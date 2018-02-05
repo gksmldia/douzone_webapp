@@ -178,10 +178,10 @@ function commonSelectInit(cd_field, selector, select_callback) {
 	var bodyObj = new Object();
 	bodyObj.FunctionID = "UP_CG_MOB_CODE_S";
 	bodyObj.P_CD_FIELD = cd_field;
-	
+	var option = null;
 	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "1000") {
-			var option = JSON.parse(data).result.List.UP_CG_MOB_CODE_S;
+			option = JSON.parse(data).result.List.UP_CG_MOB_CODE_S;
 			console.log(option)
 			$(selector).empty();
 			$(selector).append('<option value="'+ 0 +'">없음</option>');
@@ -189,6 +189,7 @@ function commonSelectInit(cd_field, selector, select_callback) {
 				$(selector).append('<option value="'+ option[i].CODE +'">' + option[i].NM_CODE + '</option>');
 			}
 			$(selector).selectpicker('refresh');
+			
 		} else if(JSON.parse(data).resultCode == "2000") {
 			logOutAlert(JSON.parse(data).resultMessage);
 		}
