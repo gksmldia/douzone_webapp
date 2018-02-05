@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -60,6 +61,24 @@ public class ViewController extends WebMvcConfigurerAdapter {
 		model.addAttribute("userObj", request.getAttribute("userObj"));
 		mav.addObject("userObj", request.getAttribute("userObj"));
 		return mav;
+	}
+	
+	@RequestMapping(path = "/load", method = RequestMethod.GET, produces = "application/text; charset=utf8")
+	public ModelAndView load(RedirectAttributes redirect, Model model
+			,@RequestParam(value = "web", required = false, defaultValue = "") String web) {
+		ModelAndView mav = new ModelAndView("/loading");
+		if(web != "") {
+			model.addAttribute("web", "web");
+			mav.addObject("web", "web");
+		}
+		return mav;
+	}
+	
+	@RequestMapping(path = "/homeEx", method = RequestMethod.GET, produces = "application/text; charset=utf8")
+	public View load(RedirectAttributes redirect, Model model) {
+		ModelAndView mav = new ModelAndView("/homeEx");
+
+		return mav.getView();
 	}
 	
 }

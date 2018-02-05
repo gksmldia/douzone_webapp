@@ -134,7 +134,7 @@ function getUrl(header) {
 		if(response.resultCode == 1000) {
 			hom01.hostUrl = JSON.parse(data).result.List.CustomInfo[0].HostUrl.toString();
 			sessionStorage.setItem("hostUrl", hom01.hostUrl);
-			getApi(hom01.hostUrl, hom01.headerObj);
+			getApi(hom01.hostUrl);
 		} 
 	});
 }

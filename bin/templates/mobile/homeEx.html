@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content" style="background-color: #f2fbff; height: -webkit-fill-available;">
@@ -61,27 +61,20 @@
 	</div>
 <script type="text/javascript">
 /*<![CDATA[*/
-var hom01 = {
-		isApp: null,
+var homeEx = {
 		hostUrl: null,
 		headerObj: null,
 		apiTable: null,
 }
 $(document).ready(function() {
-	hom01.isApp = document.URL.indexOf("web");
-	$("#head_title").hide();
-	if(hom01.isApp < 0) {
-		location.href="app://callback;headerinfo;homeInitialise;";
-		sessionStorage.setItem("isApp", "mobile");
-	} else {
-		homeInitialise();
-		sessionStorage.setItem("isApp", "web");
-	}
+	home01Initialise()
 });
 
-function homeInitialise(data) {
+function home01Initialise() {
+	homeEx.hostUrl = sessionStorage.getItem("hostUrl");
+	homeEx.headerObj = JSON.parse(sessionStorage.getItem("headerObj"));
+	homeEx.apiTable = JSON.parse(sessionStorage.getItem("api"));
 	inputFixHeight();
-	getInfo(data);
 	homeEventBind();
 	$("#head_title").hide();
 }
@@ -96,57 +89,6 @@ function inputFixHeight() {
 	}
 }
 
-function getInfo(data) {
-	var info = null;
-	if(hom01.isApp < 0) {
-		info = JSON.parse(data);
-	}
-	$.get( "/api/getInfo", function( data ) {
-		hom01.headerObj = new Object();
-		hom01.headerObj.custom = "DARBY";
-		hom01.headerObj.product = "DARBY";
-		hom01.headerObj.language = "KR";
-		hom01.headerObj.session = "";
-		hom01.headerObj.push = "";
-		hom01.headerObj.certkey = "DARBY";
-		
-		if(hom01.isApp < 0) {
-			hom01.headerObj.os_type = info.os_type; //*
-			hom01.headerObj.os_ver = info.os_ver; //*
-			hom01.headerObj.product_ver = info.product_ver; //*
-			hom01.headerObj.device = info.device; //*
-			hom01.headerObj.device_model = info.device_model; //*
-		} else {
-			hom01.headerObj.os_type = "01"; //*
-			hom01.headerObj.os_ver = "3.5.6"; //*
-			hom01.headerObj.product_ver = "1.5.6"; //*
-			hom01.headerObj.device = "FDSFSFSDAFASF"; //*
-			hom01.headerObj.device_model = "G6"; //*
-		}
-		getUrl(hom01.headerObj);
-	});
-}
-
-function getUrl(header) {
-	$.get( "/api/getUrl?header=" + encodedJSON(header), function( data ) {
-		console.log(JSON.parse(data))
-		var response = JSON.parse(data);
-		if(response.resultCode == 1000) {
-			hom01.hostUrl = JSON.parse(data).result.List.CustomInfo[0].HostUrl.toString();
-			sessionStorage.setItem("hostUrl", hom01.hostUrl);
-			getApi(hom01.hostUrl);
-		} 
-	});
-}
-
-function getApi(hostUrl) {
-	$.get( "/api/getApi?hostUrl=" + hostUrl, function( data ) {
-		console.log(JSON.parse(data).result.List.Table)
-		hom01.apiTable = JSON.parse(data).result.List.Table;
-		sessionStorage.setItem("api", JSON.stringify(hom01.apiTable));
-	});
-}
-
 function getSession() {
 	var bodyObj = new Object();
 	bodyObj.server_key = "DARBY";
@@ -156,15 +98,15 @@ function getSession() {
 	bodyObj.pwd = $("#inputPW").val().trim();
 
 	var certUrl = "";
-	for(var i in  hom01.apiTable) {
-		if(hom01.apiTable[i].CD_API == "Cert") {
-			certUrl = hom01.hostUrl + "/" + hom01.apiTable[i].NM_API;
+	for(var i in  homeEx.apiTable) {
+		if(homeEx.apiTable[i].CD_API == "Cert") {
+			certUrl = homeEx.hostUrl + "/" + homeEx.apiTable[i].NM_API;
 		} 
 	}
 	$.get( "/api/getSession?certUrl=" + certUrl + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "1000") {
 			$("#NoUserSpan").hide();
-			hom01.headerObj.session = JSON.parse(data).result;
+			homeEx.headerObj.session = JSON.parse(data).result;
 			getUserInfo();
 		} else {
 			$("#NoUserText").text(JSON.parse(data).resultMessage);
@@ -182,15 +124,16 @@ function getUserInfo() {
 	bodyObj.P_ID_USER = $("#inputID").val().trim();
 
 	var userUrl = "";
-	for(var i in  hom01.apiTable) {
-		if(hom01.apiTable[i].CD_API == "RequestNtx") {
-			userUrl = hom01.hostUrl + "/" + hom01.apiTable[i].NM_API;
+	for(var i in  homeEx.apiTable) {
+		if(homeEx.apiTable[i].CD_API == "RequestNtx") {
+			userUrl = homeEx.hostUrl + "/" + homeEx.apiTable[i].NM_API;
 		}
 	}
 	
-	console.log(hom01.headerObj)
-	sessionStorage.setItem("headerInfo", JSON.stringify(hom01.headerObj));
-	$.get( "/api/getUserInfo?userUrl=" + userUrl + "&header=" + encodedJSON(hom01.headerObj) + "&body=" + encodedJSON(bodyObj), function( data ) {
+	console.log(homeEx.headerObj)
+	sessionStorage.removeItem("headerObj");
+	sessionStorage.setItem("headerInfo", JSON.stringify(homeEx.headerObj));
+	$.get( "/api/getUserInfo?userUrl=" + userUrl + "&header=" + encodedJSON(homeEx.headerObj) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "1000") {
 			sessionStorage.setItem("userInfo", JSON.stringify(JSON.parse(data).result.List.UP_MB_COM_BROWSER_USERINFO_S[0]));
 			location.href="/menu"
