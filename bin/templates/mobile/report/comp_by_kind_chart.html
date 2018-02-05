@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  th:fragment="chartByKind">
+	<div class="row">
+		<div id="by_kind_chart_area"></div>
+	</div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+function byKindBarChartInit() {
+	var theme = {
+	    series: {
+	        colors: ['#63a69f', '#f2836b']
+	    }
+	};
+	tui.chart.registerTheme('newTheme', theme);
+	
+	var container = document.getElementById('by_kind_chart_area');
+	var data = {
+		    categories:  ["category 1", "category 2", "category 3", "category 4"],
+		    series: [
+		        {
+		            "name": "Legend1",
+		            "data": [90, 30, 50, 70]
+		        },
+		        {
+		            "name": "Legend2",
+		            "data": [40, 40, 60, 30]
+		        }
+		    ]
+		};
+	var options = {
+		    chart: {
+		        "width": 400,
+		        "height": 400,
+		        "title": "계획 대비 실적"
+		    },
+		    legend: {
+		        align: 'bottom'
+		    },
+		    yAxis: {
+		        min: 0,
+		        max: 100
+		    },
+		    theme: 'newTheme'
+		};
+	tui.chart.columnChart(container, data, options);
+	$(".tui-chart-chartExportMenu-area").hide();
+}
+/*]]>*/
+</script>
+</div>
+</html>

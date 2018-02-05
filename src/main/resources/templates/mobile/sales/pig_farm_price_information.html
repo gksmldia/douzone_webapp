@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  layout:fragment="content">
+	<div class="container-fluid" style="padding-top: 25%;">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="thisWeek " class="col-xs-5 col-sm-4 control-label padTop4 text-muted"  style="padding-right: 0px;">이번주적용돈가</label>
+						<div class="col-xs-6 col-sm-7">
+							<input type="text"  class="form-control" id="businessField" />
+						</div>
+						<label class="padTop4 text-muted">원</label>
+					</div>
+					<div class="form-group" style="margin-bottom: 50px;">
+						<label for="beforeDay" class="col-xs-5 col-sm-4 control-label padTop4 text-muted"  style="padding-right: 0px;">전일돈가</label>
+						<div class="col-xs-6 col-sm-7">
+							<input type="text"  class="form-control" id="beforeDay"  />
+						</div>
+						<label class="padTop4 text-muted">원</label>
+					</div>
+					<div class="form-group">
+						<label for="infoDays" class="col-xs-2 col-sm-4 control-label padTop4 text-muted" style="padding-right: 0px">기간</label>
+						<div class="col-xs-10 col-sm-8">
+							 <div class='input-group date  input-daterange' >
+					            <div class='input-group date' >
+					                <input type='text' class="form-control"   id="start_day"/>
+					            </div>
+						            <span class="input-group-addon">-</span>
+					             <div class='input-group date' >
+					                <input type='text' class="form-control"  id="end_day" />
+					            </div>
+				            </div>
+			            </div>
+					</div>
+				</form>
+				<div class="row">
+					<div id="price_information_grid"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var priceInformation = {
+		grid: null,
+}
+	
+$(document).ready(function() {
+	priceInformationInit();
+});
+
+function priceInformationInit() {
+	setTitle("돈가 시세 정보");
+	priceInformationControles();
+	priceInformationGridInit();
+}
+
+function priceInformationControles() {
+	var today = new Date();
+	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
+	$('#start_day').datetimepicker({
+		useCurrent: false,  
+		format: "YYYY-MM-DD"
+	 });
+	
+    $('#end_day').datetimepicker({
+    	format: "YYYY-MM-DD"
+    });
+    
+    $('#start_day').val(todayStr);
+    $('#end_day').val(todayStr);
+    
+    $("#start_day").on("dp.change", function (e) {
+        $('#end_day').data("DateTimePicker").minDate(e.date);
+    });
+    $("#end_day").on("dp.change", function (e) {
+        $('#start_day').data("DateTimePicker").maxDate(e.date);
+    });
+
+}
+
+function priceInformationGridInit() {
+	var gridData=[
+		{
+			'weekStart':'17/11/26'
+			, 'weekEnd':'17/12/02'
+			, 'workType': '박피'
+			, _extraData: {
+				rowSpan: { // Merge rows
+					weekStart: 3
+					,weekEnd: 3
+				}
+			}
+		}, {
+			'weekStart':'17/11/26'
+			, 'weekEnd':'17/12/02'
+			, 'workType': '탕박'
+		}, {
+			'weekStart':'17/11/26'
+				, 'weekEnd':'17/12/02'
+				, 'workType': '탕박(제주제외)'
+			}
+	];
+	
+	priceInformation.grid = new tui.Grid({
+		el: $('#price_information_grid'),
+		data: gridData,
+		scrollX: true,
+		scrollY: true,
+		displayRowCount: 10,
+		columnFixIndex: 5,
+		columns: [
+			{
+				title: '주간시작일',
+				name: 'weekStart',
+				align : "center",
+				width: 80
+			} ,{
+				title: '주간종료일',
+				name: 'weekEnd',
+				align : "center",
+				width: 80
+			} ,{
+				title: '작업구분',
+				name: 'workType',
+				align : "center",
+				width: 100
+			}, {
+				title: '4주평균',
+				name: '4weekAvg',
+				align : "center",
+				width: 70
+			}, {
+				title: '일',
+				name: 'sun',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '월',
+				name: 'mon',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '화',
+				name: 'tue',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '수',
+				name: 'wed',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '목',
+				name: 'thur',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '금',
+				name: 'fri',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '토',
+				name: 'sat',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}
+		]
+	});
+	
+// 	tui.Grid.applyTheme('striped');
+}
+/*]]>*/
+</script>
+</div>
+</html>

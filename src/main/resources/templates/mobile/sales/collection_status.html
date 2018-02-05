@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  layout:fragment="content">
+	<div class="container-fluid" style="padding-top: 25%;">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
+						<div class="col-xs-9 col-sm-10">
+							<input type="text"  class="form-control" id="businessField" />
+						</div>
+					</div>
+					<div class="form-group"  style="margin-bottom: 0px;">
+					</div>
+					<div class="form-group">
+						<label for="shipmentDays" class="col-xs-2 col-sm-4 control-label padTop4 text-muted" style="padding-right: 0px">기간</label>
+						<div class="col-xs-10 col-sm-8">
+							 <div class='input-group date  input-daterange' >
+					            <div class='input-group date' >
+					                <input type='text' class="form-control"   id="shipmentDays_start"/>
+					            </div>
+						            <span class="input-group-addon">-</span>
+					             <div class='input-group date' >
+					                <input type='text' class="form-control"  id="shipmentDays_end" />
+					            </div>
+				            </div>
+			            </div>
+					</div>
+					<div class="form-group">
+						<label for="salesArea " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">영업지역</label>
+						<div class="col-xs-9 col-sm-10">
+							<input type="text"  class="form-control" id="salesArea"  />
+						</div>
+					</div>
+				</form>
+				<div class="row">
+					<div id="collection_status_grid"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var collectionStatus = {
+		grid: null,
+}
+	
+$(document).ready(function() {
+	collectionStatusInit();
+});
+
+function collectionStatusInit() {
+	setTitle("수금현황");
+	collectionStatusControles();
+	collectionStatusGridInit();
+}
+
+function collectionStatusControles() {
+	var today = new Date();
+	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
+	$('#shipmentDays_start').datetimepicker({
+		useCurrent: false,  
+		format: "YYYY-MM-DD"
+	 });
+	
+    $('#shipmentDays_end').datetimepicker({
+    	format: "YYYY-MM-DD"
+    });
+    
+    $('#shipmentDays_start').val(todayStr);
+    $('#shipmentDays_end').val(todayStr);
+    
+    $("#shipmentDays_start").on("dp.change", function (e) {
+        $('#shipmentDays_end').data("DateTimePicker").minDate(e.date);
+    });
+    $("#shipmentDays_end").on("dp.change", function (e) {
+        $('#shipmentDays_start').data("DateTimePicker").maxDate(e.date);
+    });
+
+}
+
+function collectionStatusGridInit() {
+	var gridData=[
+		{
+			'depositDate':'-'
+			, 'salesArea':'-'
+			, 'customer': '-'
+			, 'depositAmount':'-'
+		}, {
+			'depositDate':'-'
+				, 'salesArea':'-'
+				, 'customer': '-'
+				, 'depositAmount':'-'
+		}
+	];
+	
+	collectionStatusGridInit.grid = new tui.Grid({
+		el: $('#collection_status_grid'),
+		data: gridData,
+		scrollX: true,
+		scrollY: true,
+		displayRowCount: 10,
+		columnFixIndex: 5,
+		columns: [
+			{
+				title: '입금일',
+				name: 'depositDate',
+				align : "center"
+			} ,{
+				title: '영업지역',
+				name: 'salesArea',
+				align : "center"
+			} ,{
+				title: '거래처',
+				name: 'customer',
+				align : "center"
+			}, {
+				title: '입금액',
+				name: 'depositAmount',
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                return format(value);
+	            }
+			}
+		]
+	});
+	
+	tui.Grid.applyTheme('striped');
+}
+/*]]>*/
+</script>
+</div>
+</html>

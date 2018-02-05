@@ -1,0 +1,363 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  th:fragment="supplyStatement">
+	<div class="container-fluid" >
+		<div class="row text-center">
+			<h3><b>종 돈 공 급 내 역 서</b></h3>
+		</div>
+		<div class="row">
+			<table class="table table-bordered table-condensed table-responsive">
+				<thead>
+					<tr>
+						<th colspan="2"  class="text-center" >공급자</th>
+						<th colspan="2"  class="text-center" >인수자</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>상&nbsp;&nbsp;&nbsp;&nbsp;호 :</td>
+						<td>농업회사법인(주)다비육종</td>
+						<td>상호[농장명] :</td>
+						<td>덕산축산</td>
+					</tr>
+					<tr>
+						<td>대표자 :</td>
+						<td>윤희진 민동수</td>
+						<td>대표자[성명] :</td>
+						<td>장동혁외1명</td>
+					</tr>
+					<tr>
+						<td>주&nbsp;&nbsp;&nbsp;&nbsp;소 :</td>
+						<td>경기도 안성시 일죽면 서동대로 7381-8</td>
+						<td>주&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;소 :</td>
+						<td>충청남도 예산군 덕산면 흥덕서로 536</td>
+					</tr>
+					<tr>
+						<td>사업자등록번호 :</td>
+						<td>125-81-15252</td>
+						<td>사업자[주민]번호 :</td>
+						<td>311-93-23579</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="row" style="padding-bottom: 5px;">
+			<div class="col-xs-2">※  정산내역</div>
+			<div class="col-xs-offset-6 col-xs-2 text-right">공급일자 :</div>
+			<div class="col-xs-2 text-right">2017-09-30</div>
+		</div>
+		<div class="row">
+			<table class="table table-bordered table-condensed table-responsive text-center">
+				<tbody>
+					<tr>
+						<th class="text-center" >품목[암]</th>
+						<td colspan="5">다비퀸-S</td>
+					</tr>
+					<tr>
+						<th rowspan="2"  class="text-center"  style="padding-top: 25px;">정상공급</th>
+						<th class="text-center" >두수</th>
+						<th class="text-center" >체중</th>
+						<th class="text-center" >평균체중</th>
+						<th class="text-center"  rowspan="2" width="10%"  style="padding-top: 25px;">금액</th>
+						<th class="text-center"  rowspan="2" width="50%"  style="padding-top: 25px;">비고</th>
+					</tr>
+					<tr>
+						<th class="text-right" >23</th>
+						<th class="text-right" >2,243</th>
+						<th class="text-right" >97.5</th>
+					</tr>
+					<tr>
+						<td>적용돈가</td>
+						<td class="text-right"  colspan="3">5,935.1</td>
+						<td></td>
+						<td class="text-left" >전국도매시장 전4주간지육가평균(박피)</td>
+					</tr>
+					<tr>
+						<td>공급단가</td>
+						<td class="text-right warning"  colspan="3">746,734</td>
+						<td></td>
+						<td class="text-left" >(적용돈가 x 72% x 평균체중) + 330,000원</td>
+					</tr>
+					<tr>
+						<td>할인</td>
+						<td colspan="2">대군/단체거래</td>
+						<td class="text-right">30,000</td>
+						<td></td>
+						<td class="text-left" >영농조합법인양돈사랑</td>
+					</tr>
+					<tr>
+						<td>할인</td>
+						<td colspan="2">종돈/정액통일</td>
+						<td class="text-right">10,000</td>
+						<td></td>
+						<td class="text-left" ></td>
+					</tr>
+					<tr>
+						<td>할인</td>
+						<td colspan="2">선입[전월말]</td>
+						<td class="text-right">10,000</td>
+						<td></td>
+						<td class="text-left" ></td>
+					</tr>
+					<tr>
+						<td>할인</td>
+						<td colspan="2">기타</td>
+						<td class="text-right">10,000</td>
+						<td></td>
+						<td class="text-left" ></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="2"></td>
+						<td class="text-right"></td>
+						<td></td>
+						<td class="text-left" ></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="2"></td>
+						<td class="text-right"></td>
+						<td></td>
+						<td class="text-left" ></td>
+					</tr>
+					<tr>
+						<td>할인소계</td>
+						<td colspan="2"></td>
+						<td class="text-right">60,000</td>
+						<td class="text-right warning">686,734</td>
+						<td class="text-left" ></td>
+					</tr>
+					<tr>
+						<td>정산금액</td>
+						<td colspan="3"></td>
+						<td class="text-right warning">15,794,000</td>
+						<td class="text-left" >두수 x 할인소계</td>
+					</tr>
+					<tr>
+						<td>기타정산</td>
+						<td colspan="3"></td>
+						<td class="text-right">-</td>
+						<td class="text-left" ></td>
+					</tr>
+					<tr>
+						<td>하자처리</td>
+						<td class="text-right">1</td>
+						<td class="text-right">97</td>
+						<td class="text-right">97.0</td>
+						<td></td>
+						<td class="text-left" >무상(1)</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr class="warning">
+						<th class="text-center">합계</th>
+						<th class="text-right">24</th>
+						<th class="text-right">2,340</th>
+						<th class="text-right">97.5</th>
+						<th class="text-right">15,794,000</th>
+						<th class="text-left" >정산금액 + 기타정산 + 하자처리</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<div class="row">
+			<table class="table table-bordered table-condensed table-responsive text-center">
+				<tr>
+					<td>전월이월</td>
+					<td>금일매출</td>
+					<td>잔고</td>
+					<td width="40%">비고</td>
+				</tr>
+				<tr class="warning">
+					<th class="text-right">6,769,000</th>
+					<th class="text-right">15,794,000</th>
+					<th class="text-right">22,530,000</th>
+					<th></th>
+				</tr>
+			</table>
+		</div>
+		<div class="row">
+			<table class="table table-bordered table-condensed table-responsive text-center">
+				<tr>
+					<td>항생제</td>
+					<td>제품명</td>
+					<td>사용량</td>
+					<td>투약일자</td>
+					<td>휴약기간</td>
+					<td>물류계장</td>
+					<td>차량번호</td>
+				</tr>
+				<tr>
+					<td>-</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>주광천</td>
+					<td class="text-left">경기93아4582</td>
+				</tr>
+			</table>
+		</div>
+		<div class="row">
+			<table id="team_info_table" class="text-center" style="border: 1px solid #ddd ; background-color: #fcf8e3; width: -webkit-fill-available;" >
+				<tbody>
+				<tr>
+					<td colspan="4" style="border-bottom: 1px solid #ddd;">(주)다비육종 고객지원본부 종돈팀</td>
+					<td rowspan="3" style="border-left: 1px solid #ddd;">
+						종돈대금 입금 계좌번호<br/>
+						농협 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;000-00-000000<br/>
+						예금주 (주)다비육종
+					</td>
+				</tr>
+				<tr style="border-bottom: 1px solid #ddd;">
+					<td>전&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;화</td>
+					<td>031-672-5660</td>
+					<td>팩스</td>
+					<td>031-672-5566</td>
+				</tr>
+				<tr style="border-bottom: 1px solid #ddd;">
+					<td>영업담당</td>
+					<td>유안상</td>
+					<td>과장</td>
+					<td>0505-672-5668</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="row" style="padding-top: 5px;">
+			<div class="col-xs-3">※  종돈내역(첨부)</div>
+			<div class="col-xs-offset-5 col-xs-2 text-right">공급일자 :</div>
+			<div class="col-xs-2 text-right">2017-09-30</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6"  style="padding-right: 0;">
+			<div id="odd_grid"></div>
+		</div>
+		<div class="col-xs-6"  style="padding-left: 0;">
+			<div id="even_grid"></div>
+		</div>
+	</div>
+<style>
+#team_info_table > tbody > tr > td {
+	padding: 5px;
+}
+</style>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var supplyStatementForm = {
+		oddGrid: null,
+		evenGrid: null,
+}
+function supplyStatementFormInit() {
+	supplyStatementFormGrid();
+}
+
+function supplyStatementFormGrid() {
+	var gridData = [];
+	for(var i = 1; i <25; i++) {
+		var tempObj = new Object();
+		tempObj.num = i;
+		tempObj.item = "YL";
+		tempObj.gender = "암";
+		tempObj.tagNum = "";
+		tempObj.individualNum = "S1000" + i;
+		tempObj.birth = "2017-04-" + setTwinNum(i);
+		gridData.push(tempObj);
+	}
+	
+	var oddData = [];
+	var evenData = [];
+	for(var i in gridData) {
+		if(gridData[i].num%2 == 0 ) {
+			evenData.push(gridData[i]);
+		} else {
+			oddData.push(gridData[i]);
+		}
+	}
+	
+	supplyStatementForm.oddGrid = new tui.Grid({
+		el: $('#odd_grid'),
+		data: oddData,
+		virtualScrolling: false,
+		scrollX: false,
+		scrollY: false,
+		displayRowCount: 10,
+		columnFixIndex: 5,
+		columns: [
+			{
+				title: '번호',
+				name: 'num',
+				align : "center",
+				width: 10
+			} ,{
+				title: '품종',
+				name: 'item',
+				align : "center"
+			} ,{
+				title: '성별',
+				name: 'gender',
+				align : "center",
+				width: 10
+			}, {
+				title: '태그번호',
+				name: 'tagNum',
+				align : "center"
+			}, {
+				title: '개체번호',
+				name: 'individualNum',
+				align : "center"
+			}, {
+				title: '생년월일',
+				name: 'birth',
+				align : "center"
+			}
+		] 
+	});
+	
+	supplyStatementForm.evenGrid = new tui.Grid({
+		el: $('#even_grid'),
+		data: evenData,
+		virtualScrolling: false,
+		scrollX: false,
+		scrollY: false,
+		displayRowCount: 10,
+		columnFixIndex: 5,
+		columns: [
+			{
+				title: '번호',
+				name: 'num',
+				align : "center",
+				width: 10
+			} ,{
+				title: '품종',
+				name: 'item',
+				align : "center"
+			} ,{
+				title: '성별',
+				name: 'gender',
+				align : "center",
+				width: 10
+			}, {
+				title: '태그번호',
+				name: 'tagNum',
+				align : "center"
+			}, {
+				title: '개체번호',
+				name: 'individualNum',
+				align : "center"
+			}, {
+				title: '생년월일',
+				name: 'birth',
+				align : "center"
+			}
+		] 
+	});
+	
+	tui.Grid.applyTheme('clean');
+}
+/*]]>*/
+</script>
+</div>
+</html>

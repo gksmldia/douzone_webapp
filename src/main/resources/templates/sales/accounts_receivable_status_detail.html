@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  layout:fragment="content">
+	<div class="container-fluid" style="padding-top: 25%;">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
+						<div class="col-xs-9 col-sm-10">
+							<input type="text"  class="form-control" id="businessField" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="shipmentDays" class="col-xs-2 col-sm-4 control-label padTop4 text-muted" style="padding-right: 0px">기간</label>
+						<div class="col-xs-10 col-sm-8">
+							 <div class='input-group date  input-daterange' >
+					            <div class='input-group date' >
+					                <input type='text' class="form-control"   id="shipmentDays_start"/>
+					            </div>
+						            <span class="input-group-addon">-</span>
+					             <div class='input-group date' >
+					                <input type='text' class="form-control"  id="shipmentDays_end" />
+					            </div>
+				            </div>
+			            </div>
+					</div>
+					<div class="form-group">
+						<label for="salesArea " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">영업지역</label>
+						<div class="col-xs-9 col-sm-10">
+							<input type="text"  class="form-control" id="salesArea"  value="1A"/>
+						</div>
+					</div>
+				</form>
+				<div class="row">
+					<div id="accounts_receivable_status_detail_grid"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var accountsReceivableStatusDatail = {
+		grid: null,
+}
+	
+$(document).ready(function() {
+	accountsReceivableStatusDatailInit();
+});
+
+function accountsReceivableStatusDatailInit() {
+	setTitle("미수현황(세부내역)");
+	accountsReceivableStatusDatailControles();
+	accountsReceivableStatusDatailGridInit();
+}
+
+function accountsReceivableStatusDatailControles() {
+	var today = new Date();
+	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
+	$('#shipmentDays_start').datetimepicker({
+		useCurrent: false,  
+		format: "YYYY-MM-DD"
+	 });
+	
+    $('#shipmentDays_end').datetimepicker({
+    	format: "YYYY-MM-DD"
+    });
+    
+    $('#shipmentDays_start').val(todayStr);
+    $('#shipmentDays_end').val(todayStr);
+    
+    $("#shipmentDays_start").on("dp.change", function (e) {
+        $('#shipmentDays_end').data("DateTimePicker").minDate(e.date);
+    });
+    $("#shipmentDays_end").on("dp.change", function (e) {
+        $('#shipmentDays_start').data("DateTimePicker").maxDate(e.date);
+    });
+
+}
+
+function accountsReceivableStatusDatailGridInit() {
+	var gridData=[
+		{
+			'salesArea':'1A'
+			, 'customerName':'진길부(개척)'
+			, 'forwardOver': 2000
+			, 'sales':2000
+			, 'deposit':1000
+			, 'balance':1000
+			, _extraData: {
+				rowSpan: { // Merge rows
+					salesArea: 2
+				}
+			}
+		}, {
+			'salesArea':'1A'
+			, 'customerName':'이범호(성지)'
+			, 'forwardOver': 3000
+			, 'sales':4000
+			, 'deposit':5000
+			, 'balance': 6000
+		}];
+	
+	accountsReceivableStatusDatail.grid = new tui.Grid({
+		el: $('#accounts_receivable_status_detail_grid'),
+		data: gridData,
+		scrollX: true,
+		scrollY: true,
+		displayRowCount: 10,
+		columnFixIndex: 5,
+		columns: [
+			{
+				title: '영업지역',
+				name: 'salesArea',
+				align : "center"
+			} ,{
+				title: '단체명',
+				name: 'groupName',
+				align : "center"
+			} ,{
+				title: '거래처명',
+				name: 'customerName',
+				align : "center"
+			}, {
+				title: '전월이월',
+				name: 'forwardOver',
+				align : "center",
+	            formatter: function(value, options, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '매출',
+				name: 'sales',
+				align : "center",
+	            formatter: function(value, options, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '입금',
+				name: 'deposit',
+				align : "center",
+	            formatter: function(value, options, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '잔고',
+				name: 'balance',
+				align : "center",
+	            formatter: function(value, options, rowData) {
+	                return format(value);
+	            }
+			}, {
+				title: '매출채권',
+				width: 80,
+				align : "center",
+	            formatter: function(value, options,, rowData) {
+	                var id = rowData.id;
+	                var url = '/report/credit_sales_status';
+	
+	                return '<a href="' + url + '" class="btn btn-default">확인</a>';
+	            }
+			}
+		] ,
+	    summary: {
+	        position: 'bottom',
+	        height: 50,  // by pixel
+	        columnContent: {
+	        	customerName: {
+	                template: function() {
+	                    return '합계';
+	                }
+	            },
+	            forwardOver: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            sales: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            deposit: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            balance: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            }
+	        }
+	    }
+	});
+	
+	tui.Grid.applyTheme('striped');
+}
+/*]]>*/
+</script>
+</div>
+</html>

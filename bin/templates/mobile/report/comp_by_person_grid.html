@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  th:fragment="gridByPerson">
+	<div class="container-fluid" >
+		<div class="row">
+			 <div class='col-xs-12'>
+				 <form class="form-horizontal">
+		        	<div class="form-group">
+						<button type="button" class="btn col-xs-offset-8 col-xs-4" id="person_view_graph">그래프 보기</button>
+		        	</div>
+		        	<div class="form-group" id="grid_by_person_div">
+						<div id="by_person_grid"></div>
+		        	</div>
+		        	<div class="form-group" id="chart_by_person_div">
+						<div th:replace="/mobile/report/comp_by_person_chart :: chartByPerson" ></div>
+		        	</div>
+		        </form>
+	        </div>
+		</div>
+	</div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var byPerson = {
+		grid: null,
+}
+
+function byPersonViewInit() {
+	$("#chart_by_person_div").hide();
+	byPersonViewGridInit();
+	byPersonViewEventBind();
+	byPersonBarChartInit();
+}
+
+function byPersonViewGridInit() {
+	var byPersonData = [
+		{"item": "1A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "1B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "2A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "2B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "2C", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "3A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "3B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "4A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+		{"item": "4B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
+	];
+	
+	byPerson.grid = new tui.Grid({
+		el: $('#by_person_grid'),
+		data: byPersonData,
+		virtualScrolling: false,
+		scrollX: false,
+		scrollY: false,
+		displayRowCount: 10,
+		columnFixIndex: 5,
+		columns: [
+			{
+				title: '',
+				name: 'item',
+				align : "center"
+			},{
+				title: '계획',
+				name: 'plan',
+				align : "center"
+			}, {
+				title: '실적',
+				name: 'perform',
+				align : "center"
+			}, {
+				title: '계획(누계)',
+				name: 'planTotal',
+				align : "center"
+			}, {
+				title: '실적(누계)',
+				name: 'performTotal',
+				align : "center"
+			}
+		] ,
+	    summary: {
+	        position: 'bottom',
+	        height: 30,  // by pixel
+	        columnContent: {
+	        	item: {
+	                template: function() {
+	                    return '합계';
+	                }
+	            }
+	        }
+	    }
+	});
+}
+
+function byPersonViewEventBind() {
+	$("#person_view_graph").click(function() {
+		$("#grid_by_person_div").hide();
+		$("#chart_by_person_div").show();
+	});
+}
+/*]]>*/
+</script>
+</div>
+</html>

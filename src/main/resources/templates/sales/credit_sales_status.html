@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  layout:fragment="content">
+	<div class="container-fluid" style="padding-top: 25%;">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<form class="form-horizontal" style="font-size: 11pt;">
+					<div class="form-group">
+						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
+						<div class="col-xs-9 col-sm-6">
+							<input type="text"  class="form-control" id="businessField" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="account" class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  >거래처</label>
+						<div class="col-xs-9 col-sm-9">
+							<div class='input-group' >
+								<input type="text"  class="form-control" id="farm"/>
+								<span class="input-group-btn">
+									<button type="button"  class="btn btn-default" id="farm_search" data-toggle="modal" data-target="#search_popup"  >
+										<i class="fa fa-search" aria-hidden="true"></i>&nbsp;검색
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" >
+						<label for="shipmentDays" class="col-xs-3 col-sm-2 control-label padTop4 text-muted">기간</label>
+						<div class="col-xs-9 col-sm-10">
+							 <div class='input-group date  input-daterange' >
+					            <div class='input-group date' >
+					                <input type='text' class="form-control"  id="credit_shipment_start"/>
+					            </div>
+						            <span class="input-group-addon">-</span>
+					             <div class='input-group date' >
+					                <input type='text' class="form-control"  id="credit_shipment_end"/>
+					            </div>
+				            </div>
+			            </div>
+					</div>
+					<div class="form-group" style="padding-right: 20px;">
+						<button type="button" class="btn btn-info col-xs-offset-6 col-xs-6 col-sm-offset-4 col-sm-4" id="credit_search">
+							<i class="fa fa-binoculars" aria-hidden="true"></i>&nbsp;매출 채권 조회
+						</button>
+					</div>
+				</form>
+				<div class="row">
+					<div id="credit_sales_status_grid"></div>
+				</div>
+				<div class="row">
+					<div class="btn-group text-center"  role="group" style="padding-left: 10px;">
+						<button type="button"  class="btn btn-default"  id="go_claim_history" >
+							<i class="fa fa-chevron-left" aria-hidden="true"></i>
+							&nbsp;클레임 내역 조회
+						</button>
+						<button type="button"  class="btn btn-default"  id="go_menu" >
+							<i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+							메뉴
+						</button>
+						<button type="button"  class="btn btn-default"  id="go_account_receivable" >
+							미수현황&nbsp;
+							<i class="fa fa-chevron-right" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
+				<div class="modal fade"  id="search_popup">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title">고객 정보 검색</h4>
+				      </div>
+				      <div class="modal-body">
+				        <div th:replace="/mobile/breedingPig/partner_search_popup:: partnerSearch" ></div>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-info" id="modal_confirm">확인</button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+				      </div>
+				    </div><!-- /.modal-content -->
+				  </div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			</div>
+		</div>
+	</div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var creditSalesStatus = {
+		grid: null,
+}
+	
+$(document).ready(function() {
+	creditSalesStatusInit();
+});
+
+function creditSalesStatusInit() {
+	setTitle("매출채권명세");
+	creditSalesStatusControles();
+	creditSalesStatusGridInit();
+	creditSalesStatusEventBind();
+}
+
+function creditSalesStatusControles() {
+	var today = new Date();
+	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
+	$('#credit_shipment_start').datetimepicker({
+		useCurrent: false,  
+		format: "YYYY-MM-DD"
+	 });
+	
+    $('#credit_shipment_end').datetimepicker({
+    	format: "YYYY-MM-DD"
+    });
+    
+    $('#credit_shipment_start').val(todayStr);
+    $('#credit_shipment_end').val(todayStr);
+    
+    $("#credit_shipment_start").on("dp.change", function (e) {
+        $('#credit_shipment_end').data("DateTimePicker").minDate(e.date);
+    });
+    $("#credit_shipment_end").on("dp.change", function (e) {
+        $('#credit_shipment_start').data("DateTimePicker").maxDate(e.date);
+    });
+
+}
+
+function creditSalesStatusGridInit() {
+	var gridData=[ {'date': '-','item': '-', 'forwardOver' : '-', 'cnt1' : '-', 'cnt2': '-', 'exchange': '-', 'sales': '-', 'deposit': '-', 'balance': '-' } ];
+	
+	creditSalesStatus.grid = new tui.Grid({
+	el: $('#credit_sales_status_grid'),
+	data: gridData,
+	scrollX: true,
+	scrollY: true,
+	displayRowCount: 10,
+	columnFixIndex: 5,
+// 	minimumColumnWidth: 20,
+	columns: [
+		{
+			title: '일자',
+			name: 'date',
+			align : "center"
+		},{
+			title: '품목',
+			name: 'item',
+			align : "center"
+		}, {
+			title: '전월이월',
+			name: 'forwardOver',
+			align : "center"
+		}, {
+			title: '수량1',
+			name: 'cnt1',
+			align : "center"
+		}, {
+			title: '수량2',
+			name: 'cnt2',
+			align : "center"
+		}, {
+			title: '교환',
+			name: 'exchange',
+			align : "center"
+		}, {
+			title: '매출',
+			name: 'sales',
+			align : "center",
+		}, {
+			title: '입금',
+			name: 'deposit',
+			align : "center",
+		}, {
+			title: '잔고',
+			name: 'balance',
+			align : "center",
+		}
+	] });
+	
+	tui.Grid.applyTheme('striped');
+}
+
+function creditSalesStatusEventBind() {
+	$("#go_claim_history").click(function() {
+		location.href = "/sales/claim_management_account";
+	});
+	
+	$("#go_menu").click(function() {
+		location.href = "/menu";
+	});
+	
+	$("#go_account_receivable").click(function() {
+		location.href = "/sales/accounts_receivable_status";
+	});
+	
+	$("#search_popup").on('shown.bs.modal', function () {
+		$("#ln_partner").val($("#farm").val());
+	});
+	
+	$("#modal_confirm").click(function() {
+		if($('input:radio[name="selectRadio"]:checked').val() == undefined) {
+			bootalert("선택 할 거래처를 선택해 주세요.");
+			return false
+		} else {
+			if($('input:radio[name="selectRadio"]:checked').val() != undefined) {
+				var index = $('input:radio[name="selectRadio"]:checked').val()*1;
+				var rowData = partner.grid.rows.all[index].value
+				$("#farm").val(rowData.NM_CEO + "[" + rowData.LN_PARTNER + "]");
+				$("#farm").attr("name", "");
+				$("#farm").attr("name", rowData.CD_PARTNER);
+			}
+			$("#search_popup").modal('hide');
+		}
+	});
+}
+/*]]>*/
+</script>
+</div>
+</html>

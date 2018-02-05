@@ -1,0 +1,525 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  th:fragment="accountForm">
+	<div class="container-fluid" style="padding-top: 10px;">
+		<div class="row">
+			<div class="col-xs-6">
+				<p>고능력웅돈, 신뢰받는 품질</p>
+				<h1><b>(주)다비육종</b></h1>
+			</div>
+			<div class="col-xs-6 text-right">
+				<p>지역담당 김정빈</p>
+				<p>Tel. 0505-673-5663</p>
+			</div>
+		</div>
+		<div class="row">
+			<p>경기도 안성시 일죽면 서동대로 7381-8</p>
+		</div>
+		<div class="row text-right"><p><b>경상남도 거창군 신원면 신차로 3057</b></p></div>
+		<div class="row">
+			<p>Tel. (080)080-7660</p>
+		</div>
+		<div class="row text-right">
+			<p><b>홍일농장</b></p>
+			<p>엄홍주 귀하</p>
+			<p>50153</p>
+		</div>
+		<div class="row">
+			<p><small>* 본 정산서는 2017년 10월 31일 기준으로 작성된 것입니다.</small></p>
+		</div>
+		<div class="row">
+			<table style="border-top: 3px solid #333; border-bottom: 2px solid #333;     width: -webkit-fill-available;">
+				<tbody>
+					<tr>
+						<th colspan="2">* 정액대금 정산서</th>
+						<th colspan="3">* 송금계좌</th>
+					</tr>
+					<tr>
+						<td class="text-center">사용기간</td>
+						<td class="text-right">2017-10-01</td>
+						<td>은행명</td>
+						<td>농협</td>
+						<td rowspan="3" ><img alt=""  th:src='@{http://1.244.192.47:85/ERP-U/shared/image/common/ESLEE/DARVY_journeyman.jpg}'  style="width: 80px;"/></td>
+					</tr>
+					<tr>
+						<th class="text-center">청구금액</th>
+						<td class="text-right"><b>1,584,000</b>  (원)</td>
+						<td>계좌번호</td>
+						<td>000-00-000000</td>
+					</tr>
+					<tr>
+						<th></th>
+						<td></td>
+						<td>예금주</td>
+						<td>(주)다비육종</td>
+					</tr>
+					<tr>
+						<th colspan="5">* 이 번 달 사 용 내 역</th>
+					</tr>
+					<tr>
+						<th><small>지난달 잔액</small></th>
+						<td class="text-right"><small><b>880,000</b></small>  (원)</td>
+						<th colspan="3"  style="padding-left: 20px;">* 비 고</th>
+					</tr>
+					<tr>
+						<th>이번달 사용액(+)</th>
+						<th class="text-right"><b>1,584,000 </b>  (원)</th>
+						<th colspan="3" rowspan="5"  style="padding: 10px 20px;"><div style="border: 1px solid #333; height: 100px;"></div></th>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;<small>정액비용</small></td>
+						<td class="text-right"><small>1,584,000</small>  (원)</td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;<small>할인액</small></td>
+						<td class="text-right"><small>0</small>  (원)</td>
+					</tr>
+					<tr>
+						<td style="border-bottom: 2px solid #333;">이번달 입금액(-)</td>
+						<td class="text-right" style="border-bottom: 2px solid #333;">880,000  (원)</td>
+					</tr>
+					<tr>
+						<th>현재 미수금 계</th>
+						<th class="text-right"><b>1,574,000 </b>  (원)</th>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="row"><p><b>* 품종별 정액 판매 현황</b></p></div>
+		<div class="row">
+			<table style="border: 1px solid #333; width: -webkit-fill-available;" class="itemSalesTable">
+				<tr style="border-bottom: 2px solid #333;">
+					<td style="border-right: 1px solid #333; width: 95px;">품종/일</td>
+					<td>1</td>
+					<td>2</td>
+					<td>3</td>
+					<td>4</td>
+					<td>5</td>
+					<td>6</td>
+					<td>7</td>
+					<td>8</td>
+					<td>9</td>
+					<td>10</td>
+					<td>11</td>
+					<td>12</td>
+					<td>13</td>
+					<td>14</td>
+					<td>15</td>
+					<td>16</td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">DD</td>
+					<td id="dd1"></td>
+					<td id="dd2"></td>
+					<td id="dd3"></td>
+					<td id="dd4"></td>
+					<td id="dd5"></td>
+					<td id="dd6"></td>
+					<td id="dd7"></td>
+					<td id="dd8"></td>
+					<td id="dd9">42</td>
+					<td id="dd10"></td>
+					<td id="dd11">15</td>
+					<td id="dd12"></td>
+					<td id="dd13"></td>
+					<td id="dd14"></td>
+					<td id="dd15"></td>
+					<td id="dd16"></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">DD(교환)</td>
+					<td id="de1"></td>
+					<td id="de2"></td>
+					<td id="de3"></td>
+					<td id="de4"></td>
+					<td id="de5"></td>
+					<td id="de6"></td>
+					<td id="de7"></td>
+					<td id="de8"></td>
+					<td id="de9"></td>
+					<td id="de10"></td>
+					<td id="de11"></td>
+					<td id="de12"></td>
+					<td id="de13"></td>
+					<td id="de14"></td>
+					<td id="de15"></td>
+					<td id="de16"></td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">LL</td>
+					<td id="ll1"></td>
+					<td id="ll2"></td>
+					<td id="ll3"></td>
+					<td id="ll4"></td>
+					<td id="ll5"></td>
+					<td id="ll6"></td>
+					<td id="ll7"></td>
+					<td id="ll8"></td>
+					<td id="ll9"></td>
+					<td id="ll10"></td>
+					<td id="ll11"></td>
+					<td id="ll12"></td>
+					<td id="ll13"></td>
+					<td id="ll14"></td>
+					<td id="ll15"></td>
+					<td id="ll16"></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">LL(교환)</td>
+					<td id="le1"></td>
+					<td id="le2"></td>
+					<td id="le3"></td>
+					<td id="le4"></td>
+					<td id="le5"></td>
+					<td id="le6"></td>
+					<td id="le7"></td>
+					<td id="le8"></td>
+					<td id="le9"></td>
+					<td id="le10"></td>
+					<td id="le11"></td>
+					<td id="le12"></td>
+					<td id="le13"></td>
+					<td id="le14"></td>
+					<td id="le15"></td>
+					<td id="le16"></td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">YY</td>
+					<td id="yy1"></td>
+					<td id="yy2"></td>
+					<td id="yy3"></td>
+					<td id="yy4"></td>
+					<td id="yy5"></td>
+					<td id="yy6"></td>
+					<td id="yy7"></td>
+					<td id="yy8"></td>
+					<td id="yy9"></td>
+					<td id="yy10"></td>
+					<td id="yy11"></td>
+					<td id="yy12"></td>
+					<td id="yy13"></td>
+					<td id="yy14"></td>
+					<td id="yy15"></td>
+					<td id="yy16"></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">YY(교환)</td>
+					<td id="ye1"></td>
+					<td id="ye2"></td>
+					<td id="ye3"></td>
+					<td id="ye4"></td>
+					<td id="ye5"></td>
+					<td id="ye6"></td>
+					<td id="ye7"></td>
+					<td id="ye8"></td>
+					<td id="ye9"></td>
+					<td id="ye10"></td>
+					<td id="ye11"></td>
+					<td id="ye12"></td>
+					<td id="ye13"></td>
+					<td id="ye14"></td>
+					<td id="ye15"></td>
+					<td id="ye16"></td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">BB</td>
+					<td id="bb1"></td>
+					<td id="bb2"></td>
+					<td id="bb3"></td>
+					<td id="bb4"></td>
+					<td id="bb5"></td>
+					<td id="bb6"></td>
+					<td id="bb7"></td>
+					<td id="bb8"></td>
+					<td id="bb9"></td>
+					<td id="bb10"></td>
+					<td id="bb11"></td>
+					<td id="bb12"></td>
+					<td id="bb13"></td>
+					<td id="bb14"></td>
+					<td id="bb15"></td>
+					<td id="bb16"></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">BB(교환)</td>
+					<td id="be1"></td>
+					<td id="be2"></td>
+					<td id="be3"></td>
+					<td id="be4"></td>
+					<td id="be5"></td>
+					<td id="be6"></td>
+					<td id="be7"></td>
+					<td id="be8"></td>
+					<td id="be9"></td>
+					<td id="be10"></td>
+					<td id="be11"></td>
+					<td id="be12"></td>
+					<td id="be13"></td>
+					<td id="be14"></td>
+					<td id="be15"></td>
+					<td id="be16"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="row">
+			<table style="border: 1px solid #333;" class="itemSalesTable">
+				<tr style="border-bottom: 2px solid #333;">
+					<td style="border-right: 1px solid #333; width: 95px;">품종/일</td>
+					<td>17</td>
+					<td>18</td>
+					<td>19</td>
+					<td>20</td>
+					<td>21</td>
+					<td>22</td>
+					<td>23</td>
+					<td>24</td>
+					<td>25</td>
+					<td>26</td>
+					<td>27</td>
+					<td>28</td>
+					<td>29</td>
+					<td>30</td>
+					<td>31</td>
+					<td class="text-center"  style="border-left:1px solid #333; width: 55px;">계</td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">DD</td>
+					<td id="dd17"></td>
+					<td id="dd18"></td>
+					<td id="dd19"></td>
+					<td id="dd20"></td>
+					<td id="dd21"></td>
+					<td id="dd22"></td>
+					<td id="dd23"></td>
+					<td id="dd24"></td>
+					<td id="dd25"></td>
+					<td id="dd26"></td>
+					<td id="dd27"></td>
+					<td id="dd28"></td>
+					<td id="dd29"></td>
+					<td id="dd30">42</td>
+					<td id="dd31"></td>
+					<td id="ddSum"  class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">DD(교환)</td>
+					<td id="de17"></td>
+					<td id="de18"></td>
+					<td id="de19"></td>
+					<td id="de20"></td>
+					<td id="de21"></td>
+					<td id="de22"></td>
+					<td id="de23"></td>
+					<td id="de24"></td>
+					<td id="de25"></td>
+					<td id="de26"></td>
+					<td id="de27"></td>
+					<td id="de28"></td>
+					<td id="de29"></td>
+					<td id="de30"></td>
+					<td id="de31"></td>
+					<td id="deSum" class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">LL</td>
+					<td id="ll17"></td>
+					<td id="ll18"></td>
+					<td id="ll19"></td>
+					<td id="ll20"></td>
+					<td id="ll21"></td>
+					<td id="ll22"></td>
+					<td id="ll23"></td>
+					<td id="ll24"></td>
+					<td id="ll25"></td>
+					<td id="ll26"></td>
+					<td id="ll27"></td>
+					<td id="ll28"></td>
+					<td id="ll29"></td>
+					<td id="ll30"></td>
+					<td id="ll31"></td>
+					<td id="llSum" class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">LL(교환)</td>
+					<td id="le17"></td>
+					<td id="le18"></td>
+					<td id="le19"></td>
+					<td id="le20"></td>
+					<td id="le21"></td>
+					<td id="le22"></td>
+					<td id="le23"></td>
+					<td id="le24"></td>
+					<td id="le25"></td>
+					<td id="le26"></td>
+					<td id="le27"></td>
+					<td id="le28"></td>
+					<td id="le29"></td>
+					<td id="le30"></td>
+					<td id="le31"></td>
+					<td id="leSum"  class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">YY</td>
+					<td id="yy17"></td>
+					<td id="yy18"></td>
+					<td id="yy19"></td>
+					<td id="yy20"></td>
+					<td id="yy21"></td>
+					<td id="yy22"></td>
+					<td id="yy23"></td>
+					<td id="yy24"></td>
+					<td id="yy25"></td>
+					<td id="yy26"></td>
+					<td id="yy27"></td>
+					<td id="yy28"></td>
+					<td id="yy29"></td>
+					<td id="yy30"></td>
+					<td id="yy31"></td>
+					<td id="yySum" class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">YY(교환)</td>
+					<td id="ye17"></td>
+					<td id="ye18"></td>
+					<td id="ye19"></td>
+					<td id="ye20"></td>
+					<td id="ye21"></td>
+					<td id="ye22"></td>
+					<td id="ye23"></td>
+					<td id="ye24"></td>
+					<td id="ye25"></td>
+					<td id="ye26"></td>
+					<td id="ye27"></td>
+					<td id="ye28"></td>
+					<td id="ye29"></td>
+					<td id="ye30"></td>
+					<td id="ye31"></td>
+					<td id="yeSum" class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+				<tr>
+					<td style="border-right: 1px solid #333;">BB</td>
+					<td id="bb17"></td>
+					<td id="bb18"></td>
+					<td id="bb19"></td>
+					<td id="bb20"></td>
+					<td id="bb21"></td>
+					<td id="bb22"></td>
+					<td id="bb23"></td>
+					<td id="bb24"></td>
+					<td id="bb25"></td>
+					<td id="bb26"></td>
+					<td id="bb27"></td>
+					<td id="bb28"></td>
+					<td id="bb29"></td>
+					<td id="bb30"></td>
+					<td id="bb31"></td>
+					<td id="bbSum"  class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+				<tr style="border-bottom: 1px solid #333;">
+					<td style="border-right: 1px solid #333;">BB(교환)</td>
+					<td id="be17"></td>
+					<td id="be18"></td>
+					<td id="be19"></td>
+					<td id="be20"></td>
+					<td id="be21"></td>
+					<td id="be22"></td>
+					<td id="be23"></td>
+					<td id="be24"></td>
+					<td id="be25"></td>
+					<td id="be26"></td>
+					<td id="be27"></td>
+					<td id="be28"></td>
+					<td id="be29"></td>
+					<td id="be30"></td>
+					<td id="be31"></td>
+					<td id="beSum"  class="text-right"  style="border-left:1px solid #333; "></td>
+				</tr>
+			</table>
+		</div>
+		<div class="row">
+			<table class="text-center sumTable" style="border: 1px solid #333; width: -webkit-fill-available;">
+				<tbody>
+					<tr style="border-bottom: 1px solid #333;">
+						<th>정액품목 계</th>
+						<th>수량</th>
+						<th class="text-right" >99</th>
+						<th>단가</th>
+						<th class="text-right" ></th>
+						<th></th>
+						<th class="text-right" >16,000</th>
+						<th>금액</th>
+						<th class="text-right" >1,584,000</th>
+					</tr>
+					<tr style="border-bottom: 1px solid #333;">
+						<th>기타품목 계</th>
+						<th>수량</th>
+						<th class="text-right" ></th>
+						<th>단가</th>
+						<th class="text-right" ></th>
+						<th></th>
+						<th class="text-right" ></th>
+						<th>금액</th>
+						<th class="text-right" ></th>
+					</tr>
+					<tr style="border-bottom: 1px solid #333;">
+						<th>배송비</th>
+						<th>수량</th>
+						<th class="text-right" ></th>
+						<th>단가</th>
+						<th class="text-right" ></th>
+						<th></th>
+						<th class="text-right" ></th>
+						<th>금액</th>
+						<th class="text-right" ></th>
+					</tr>
+					<tr>
+						<th>총 합계</th>
+						<th>판매</th>
+						<th class="text-right" >99</th>
+						<th>교환</th>
+						<th class="text-right" >0</th>
+						<th>계</th>
+						<th class="text-right" >99</th>
+						<th>금액</th>
+						<th class="text-right" >1,584,000</th>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+<style>
+.itemSalesTable > tbody > tr > td {
+	padding: 1px 10px 1px 10px;
+}
+
+.sumTable > tbody > tr > th {
+	padding: 1px 20px 1px 20px;
+}
+</style>
+<script th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	
+});
+
+function accountFormInit() {
+	accountTableSum(); 
+}
+
+function accountTableSum() {
+	itemData = ["dd", "de", "ll", "le", "yy", "ye", "bb", "be"];
+	
+	for(var i in itemData) {
+		var sum = 0;
+		for(var j = 1; j < 32; j++) {
+			var item = $("#" + itemData[i] + j).text() == "" ? 0 : $("#" + itemData[i] + j).text()*1;
+			sum += item;
+		}
+		$("#" + itemData[i] + "Sum").text(sum);
+	}
+}
+/*]]>*/
+</script>
+</div>
+</html>
