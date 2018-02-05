@@ -3,11 +3,26 @@
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content" style="background-color: #f2fbff; height: -webkit-fill-available;">
 	<div class="container-fluid">
-		<div class="row">
+		<div class="row text-center"  style="padding-top: 50%">
 			<i class="fa fa-spinner fa-spin fa-3x"></i>
-			<span class="pClass"></span>
+			<p>로딩 중입니다.<br/> 잠시만 기다려 주세요.</p>
+			<p class="p2"></p>
 		</div>
 	</div>
+<style>
+	p {
+		display: none;
+		font-size: 25px;
+		font-family:dotum
+	}
+	.p2 {
+		display: block;
+		width: 100%;
+		margin: 0 auto;
+		word-break: break-all;
+		margin-top:50px;
+	}
+</style>
 <script type="text/javascript">
 /*<![CDATA[*/
 var loading = {
@@ -16,15 +31,11 @@ var loading = {
 		headerObj: null,
 		apiTable: null,
 }
-var text = "로딩 중 입니다. 잠시만 기다려 주세요.";
-var cnt = 0;
-var speed = 10; //글자가 찍히는 속도
-var timer1 = null;
 $(document).ready(function() {
-	changeText();
-// 	clearInterval(Otimer);
+	changeText($("p"), $(".p2"), 100);
 	loading.isApp = document.URL.indexOf("web");
 	$("#head_title").hide();
+	setTimeout(function(){ 
 	if(loading.isApp < 0) {
 		location.href="app://callback;headerinfo;homeInitialise;";
 		sessionStorage.setItem("isApp", "mobile");
@@ -32,18 +43,21 @@ $(document).ready(function() {
 		homeInitialise();
 		sessionStorage.setItem("isApp", "web");
 	}
+	}, 500);
 });
 
-function changeText(){
-	$(".pClass").innerHTML = text.substring(0, cnt) + "_";
-    cnt++;
-    timer1 = setTimeout('gogogo()', speed);
- 
-    if(text.length < cnt){
-        // 아래 주석으로 처리된 부분을 지우면 한번만 실행됩니다.
-        //clearTimeout(timer1)
-        cnt = 0;
-    }
+function changeText(cont1,cont2,speed){
+	var Otext=cont1.text();
+	var Ocontent=Otext.split("");
+	var i=0;
+	function show(){
+		if(i<Ocontent.length) {		
+			cont2.append(Ocontent[i]);
+			i=i+1;
+		};
+	};
+	var Otimer = setInterval(show,speed);	
+// 	clearInterval(Otimer);
 };
 
 function homeInitialise(data) {
