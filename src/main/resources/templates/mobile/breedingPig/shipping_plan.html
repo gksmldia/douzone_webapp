@@ -52,7 +52,9 @@ function shippingPlanInitialize() {
 	setTitle("출하 계획");
 	datePickerInitialize();
 	shippingPlangridInitialize();
-	shippingPlanGetDataByAjax(shippingPlanGetData());
+	setTimeout(function () {
+		shippingPlanGetDataByAjax(shippingPlanGetData());
+	}, 300);
 	shippingPlanEventBind();
 }
 
