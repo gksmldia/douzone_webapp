@@ -49,6 +49,12 @@
 						  <input type="password" class="form-control" placeholder="PASSWORD"  id="inputPW" />
 						</div>
 					</div>
+					<div class="checkbox"  style="padding-top: 0; padding-bottom: 10px;">
+						<label>
+							<input type="checkbox"  id="remember" style="height: 20px; width: 20px;"/>
+							<span style="font-size: 14pt; padding-left: 10px;">그룹코드, 아이디 저장</span>
+						</label>
+					</div>
 					<div class="form-group" >
 						<button type="button"  class="btn  btn-lg btn-info col-xs-12"  id="btnLogin" >로그인</button>
 					</div>
@@ -81,6 +87,13 @@ $(document).ready(function() {
 
 function homeInitialise(data) {
 	inputFixHeight();
+	if(localStorage.getItem("cd_group") != null) {
+		$("#group_code").val(localStorage.getItem("cd_group"))
+	}
+	
+	if(localStorage.getItem("id") != null) {
+		$("#inputID").val(localStorage.getItem("id"))
+	}
 	getInfo(data);
 	homeEventBind();
 	$("#head_title").hide();
@@ -188,11 +201,17 @@ function getUserInfo() {
 		}
 	}
 	
-	console.log(hom01.headerObj)
 	sessionStorage.setItem("headerInfo", JSON.stringify(hom01.headerObj));
 	$.get( "/api/getUserInfo?userUrl=" + userUrl + "&header=" + encodedJSON(hom01.headerObj) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "1000") {
 			sessionStorage.setItem("userInfo", JSON.stringify(JSON.parse(data).result.List.UP_MB_COM_BROWSER_USERINFO_S[0]));
+			if($("input[type='checkbox']")[0].checked == true) {
+				localStorage.setItem("cd_group", $("#group_code").val().trim());
+				localStorage.setItem("id", $("#inputID").val().trim());
+			} else {
+				localStorage.removeItem("cd_group");
+				localStorage.removeItem("id");
+			}
 			location.href="/menu"
 		}else {
 			$("#NoUserText").show();

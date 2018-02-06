@@ -36,13 +36,13 @@ $(document).ready(function() {
 	loading.isApp = document.URL.indexOf("web");
 	$("#head_title").hide();
 	setTimeout(function(){ 
-	if(loading.isApp < 0) {
-		location.href="app://callback;headerinfo;homeInitialise;";
-		sessionStorage.setItem("isApp", "mobile");
-	} else {
-		homeInitialise();
-		sessionStorage.setItem("isApp", "web");
-	}
+		if(loading.isApp < 0) {
+			location.href="app://callback;headerinfo;homeInitialise;";
+			sessionStorage.setItem("isApp", "mobile");
+		} else {
+			homeInitialise();
+			sessionStorage.setItem("isApp", "web");
+		}
 	}, 500);
 });
 
