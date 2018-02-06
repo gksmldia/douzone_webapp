@@ -52,7 +52,7 @@
 					<div class="checkbox"  style="padding-top: 0; padding-bottom: 10px;">
 						<label>
 							<input type="checkbox"  id="remember" style="height: 20px; width: 20px;"/>
-							<span style="font-size: 14pt; padding-left: 10px;">그룹코드, 아이디 저장</span>
+							<span style="font-size: 12pt; padding-left: 10px;">그룹코드, 아이디 저장</span>
 						</label>
 					</div>
 					<div class="form-group" >
@@ -88,11 +88,17 @@ $(document).ready(function() {
 function homeInitialise(data) {
 	inputFixHeight();
 	if(localStorage.getItem("cd_group") != null) {
-		$("#group_code").val(localStorage.getItem("cd_group"))
+		$("#group_code").val(localStorage.getItem("cd_group"));
 	}
 	
 	if(localStorage.getItem("id") != null) {
-		$("#inputID").val(localStorage.getItem("id"))
+		$("#inputID").val(localStorage.getItem("id"));
+	}
+	
+	if(localStorage.getItem("rememberFlag") == "Y") {
+		$("#remember").prop('checked', true);
+	} else {
+		$("#remember").prop('checked', false);
 	}
 	getInfo(data);
 	homeEventBind();
@@ -208,9 +214,11 @@ function getUserInfo() {
 			if($("input[type='checkbox']")[0].checked == true) {
 				localStorage.setItem("cd_group", $("#group_code").val().trim());
 				localStorage.setItem("id", $("#inputID").val().trim());
+				localStorage.setItem("rememberFlag", "Y");
 			} else {
 				localStorage.removeItem("cd_group");
 				localStorage.removeItem("id");
+				localStorage.setItem("rememberFlag", "N");
 			}
 			location.href="/menu"
 		}else {

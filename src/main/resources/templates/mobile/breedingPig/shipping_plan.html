@@ -9,7 +9,7 @@
 			        <div class="form-group">
 						<label class="text-muted col-xs-5">출하 일자</label>
 			            <div class='input-group date col-xs-7'  >
-			                <input type='text' class="form-control"  id="start_date" th:value="${date}"/>
+			                <input type='text' class="form-control"  id="start_date"  th:value="${date}"/>
 				            <span class="input-group-btn">
 				            	<button type="button" class="btn btn-info"  id="shipping_plan_confirm">확인</button>
 				            </span>
@@ -59,7 +59,7 @@ function shippingPlanInitialize() {
 // 데이터 피커 이니셜라이즈
 function datePickerInitialize() {
 	$('#start_date').datetimepicker({
-		 format: "YYYYMMDD"
+		 format: "YYYY-MM-DD"
 	 });
 	
 // 	var today = new Date();
@@ -72,7 +72,7 @@ function shippingPlanGetData() {
 	var returnObj = {};
 	returnObj.FunctionID = "UP_CG_MOB_SHIP_PLAN_S";
 	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
-	returnObj.P_DT_PLAN = $("#start_date").val();
+	returnObj.P_DT_PLAN = $("#start_date").val().replace( /-/gi, '');
 	returnObj.P_CD_DRIVER = userInfo().ID_USER;
 
 	return returnObj;
@@ -101,7 +101,7 @@ function shippingPlanGetDataByAjax(body) {
 // 그리드 
 function shippingPlangridInitialize(gridDataSource) {
 	$('#shipping_plan_grid').footable({
-		"empty": "There are no data",
+		"empty": "조회된 정보가 없습니다.",
 		"paging": {
 			"size": 5
 		},
