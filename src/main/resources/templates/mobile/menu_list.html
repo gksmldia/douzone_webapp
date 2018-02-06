@@ -75,6 +75,11 @@
 				<button class="btn btn-lg navbar navbar-default col-xs-12" id="logout_btn">로그아웃</button>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-xs-8 col-xs-offset-2">
+				<button class="btn btn-lg navbar navbar-default col-xs-12" id="bluetoothdevicelist">프린터 연결</button>
+			</div>
+		</div>
 	</div>
 <script th:inline="javascript">
 /*<![CDATA[*/
@@ -106,10 +111,14 @@ function menuListEventBind() {
 	$("#logout_btn").click(function() {
 		sessionStorage.clear();
 		if(sessionStorage.getItem("isApp") == "web") {
-			location.href="/home?web=web"
+			location.href="/home?web=web";
 		} else {
-			location.href="/home"
+			location.href="/home";
 		}
+	});
+	
+	$("#bluetoothdevicelist").click(function() {
+		location.href="app://cmd;bluetoothdevicelist";
 	});
 }
 /*]]>*/
