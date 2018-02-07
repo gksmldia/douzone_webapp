@@ -30,8 +30,6 @@
 			<div class="collapse" id="side_breedingPig_shipping">
 		      <ul class="nav">
 		        <li><a href="/breedingPig/shipping_plan" > - 출하계획</a></li>
-<!-- 		        <li><a href="/breedingPig/shipping_regist" > - 입식,출하등록</a></li>  -->
-<!-- 		        <li><a  href="/breedingPig/sign_regist" > - 서명등록</a></li>  -->
 		        <li id="li_eartag"><a  href="/breedingPig/earTagged_check" > - 이각확인</a></li> 
 		      </ul>
 		    </div>
@@ -41,8 +39,8 @@
 				<i class="fa fa-briefcase" aria-hidden="true"></i>영업관리
 			</a>
 			<div class="collapse" id="side_salesManagement">
-		      <ul class="nav">
-		        <li><a href="/sales/partner"> - 고객정보</a></li>
+		      <ul class="nav"  id="side_ul_sales">
+		        <li id="side_li_partner"><a href="/sales/partner"> - 고객정보</a></li>
 		        <li><a href="/sales/shipping_related"> - 출하관련</a></li> 
 		        <li><a href="/sales/dealing_by_customer"> - 거래처별거래내역</a></li> 
 		        <li><a href="/sales/claim_management"> - 클레임관리</a></li> 
@@ -110,7 +108,9 @@ $(".nav_trigger").click(function() {
  } else {
 	 $("#sessionName").text(userInfo().ID_USER);
 	 if(JSON.parse(sessionStorage.getItem("userInfo")).CD_GROUP == "8030") {
-		 $("#li_eartag, #li_sales, #li_report").hide();
+		 $("#li_eartag, #li_report").hide();
+		 $("#side_ul_sales li").hide();
+		 $("#side_li_partner").show();
 	 }
  }
 

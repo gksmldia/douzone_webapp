@@ -71,6 +71,10 @@ $(document).ready(function() {
 
 function costomerInfoInit() {
 	setTitle("고객 정보");
+	if(JSON.parse(sessionStorage.getItem("userInfo")).CD_GROUP == "8030") {
+		 $("#go_shipping_related").remove();
+		 $($("#go_menu").parent()[0]).removeClass("col-xs-offset-3").addClass("col-xs-offset-5");
+	 }
 	costomerInfoSelectInit();
 	costomerInfoGridInit();
 	costomerInfoEventBind();
