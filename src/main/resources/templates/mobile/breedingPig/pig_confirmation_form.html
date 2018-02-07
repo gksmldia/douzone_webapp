@@ -115,8 +115,11 @@
 			</div>
 		</div>
 		<div class="row text-center" style="margin-top: 10px; margin-bottom: 10px;">
-			<div class="col-xs-offset-3 col-xs-12 btn-group text-center"  role="group" >
-				<button type="button" class="btn btn-info"  data-toggle="modal" data-target="#confirmationOutput" id="output_img">
+			<div class="col-xs-offset-2 col-xs-12 btn-group text-center"  role="group" >
+				<button type="button" class="btn btn-default"  data-toggle="modal" data-target="#confirmationOutput" id="output_img">
+					<i class="fa fa-save" aria-hidden="true"></i>&nbsp;이미지 저장
+				</button>
+				<button type="button" class="btn btn-info"  id="output_print">
 					<i class="fa fa-print" aria-hidden="true"></i>&nbsp;출력
 				</button>
 				<button type="button"  class="btn btn-default"  id="confirmation_pre_view"  style="width: 20%;" >
@@ -154,6 +157,7 @@ var confirmation = {
 		data: null,
 		sign: null,
 		context: null,
+		src: null,
 }
 $(document).ready(function() {
 	confirmationFormInit();
@@ -173,11 +177,11 @@ $(window).load(function() {
 				var cd_company = str.substring(0, 4);
 				var no_ship_plan = str.substring(4, 16);
 				var cd_partner = str.substring(16, 21);
-				console.log(cd_company, no_ship_plan, cd_partner)
 				$.post('/canv/confirmationUploadProc'
 					, {strImg : cavImgStr, cd_company: cd_company, no_ship_plan: no_ship_plan, cd_partner: cd_partner}
 					, function(data) {
 						console.log(data);
+						confirmation.src = 'http://1.244.192.47:85/ERP-U/Upload/ship_confirmation/' + confirmation.data.IMG_SIGN_FILE.replace("jpg", "png")
 				});
 			}, 1000);
 		});
@@ -324,7 +328,7 @@ function confirmationFormSetData(data) {
 
 function confirmationFormEventBind() {
 	$("#output_img").click(function() {
-		$("#confirmationImg").attr('src', 'http://1.244.192.47:85/ERP-U/Upload/ship_confirmation/' + confirmation.data.IMG_SIGN_FILE.replace("jpg", "png"));
+		$("#confirmationImg").attr('src', confirmation.src);
 	});
 	
 	$("#confirmation_pre_view").click(function() {
@@ -332,6 +336,9 @@ function confirmationFormEventBind() {
 		history.back();
 	});
 	
+	$("#output_print").click(function() {
+		location.href = "app://cmd;print;" + confirmation.src
+	});
 }
 
 /*]]>*/
