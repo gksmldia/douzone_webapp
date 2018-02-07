@@ -84,6 +84,7 @@
 /*<![CDATA[*/
 var clameDetail = {
 		grid: null,
+		data: null,
 }
 	
 $(document).ready(function() {
@@ -98,6 +99,7 @@ function clameDetailInit() {
 	} 
 	clameDetailControles();
 	clameDetailGridInit();
+	partnerInit();
 	clameDetailEventBind();
 }
 
@@ -129,6 +131,48 @@ function clameDetailControles() {
 
 }
 
+function clameDetailSearchForValidation() {
+	if($("#farm").val().trim() != "" && $("#farm").attr("name") == null) {
+		bootalert("[ 거래처 명 : " + $("#farm").val() + " ]로 검색을 원하신다면 농장 조회 후 선택하여 조회하여 주십시오.");
+		return false;
+	}
+	
+	return true;
+}
+
+function clameDetailForGetData() {
+	var returnObj = new Object();
+	returnObj.FunctionID = "UP_CG_MOB_CLAIM_SELECT1";
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_dt_ship_from = $("#claim_shipment_start").val().replace(/-/gi, '').trim();
+	returnObj.P_dt_ship_to = $("#claim_shipment_end").val().replace(/-/gi, '').trim();
+	returnObj.p_cd_partner = "";
+	if($("#farm").attr("name") != "" && $("#farm").attr("name") != null) {
+		returnObj.p_cd_partner = $("#farm").attr("name");
+	}
+	
+	return returnObj;
+}
+
+function clameDetailSearch(bodyObj) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		clameDetail.data = JSON.parse(data).result.List.UP_CG_MOB_CLAIM_SELECT1;
+		console.log(clameDetail.data)
+		clameDetail.grid.loadRows(clameDetail.data)
+	}).fail(function(err) {
+		console.log(err)
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
+	});
+}
+
 function clameDetailGridInit() {
 	$('#clame_detail_grid').footable({
 		"empty": "조회된 정보가 없습니다.",
@@ -138,41 +182,45 @@ function clameDetailGridInit() {
 		"columns": [
 			{
 				title: '거래처',
-				name: 'account'
+				name: 'NM_PARTNER'
 			},{
 				title: '출하일자',
-				name: 'date',
+				name: 'DT_SHIP',
 				style:{
 					"width": "90px",
-				}
+				},
+				formatter: function(value, options, rowData) {
+					var dtList = [value.substring(0, 4), value.substring(4, 6), value.substring(6, 9)];
+	                return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
+	            }
 			}, {
 				title: '출고농장',
-				name: 'Origin',
+				name: 'NM_FARM',
 				style:{
 					"width": "70px",
 					"text-align": "center"
 				}
 			}, {
 				title: '이각번호',
-				name: 'earTaggedNum',
+				name: 'CD_EAR',
 				style:{
 					"text-align": "center"
 				}
 			}, {
 				title: '원인',
-				name: 'reason',
+				name: 'NM_CLAIM',
 				style:{
 					"text-align": "center"
 				}
 			}, {
 				title: '조치구분',
-				name: 'actionType',
+				name: 'NM_ACTION_ACT',
 				style:{
 					"text-align": "center"
 				}
 			}, {
 				title: '조치처리일자',
-				name: 'actionDate',
+				name: 'DT_ACTION_ACT',
 				style:{
 					"width": "100px",
 					"text-align": "center"
@@ -214,6 +262,12 @@ function clameDetailEventBind() {
 				$("#farm").attr("name", rowData.CD_PARTNER);
 			}
 			$("#search_popup").modal('hide');
+		}
+	});
+	
+	$("#claim_search").click(function() {
+		if(clameDetailSearchForValidation()) {
+			clameDetailSearch(clameDetailForGetData());
 		}
 	});
 }
