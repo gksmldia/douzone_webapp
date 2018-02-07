@@ -334,7 +334,11 @@ function confirmationFormEventBind() {
 	
 	$("#output_print").click(function() {
 		alert(confirmation.src)
-// 		location.href = "app://cmd;print;" + confirmation.src
+		if(confirmation.src == null) {
+			bootalert("다시 시도해 주세요.");
+		} else {
+			location.href = "app://cmd;print;" + confirmation.src;
+		}
 	});
 }
 
