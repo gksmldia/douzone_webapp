@@ -127,6 +127,50 @@ function dealingByCustomerControles() {
 
 }
 
+function dealingByCustomerSearchForValidation() {
+	if($("#farm").val().trim() == "" ) {
+		bootalert("거래처 입력은 필수 입니다. 검색 후 선택하여 조회해 주십시오.");
+		return false;
+	}
+	
+	if($("#farm").val().trim() != "" && $("#farm").attr("name") == null) {
+		bootalert("[ 거래처 명 : " + $("#farm").val() + " ]로 검색을 원하신다면 농장 검색 후 선택하여 조회해 주십시오.");
+		return false;
+	}
+	
+	return true;
+}
+
+function dealingByCustomerForGetData() {
+	var returnObj = new Object();
+	returnObj.FunctionID = "UP_CG_MOB_SHIP_SALE_P";
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_dt_ship_from = $("#dealing_shipping_start").val().replace(/-/gi, '').trim();
+	returnObj.P_dt_ship_to = $("#dealing_shipping_end").val().replace(/-/gi, '').trim();
+	returnObj.p_cd_partner = $("#farm").attr("name");
+	
+	return returnObj;
+}
+
+function dealingByCustomerSearch(bodyObj) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		dealingByCustomer.data = JSON.parse(data).result.List.UP_CG_MOB_SHIP_SALE_P;
+		console.log(dealingByCustomer.data)
+		dealingByCustomer.grid.loadRows(dealingByCustomer.data)
+	}).fail(function(err) {
+		console.log(err)
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
+	});
+}
+
 function dealingByCustomerGridInit() {
 	$('#dealing_grid').footable({
 		"empty": "조회된 정보가 없습니다.",
@@ -135,56 +179,77 @@ function dealingByCustomerGridInit() {
 		},
 		"columns": [
 			{
-				title: '선택',
-				name: 'index',
+				title: '일자',
+				name: 'DT_SHIP',
 				style:{
-					"width": "15%",
-					"text-align" : "center",
-					"vertical-align" : "middle"
+					"width": "100px",
 				},
 				formatter: function(value, options, rowData) {
-					console.log(value)
-
-	                return '<input type="radio" name="clame_search_select" value="'+value+'" />';
+					var dtList = [value.substring(0, 4), value.substring(4, 6), value.substring(6, 9)];
+	                return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
 	            }
-			}, {
-				title: '일자',
-				name: 'date',
-				style:{
-					"width": "100px",
-				}
 			}, {
 				title: '출고지',
-				name: 'Origin'
+				name: 'NM_FARM_SUB'
 			}, {
 				title: '품목',
-				name: 'shippingItem'
+				name: 'NM_NICK'
 			}, {
 				title: '총두수',
-				name: 'numberOfHeadsAll'
+				name: 'QTY_SALE',
+				formatter: function(value, options, rowData) {
+	                return value + " 두";
+	            }
 			}, {
 				title: '크레임',
-				name: 'clame'
+				name: 'QTY_CLAIM',
+				formatter: function(value, options, rowData) {
+	                return value + " 건";
+	            }
 			}, {
 				title: '체중',
-				name: 'weight'
+				name: 'WEI_SALE',
+				formatter: function(value, options, rowData) {
+	                return value + " kg";
+	            }
 			}, {
 				title: '금액',
-				name: 'price',
+				name: 'AMT_CALC_SALE_LAST',
 				style:{
 					"width": "100px",
-				}
+				},
+				formatter: function(value, options, rowData) {
+					var len, point, str; 
+				       
+				    point = value.length % 3 ;
+				    len = value.length; 
+				   
+				    str = value.substring(0, point); 
+				    while (point < len) { 
+				        if (str != "") str += ","; 
+				        str += value.substring(point, point + 3); 
+				        point += 3; 
+				    } 
+	                return str;
+	            }
 			}, {
 				title: '종돈공급내역서',
+				name: 'ID_BIZ_PERSON',
 				style:{
 					"width": "80px",
+					"text-align": "center"
 				},
 	            formatter: function(value, options, rowData) {
-	                var shippingId = rowData.id;
 	                var url = '/report/breeding_pig_supply_statement';
 
-	                return '<a href="' + url + '" class="btn btn-default">확인</a>';
+	                return '<a href="' + url + '" class="btn btn-sm btn-default">확인</a>';
 	            }
+			}, {
+				name: 'CD_FARM_SUB',
+				"visible": false
+			}, {
+				name: 'CD_PARTNER',
+				"visible": false
 			}
 		],
 		"rows": []
@@ -227,6 +292,12 @@ function dealingByCustomerEventBind() {
 				$("#farm").attr("name", rowData.CD_PARTNER);
 			}
 			$("#search_popup").modal('hide');
+		}
+	});
+	
+	$("#dealing_search").click(function() {
+		if(dealingByCustomerSearchForValidation()) {
+			dealingByCustomerSearch(dealingByCustomerForGetData());
 		}
 	});
 }
