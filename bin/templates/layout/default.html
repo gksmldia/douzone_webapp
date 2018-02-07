@@ -66,7 +66,7 @@
 	</ul>
 </div>
 <!-- /#push_sidebar -->
- <div id="wrapper"  style="height: -webkit-fill-available; overflow-y: auto;">
+<div id="wrapper"  style="overflow-y: auto;">
 	<!-- .container-fluid -->
 	<header>
 		<div class="container-fluid" style=" " id="head_title">
@@ -115,8 +115,7 @@ $(".nav_trigger").click(function() {
  }
 
 	 
- function defaultEventBind() {
-	 $(".side_nav_li").click(function() {
+ function defaultEventBind() li_reportside_nav_li").click(function() {
 		 var nav_list = ["#side_breedingPig_shipping", "#side_salesManagement", "#side_report"];
 		 var target = $(this).attr("data-target");
 			var index = nav_list.indexOf(target);
