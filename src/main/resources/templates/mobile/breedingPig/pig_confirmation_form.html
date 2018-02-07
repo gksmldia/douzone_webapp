@@ -166,10 +166,6 @@ $(document).ready(function() {
 $(window).load(function() {
 	setTimeout(function(){ 
 		html2canvas(document.querySelector('#confirmation_text')).then(canvas => {
-// 			var image = document.getElementById("confirmationImg");
-// 			$(image).attr('Access-Control-Allow-Origin', '*');
-// 			image.crossOrigin = "Anonymous";
-// 			$(image).attr("src", canvas.toDataURL("image/png"));
 			setTimeout(function(){ 
 				var cavImgStr = canvas.toDataURL('image/png', 1.0);
 				
@@ -183,9 +179,9 @@ $(window).load(function() {
 						console.log(data);
 						confirmation.src = 'http://1.244.192.47:85/ERP-U/Upload/ship_confirmation/' + confirmation.data.IMG_SIGN_FILE.replace("jpg", "png")
 				});
-			}, 1000);
+			}, 400);
 		});
-	}, 500);
+	}, 300);
 });
 
 function confirmationFormInit() {
@@ -337,7 +333,8 @@ function confirmationFormEventBind() {
 	});
 	
 	$("#output_print").click(function() {
-		location.href = "app://cmd;print;" + confirmation.src
+		alert(confirmation.src)
+// 		location.href = "app://cmd;print;" + confirmation.src
 	});
 }
 

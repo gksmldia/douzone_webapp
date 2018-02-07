@@ -44,6 +44,10 @@ var shippingPlan = {
 		
 }
 $(document).ready(function() {
+// 	shippingPlanInitialize();
+});
+
+$( window ).load(function() {
 	shippingPlanInitialize();
 });
 
@@ -67,11 +71,6 @@ function datePickerInitialize() {
 	$('#start_date').datetimepicker({
 		 format: "YYYY-MM-DD"
 	 });
-	
-// 	var today = new Date();
-// 	var todayStr = today.getFullYear().toString() + setTwinNum(today.getMonth() + 1).toString() + today.getDate().toString();
-// 	$('#start_date').val(todayStr);
-
 }
 // 데이터 받기 위한 parameter 생성
 function shippingPlanGetData() {
