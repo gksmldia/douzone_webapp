@@ -115,7 +115,8 @@ $(".nav_trigger").click(function() {
  }
 
 	 
- function defaultEventBind() li_reportside_nav_li").click(function() {
+ function defaultEventBind() {
+	 $("#side_nav_li").click(function() {
 		 var nav_list = ["#side_breedingPig_shipping", "#side_salesManagement", "#side_report"];
 		 var target = $(this).attr("data-target");
 			var index = nav_list.indexOf(target);
