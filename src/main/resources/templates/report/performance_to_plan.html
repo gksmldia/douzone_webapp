@@ -49,6 +49,7 @@ $(document).ready(function() {
 
 function profitToPlanInit() {
 	setTitle("계획대비실적");
+	$("input[type='text']").css("height", $(".input-group-addon").css("height"));
 	profitToPlanControles();
 	profitToPlanEventBind();
 	byKindViewInit();

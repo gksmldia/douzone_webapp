@@ -35,7 +35,7 @@
 				      </button>
 				      <a class="navbar-brand" href="#">영업 관리</a>
 				    </div>
-				    <div class="collapse navbar-collapse" id="salesManagement">
+				    <div class="collapse navbar-collapse"  id="salesManagement">
 				      <ul class="nav navbar-nav" id="menu_ul_sales" >
 				        <li  id="menu_li_partner"><a href="/sales/partner" >고객정보</a></li>
 				        <li><a href="/sales/shipping_related">출하관련</a></li> 
@@ -100,7 +100,7 @@ function menuListInitialize() {
 
 function menuListEventBind() {
 	$(".navbar-toggle").click(function() {
-		var navDivList = ["#shippingManagement", "#salesManagement", "#report"];
+		var navDivList = ["#breedingPig_shipping", "#salesManagement", "#report"];
 		var target = $(this).attr("data-target");
 		var index = navDivList.indexOf(target);
 		navDivList.splice(index, 1);
