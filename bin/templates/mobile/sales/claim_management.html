@@ -165,8 +165,8 @@ function clameDetailSearch(bodyObj) {
 		}
 	}).done(function(data){
 		clameDetail.data = JSON.parse(data).result.List.UP_CG_MOB_CLAIM_SELECT1;
-		console.log(clameDetail.data)
-		clameDetail.grid.loadRows(clameDetail.data)
+		console.log(clameDetail.data);
+		clameDetail.grid.loadRows(clameDetail.data);
 	}).fail(function(err) {
 		console.log(err)
 		bootalert(JSON.parse(data).resultMessage);

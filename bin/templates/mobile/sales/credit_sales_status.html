@@ -7,9 +7,10 @@
 			<div class="col-xs-12 col-sm-12">
 				<form class="form-horizontal" style="font-size: 11pt;">
 					<div class="form-group">
-						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
-						<div class="col-xs-9 col-sm-6">
-							<input type="text"  class="form-control" id="businessField" />
+						<label for="businessField " class="col-xs-3 col-sm-3 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
+						<div class="col-xs-9 col-sm-9">
+							<select class="form-control selectpicker"  id="business_part_sel"  >
+							</select>
 						</div>
 					</div>
 					<div class="form-group">
@@ -88,6 +89,7 @@
 /*<![CDATA[*/
 var creditSalesStatus = {
 		grid: null,
+		data: null,
 }
 	
 $(document).ready(function() {
@@ -97,9 +99,15 @@ $(document).ready(function() {
 function creditSalesStatusInit() {
 	$("#farm_search").css("height", $("#farm").css("height"));
 	setTitle("매출채권명세");
+	creditSalesStatusSelectInit();
 	creditSalesStatusControles();
 	creditSalesStatusGridInit();
+	partnerInit();
 	creditSalesStatusEventBind();
+}
+
+function creditSalesStatusSelectInit() {
+	commonSelectInit('CG_BA_0001', '#business_part_sel', '0', '선택');
 }
 
 function creditSalesStatusControles() {
@@ -126,12 +134,62 @@ function creditSalesStatusControles() {
 
 }
 
+function creditSalesStatusSearchForValidation() {
+	if($("#business_part_sel").val() == "0" || $("#business_part_sel").val() == null) {
+		bootalert("사업부문 선택은 필수 입니다.");
+		return false;
+	}
+	
+	if($("#farm").val().trim() == "" ) {
+		bootalert("거래처 입력은 필수 입니다. 검색 후 선택하여 조회해 주십시오.");
+		return false;
+	}
+	
+	if($("#farm").val().trim() != "" && $("#farm").attr("name") == null) {
+		bootalert("[ 거래처 명 : " + $("#farm").val() + " ]로 검색을 원하신다면 농장 검색 후 선택하여 조회해 주십시오.");
+		return false;
+	}
+	
+	return true;
+}
+
+function creditSalesStatusForGetData() {
+	var returnObj = new Object();
+	returnObj.FunctionID = "UP_CG_MOB_RECEIVALE_S";
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_BIZ_FIELD = $("#assignment_area_sel").val();
+	returnObj.P_CD_PARTNER = $("#farm").attr("name");
+	returnObj.P_DT_FROM = $("#credit_shipment_start").val().replace(/-/gi, '').trim();
+	returnObj.P_DT_TO = $("#credit_shipment_end").val().replace(/-/gi, '').trim();
+	
+	return returnObj;
+}
+
+function creditSalesStatusSearch(bodyObj) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		creditSalesStatus.data = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S;
+		console.log(creditSalesStatus.data);
+// 		creditSalesStatus.grid.loadRows(creditSalesStatus.data);
+		creditSalesStatus.grid.setData(creditSalesStatus.data);
+	}).fail(function(err) {
+		console.log(err)
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
+	});
+}
+
 function creditSalesStatusGridInit() {
-	var gridData=[ {'date': '-','item': '-', 'forwardOver' : '-', 'cnt1' : '-', 'cnt2': '-', 'exchange': '-', 'sales': '-', 'deposit': '-', 'balance': '-' } ];
 	
 	creditSalesStatus.grid = new tui.Grid({
 	el: $('#credit_sales_status_grid'),
-	data: gridData,
+	data: [],
 	scrollX: true,
 	scrollY: true,
 	displayRowCount: 10,
@@ -210,6 +268,12 @@ function creditSalesStatusEventBind() {
 				$("#farm").attr("name", rowData.CD_PARTNER);
 			}
 			$("#search_popup").modal('hide');
+		}
+	});
+	
+	$("#credit_search").click(function() {
+		if(creditSalesStatusSearchForValidation()) {
+			creditSalesStatusSearch(creditSalesStatusForGetData());
 		}
 	});
 }

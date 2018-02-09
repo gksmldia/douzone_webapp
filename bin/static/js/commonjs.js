@@ -174,7 +174,7 @@ Base64 = {
 	}
 }
 
-function commonSelectInit(cd_field, selector, select_callback) {
+function commonSelectInit(cd_field, selector, select_callback, option_0) {
 	var bodyObj = new Object();
 	bodyObj.FunctionID = "UP_CG_MOB_CODE_S";
 	bodyObj.P_CD_FIELD = cd_field;
@@ -184,7 +184,11 @@ function commonSelectInit(cd_field, selector, select_callback) {
 			option = JSON.parse(data).result.List.UP_CG_MOB_CODE_S;
 			console.log(option)
 			$(selector).empty();
-			$(selector).append('<option value="'+ 0 +'">없음</option>');
+			if(option_0 == "" || option_0 == null) {
+				$(selector).append('<option value="'+ 0 +'">없음</option>');
+			} else {
+				$(selector).append('<option value="'+ 0 +'">' + option_0 + '</option>');
+			}
 			for(var i in option){
 				$(selector).append('<option value="'+ option[i].CODE +'">' + option[i].NM_CODE + '</option>');
 			}

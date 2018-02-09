@@ -163,8 +163,8 @@ function dealingByCustomerSearch(bodyObj) {
 		}
 	}).done(function(data){
 		dealingByCustomer.data = JSON.parse(data).result.List.UP_CG_MOB_SHIP_SALE_P;
-		console.log(dealingByCustomer.data)
-		dealingByCustomer.grid.loadRows(dealingByCustomer.data)
+		console.log(dealingByCustomer.data);
+		dealingByCustomer.grid.loadRows(dealingByCustomer.data);
 	}).fail(function(err) {
 		console.log(err)
 		bootalert(JSON.parse(data).resultMessage);
