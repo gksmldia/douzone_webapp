@@ -221,25 +221,21 @@ function shippingRegistGetDataForSave() {
 	returnObj.P_NO_SHIP_PLAN = shippingRegist.rowData.NO_SHIP_PLAN;
 	returnObj.P_ID_BIZ_PERSON = shippingRegist.rowData.ID_BIZ_PERSON;
 	returnObj.P_CD_PARTNER = shippingRegist.rowData.CD_PARTNER;
+	returnObj.P_DT_SHIP = $("#shipping_date").val().replace(/-/gi, '');
 	
 	if(shippingRegist.rowData.CD_PARTNER == $("#farm_name").attr("name")) {
 		returnObj.P_CD_PARTNER_NEW = shippingRegist.rowData.CD_PARTNER;
 	} else {
-		returnObj.P_CD_PARTNER_NEW = $("#farm_name").attr("name")
+		returnObj.P_CD_PARTNER_NEW = $("#farm_name").attr("name");
 	}
-// 	returnObj.P_CD_PARTNER = shippingRegist.rowData.CD_PARTNER;
 
-// 	returnObj.p_cd_farm_sub = "";
-// 	if($("#farm_name").attr("name") != null) {
-// 		returnObj.p_cd_farm_sub = $("#farm_name").attr("name");
-// 	}
-	returnObj.P_DT_SHIP = $("#shipping_date").val().replace(/-/gi, '');
 	returnObj.P_QTY_SALE = $("#input_qty_sale").val();
 	returnObj.P_WEI_SALE = $("#input_wei_sale").val();
 	returnObj.p_qty_buy = $("#input_qty_buy").val();
 	returnObj.p_wei_buy = $("#input_wei_buy").val();
 	returnObj.p_cd_antibio = $('#antibiotic_name_sel').val() == "0" ? "" : $('#antibiotic_name_sel').val();
 	returnObj.p_QTY_ANTIBIO =  $("#capacity").val();
+	returnObj.P_DAYS_VACCINE = $("#withdrawal_period").val();
 	returnObj.P_ID_UPDATE = userInfo().ID_USER;
 	return returnObj;
 }

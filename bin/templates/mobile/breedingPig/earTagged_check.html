@@ -161,9 +161,11 @@ function AjaxForearTaggedSearch(bodyObj) {
 			return false
 		}
 	}).done(function(data){
-		earTagged.data = JSON.parse(data).result.List.UP_CG_MOB_EAR_NO;
-		console.log(earTagged.data)
-		earTagged.grid.setData(earTagged.data)
+		if(JSON.parse(data).resultCode == "1000") {
+			earTagged.data = JSON.parse(data).result.List.UP_CG_MOB_EAR_NO;
+			console.log(earTagged.data)
+			earTagged.grid.setData(earTagged.data)
+		}
 	}).fail(function(err) {
 		console.log(err)
 		bootalert(JSON.parse(data).resultMessage);
