@@ -41,7 +41,9 @@ public class ViewController extends WebMvcConfigurerAdapter {
 	        logger.info("device form request: " + deviceFromRequest);
 	        logger.info("device platform: " + device.getDevicePlatform());
 
-	        return "/home_01";
+//	        ModelAndView mav = new ModelAndView("/home_01");
+//			return mav.getView();
+	        return device.toString();
 	    }
 	
 	@RequestMapping(path = "/home", method = RequestMethod.GET, produces = "application/text; charset=utf8")

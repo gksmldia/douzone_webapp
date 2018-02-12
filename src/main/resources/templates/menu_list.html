@@ -35,9 +35,9 @@
 				      </button>
 				      <a class="navbar-brand" href="#">영업 관리</a>
 				    </div>
-				    <div class="collapse navbar-collapse" id="salesManagement">
-				      <ul class="nav navbar-nav">
-				        <li><a href="/sales/partner">고객정보</a></li>
+				    <div class="collapse navbar-collapse"  id="salesManagement">
+				      <ul class="nav navbar-nav" id="menu_ul_sales" >
+				        <li  id="menu_li_partner"><a href="/sales/partner" >고객정보</a></li>
 				        <li><a href="/sales/shipping_related">출하관련</a></li> 
 				        <li><a href="/sales/dealing_by_customer">거래처별거래내역</a></li> 
 				        <li><a href="/sales/claim_management">클레임관리</a></li> 
@@ -75,6 +75,11 @@
 				<button class="btn btn-lg navbar navbar-default col-xs-12" id="logout_btn">로그아웃</button>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-xs-8 col-xs-offset-2">
+				<button class="btn btn-lg navbar navbar-default col-xs-12" id="bluetoothdevicelist">프린터 연결</button>
+			</div>
+		</div>
 	</div>
 <script th:inline="javascript">
 /*<![CDATA[*/
@@ -86,14 +91,16 @@ function menuListInitialize() {
 	setTitle("메뉴");
 	$(".nav_trigger").hide();
 	if(JSON.parse(sessionStorage.getItem("userInfo")).CD_GROUP == "8030") {
-		 $("#menu_li_eartag, #menu_nav_sales, #menu_nav_report").hide();
+		 $("#menu_li_eartag, #menu_nav_report").hide();
+		 $("#menu_ul_sales li").hide();
+		 $("#menu_li_partner").show();
 	 }
 	menuListEventBind();
 }
 
 function menuListEventBind() {
 	$(".navbar-toggle").click(function() {
-		var navDivList = ["#shippingManagement", "#salesManagement", "#report"];
+		var navDivList = ["#breedingPig_shipping", "#salesManagement", "#report"];
 		var target = $(this).attr("data-target");
 		var index = navDivList.indexOf(target);
 		navDivList.splice(index, 1);
@@ -106,10 +113,14 @@ function menuListEventBind() {
 	$("#logout_btn").click(function() {
 		sessionStorage.clear();
 		if(sessionStorage.getItem("isApp") == "web") {
-			location.href="/home?web=web"
+			location.href="/home?web=web";
 		} else {
-			location.href="/home"
+			location.href="/home";
 		}
+	});
+	
+	$("#bluetoothdevicelist").click(function() {
+		location.href="app://cmd;bluetoothdevicelist";
 	});
 }
 /*]]>*/

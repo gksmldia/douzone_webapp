@@ -51,7 +51,7 @@
 									<tr class="active">
 										<th scope="row">두수</th>
 										<td><input type="number"  class="form-control" id="input_qty_sale" /></td>
-										<td><input type="number"  class="form-control" id="input_qty_buy"/></td>
+										<td><input type="number"  class="form-control" id="input_qty_buy"  readonly="readonly"/></td>
 									</tr>
 									<tr style="background-color: white;">
 										<th scope="row">총체중</th>
@@ -120,10 +120,11 @@ var shippingRegist = {
 		data: null,
 		cd_antibio: null,
 		rowData: null,
+		option: null,
 }
 $(document).ready(function() {
 	setTitle("출하 등록");
-	$("#farm_name").css("height", $("#farm_search").css("height"));
+	$("#farm_search").css("height", $("#farm_name").css("height"));
 	shippingRegistInit();
 });
 
@@ -146,7 +147,29 @@ function shippingRegistControlInit() {
 }
 
 function shippingRegistSelectInit() {
-	commonSelectInit('CG_BP_0014', '#antibiotic_name_sel', shippingRegist.cd_antibio);
+	var bodyObj = new Object();
+	bodyObj.FunctionID = "UP_CG_MOB_CODE_S";
+	bodyObj.P_CD_FIELD = "CG_BP_0014";
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "1000") {
+			shippingRegist.option = JSON.parse(data).result.List.UP_CG_MOB_CODE_S;
+			console.log(shippingRegist.option)
+			$('#antibiotic_name_sel').empty();
+			$('#antibiotic_name_sel').append('<option value="'+ 0 +'">없음</option>');
+			for(var i in shippingRegist.option){
+				$('#antibiotic_name_sel').append('<option value="'+ shippingRegist.option[i].CODE +'" data="'+shippingRegist.option[i].CD_FLAG1+'">' + shippingRegist.option[i].NM_CODE + '</option>');
+			}
+			$('#antibiotic_name_sel').selectpicker('refresh');
+			
+		} else if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		}
+	}).done(function(e){
+		$('#antibiotic_name_sel').val(shippingRegist.cd_antibio);
+	    $('#antibiotic_name_sel').selectpicker('render');
+	}).fail(function(err) {
+		console.log(err)
+	});
 }
 
 function shippingRegistSetData() {
@@ -275,9 +298,10 @@ function shippingRegistSaveForValidation() {
 	for(var i in idList) {
 		var val = $("#"+idList[i]).val() ;
 		if(val == "" || val == null || val == "undefined" ) {
-			alert(idList[i]);
-			bootalert("데이터에 빈 값이 있습니다. 빈 값을 채워주세요.");
-			return false;
+			if(idList[i] == "withdrawal_period" && $("#antibiotic_name_sel").val() != 0) {
+				bootalert("데이터에 빈 값이 있습니다. 빈 값을 채워주세요.");
+				return false;
+			}
 		}
 	}
 	
@@ -308,9 +332,13 @@ function shippingRegistEventBind() {
 	
 	$("#input_qty_sale, #input_wei_sale").focusout(function(e) {
 		var buyId = this.id.replace("sale", "buy");
-		if($("#"+buyId).val() == "0" || $("#"+buyId).val() == "") {
-			$("#"+buyId).val($(this).val());
-		}
+		$("#"+buyId).val($(this).val());
+	});
+	
+	$("#input_qty_sale, #input_wei_sale").keyup(function(e) {
+		console.log($(this).val())
+		var buyId = this.id.replace("sale", "buy");
+		$("#"+buyId).val($(this).val());
 	});
 	
 	$("#search_popup").on('shown.bs.modal', function () {
@@ -331,6 +359,11 @@ function shippingRegistEventBind() {
 			}
 			$("#search_popup").modal('hide');
 		}
+	});
+	
+	$("#antibiotic_name_sel").on('changed.bs.select', function (e) {
+		  console.log($(this).find("option:selected").attr("data"))
+		  $("#withdrawal_period").val($(this).find("option:selected").attr("data"));
 	});
 }
 /*]]>*/

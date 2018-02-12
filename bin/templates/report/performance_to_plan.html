@@ -22,7 +22,7 @@
 				            <div class='input-group date' >
 				                <input type='text' class="form-control"  id="start_month"/>
 				            </div>
-				            <span class="input-group-addon"  id="addOn">-</span>
+				            <span class="input-group-addon">-</span>
 				             <div class='input-group date' >
 				                <input type='text' class="form-control"  id="end_month"/>
 				            </div>
@@ -49,7 +49,6 @@ $(document).ready(function() {
 
 function profitToPlanInit() {
 	setTitle("계획대비실적");
-	$("input[type='text']").css("height", $("#addOn").css("height"));
 	profitToPlanControles();
 	profitToPlanEventBind();
 	byKindViewInit();

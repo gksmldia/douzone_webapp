@@ -49,6 +49,12 @@
 						  <input type="password" class="form-control" placeholder="PASSWORD"  id="inputPW" />
 						</div>
 					</div>
+					<div class="checkbox"  style="padding-top: 0; padding-bottom: 10px;">
+						<label>
+							<input type="checkbox"  id="remember" style="height: 30px; width: 20px;"/>
+							<span style="font-size: 12pt; padding-left: 10px;">그룹코드, 아이디 저장</span>
+						</label>
+					</div>
 					<div class="form-group" >
 						<button type="button"  class="btn  btn-lg btn-info col-xs-12"  id="btnLogin" >로그인</button>
 					</div>
@@ -81,6 +87,19 @@ $(document).ready(function() {
 
 function homeInitialise(data) {
 	inputFixHeight();
+	if(localStorage.getItem("cd_group") != null) {
+		$("#group_code").val(localStorage.getItem("cd_group"));
+	}
+	
+	if(localStorage.getItem("id") != null) {
+		$("#inputID").val(localStorage.getItem("id"));
+	}
+	
+	if(localStorage.getItem("rememberFlag") == "Y") {
+		$("#remember").prop('checked', true);
+	} else {
+		$("#remember").prop('checked', false);
+	}
 	getInfo(data);
 	homeEventBind();
 	$("#head_title").hide();
@@ -134,7 +153,7 @@ function getUrl(header) {
 		if(response.resultCode == 1000) {
 			hom01.hostUrl = JSON.parse(data).result.List.CustomInfo[0].HostUrl.toString();
 			sessionStorage.setItem("hostUrl", hom01.hostUrl);
-			getApi(hom01.hostUrl, hom01.headerObj);
+			getApi(hom01.hostUrl);
 		} 
 	});
 }
@@ -147,7 +166,7 @@ function getApi(hostUrl) {
 	});
 }
 
-function getSession(certUrl) {
+function getSession() {
 	var bodyObj = new Object();
 	bodyObj.server_key = "DARBY";
 	bodyObj.company = $("#company_code").val().trim();
@@ -169,6 +188,7 @@ function getSession(certUrl) {
 		} else {
 			$("#NoUserText").text(JSON.parse(data).resultMessage);
 			$("#NoUserSpan").show();
+			alert(JSON.parse(data).resultMessage);
 		}
 	});
 }
@@ -188,11 +208,19 @@ function getUserInfo() {
 		}
 	}
 	
-	console.log(hom01.headerObj)
 	sessionStorage.setItem("headerInfo", JSON.stringify(hom01.headerObj));
 	$.get( "/api/getUserInfo?userUrl=" + userUrl + "&header=" + encodedJSON(hom01.headerObj) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "1000") {
 			sessionStorage.setItem("userInfo", JSON.stringify(JSON.parse(data).result.List.UP_MB_COM_BROWSER_USERINFO_S[0]));
+			if($("input[type='checkbox']")[0].checked == true) {
+				localStorage.setItem("cd_group", $("#group_code").val().trim());
+				localStorage.setItem("id", $("#inputID").val().trim());
+				localStorage.setItem("rememberFlag", "Y");
+			} else {
+				localStorage.removeItem("cd_group");
+				localStorage.removeItem("id");
+				localStorage.setItem("rememberFlag", "N");
+			}
 			location.href="/menu"
 		}else {
 			$("#NoUserText").show();
