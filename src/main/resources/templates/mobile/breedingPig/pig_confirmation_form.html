@@ -56,6 +56,9 @@
 						</div>
 					</div>
 					<div class="row">
+						<div class="col-xs-11"  style="border-bottom: 1px solid #d3d3d3; margin-left: 15px"></div>
+					</div>
+					<div class="row">
 						<h4 class="col-xs-5 col-sm-4 control-label " ><strong>항생제명 :</strong></h4>
 						<div class="col-xs-7 col-sm-8 pad-left-0">
 							<h3><span id="antibiotic_name"></span></h3>
@@ -72,6 +75,9 @@
 						<div class="col-xs-7 col-sm-8 pad-left-0">
 							<h3><span id="withdrawal"></span> <span id="unit_days_vaccine">(일)</span></h3>
 						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-11"  style="border-bottom: 1px solid #d3d3d3; margin-left: 15px"></div>
 					</div>
 					<div class="row">
 						<h4 class="col-xs-5 col-sm-4 control-label " ><strong>물류담당 :</strong></h4>
@@ -91,6 +97,9 @@
 							<h3><span id="salesCharge"></span></h3>
 							<h3><span id="salesChargeNum"></span></h3>
 						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-11"  style="border-bottom: 1px solid #d3d3d3; margin-left: 15px"></div>
 					</div>
 					<div class="row">
 						<h4 class="col-xs-6 col-sm-6 control-label "  style="padding-right: 0;"><strong id="label_histcall_text"></strong></h4>
@@ -333,7 +342,7 @@ function confirmationFormEventBind() {
 	});
 	
 	$("#output_print").click(function() {
-		alert(confirmation.src)
+// 		alert(confirmation.src)
 		if(confirmation.src == null) {
 			bootalert("다시 시도해 주세요.");
 		} else {
