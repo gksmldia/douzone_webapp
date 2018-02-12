@@ -2,50 +2,80 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 	layout:decorator="layout/default" lang="ko">
 <div  th:fragment="chartByPerson">
-	<div class="row">
+	<div class="row table-responsive" style="margin: 0; padding: 16px;">
 		<div id="by_person_chart_area"></div>
 	</div>
 <script th:inline="javascript">
 /*<![CDATA[*/
-function byPersonBarChartInit() {
-	var theme = {
-	    series: {
-	        colors: ['#63a69f', '#f2836b']
-	    }
-	};
-	tui.chart.registerTheme('newTheme', theme);
-	
+var byPerson = {
+		chart: null
+}
+function byPersonChartInit() {
 	var container = document.getElementById('by_person_chart_area');
 	var data = {
-		    categories:  ["category 1", "category 2", "category 3", "category 4"],
-		    series: [
-		        {
-		            "name": "Legend1",
-		            "data": [90, 30, 50, 70]
-		        },
-		        {
-		            "name": "Legend2",
-		            "data": [40, 40, 60, 30]
-		        }
-		    ]
-		};
+	    categories: ['Apr', 'May', 'June', 'July'],
+	    series: {
+	        column: [
+	            {
+	                name: 'Seoul',
+	                data: [11.3, 17.0, 21.0, 24.4]
+	            },
+	            {
+	                name: 'NewYork',
+	                data: [9.9, 16.0, 21.2, 24.2]
+
+	            },
+	        ],
+	        line: [
+	            {
+	                name: 'Average',
+	                data: [11, 15.1, 17.8, 19.7]
+	            }
+	        ]
+	    }
+	};
 	var options = {
-		    chart: {
-		        "width": 400,
-		        "height": 400,
-		        "title": "계획 대비 실적"
-		    },
-		    legend: {
-		        align: 'bottom'
-		    },
-		    yAxis: {
-		        min: 0,
-		        max: 100
-		    },
-		    theme: 'newTheme'
-		};
-	tui.chart.columnChart(container, data, options);
-	$(".tui-chart-chartExportMenu-area").hide();
+	    chart: {
+	        width: 450,
+// 	        height: 500,
+	        title: '24-hr Average Temperature'
+	    },
+	    legend: {
+	        align: 'bottom'
+	    },
+	    yAxis: {
+	        title: 'Temperature (Celsius)'
+	    },
+	    xAxis: {
+	        title: 'Month'
+	    },
+	    series: {
+	        line: {
+	            showDot: true
+	        }
+	    },
+	    tooltip: {
+	        grouped: true,
+	        suffix: '°C'
+	    }
+	};
+	var theme = {
+	    series: {
+	        column: {
+	            colors: ['#74807B',  '#F7A655']
+	        },
+	        line: {
+	            colors: ['#E05D64']
+	        }
+	    }
+	};
+
+	// For apply theme
+
+	tui.chart.registerTheme('myTheme', theme);
+	options.theme = 'myTheme';
+
+	byPerson.chart = tui.chart.comboChart(container, data, options);
 }
 /*]]>*/
 </script>

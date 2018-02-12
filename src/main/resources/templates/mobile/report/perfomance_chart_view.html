@@ -1,13 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content">
 	<div class="container-fluid" style="padding-top: 20%;">
 		<div class="row">
 			<div class='col-xs-12'>
-		        <form>
+		        <form  >
 		        	<div class="form-group">
-						<select class="selectpicker" data-width="75%"  data-style="btn-info" id="selectPlan">
+						<select class="selectpicker" data-width="75%"  data-style="btn-info" id="select_plan">
 						  <optgroup label="품종별">
 						    <option value="1">물류계장입력분</option>
 						    <option value="2">ERP 마감후 내역</option>
@@ -31,35 +31,44 @@
 				            </span>
 			            </div>
 			        </div>
-			        <div class="form-group col-xs-offset-9">
-						<button type="button" class="btn"  id="graph_view">그래프 보기</button>
-		        	</div>
 		        </form>
-				<div class="form-group"  id="byKindViewDiv" >
-					<div th:replace="/mobile/report/comp_by_kind_grid:: gridByKind" ></div>
-				</div>
-				<div class="form-group"  id="byPersonViewDiv" >
-					<div th:replace="/mobile/report/comp_by_person_grid:: gridByPerson" ></div>
-				</div>
-		    </div>
+			</div>
+		</div>
+		<div class="row"  id="byKindViewDiv" >
+			<div th:replace="/mobile/report/comp_by_kind_chart :: chartByKind" ></div>
+		</div>
+		<div class="row"  id="byPersonViewDiv" >
+			<div th:replace="/mobile/report/comp_by_person_chart :: chartByPerson" ></div>
+		</div>
+		<div class="row">
+			<div class="btn-group text-center"  role="group" style="padding: 16px 30% 16px;">
+				<button type="button"  class="btn btn-default"  id="go_pre_view" >
+					<i class="fa fa-chevron-left" aria-hidden="true"></i>
+					&nbsp;이전
+				</button>
+				<button type="button"  class="btn btn-default"  id="go_menu" >
+					<i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+					메뉴
+				</button>
+			</div>
 		</div>
 	</div>
 <script th:inline="javascript">
 /*<![CDATA[*/
 $(document).ready(function() {
-	perfomanceToPlanInit();
+	perfomanceToChartInit();
 });
 
-function perfomanceToPlanInit() {
-	setTitle("계획대비실적_그리드");
-// 	$("#byKindViewDiv").show(); 
-	perfomanceToPlanControles();
-	byKindViewInit();
-	byPersonViewInit();
-	perfomanceToPlanEventBind();
+function perfomanceToChartInit() {
+	setTitle("계획대비실적_도표");
+	perfomanceToChartControles();
+	perfomanceToChartEventBind();
+	byKindChartInit();
+	byPersonChartInit();
+// 	$(".tui-chart-chartExportMenu-area").hide();
 }
 
-function perfomanceToPlanControles() {
+function perfomanceToChartControles() {
 	var thisMon = new Date();
 	var thisMonStr = thisMon.getFullYear() + "-" + setTwinNum(thisMon.getMonth() + 1);
 	$('#start_month').datetimepicker({
@@ -85,7 +94,7 @@ function perfomanceToPlanControles() {
 
 }
 
-function selectChangeFunc() {
+function selectChangeChanrtFunc() {
 	$("#byKindViewDiv").hide();
 	$("#byPersonViewDiv").hide();
     console.log($(this).val())
@@ -99,15 +108,15 @@ function selectChangeFunc() {
     }
 }
 
-function perfomanceToPlanEventBind() {
-	$('#selectPlan').on('rendered.bs.select', selectChangeFunc);
+function perfomanceToChartEventBind() {
+	$('#select_plan').on('rendered.bs.select', selectChangeChanrtFunc);
 	
 	$("#data_confirm_view").click(function() {
 		$('#selectPlan').trigger("rendered.bs.select");
 	});
 	
-	$("#graph_view").click(function() {
-		location.href = "/report/perfomance_chart_view";
+	$("#go_pre_view").click(function() {
+		history.back();
 	});
 }
 /*]]>*/

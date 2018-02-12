@@ -5,7 +5,7 @@
 	<div class="container-fluid" style="padding-top: 20%;">
 		<div class="row">
 			<div class='col-xs-12'>
-		        <form  >
+		        <form>
 		        	<div class="form-group">
 						<select class="selectpicker" data-width="75%"  data-style="btn-info" id="selectPlan">
 						  <optgroup label="품종별">
@@ -31,12 +31,15 @@
 				            </span>
 			            </div>
 			        </div>
+			        <div class="form-group col-xs-offset-9">
+						<button type="button" class="btn"  id="graph_view">그래프 보기</button>
+		        	</div>
 		        </form>
-				<div class="form-group"  id="byKindViewDiv">
+				<div class="form-group"  id="byKindViewDiv" >
 					<div th:replace="/mobile/report/comp_by_kind_grid:: gridByKind" ></div>
 				</div>
-				<div class="form-group"  id="byPersonViewDiv">
-					<div th:replace="/mobile/report/comp_by_person_grid :: gridByPerson" ></div>
+				<div class="form-group"  id="byPersonViewDiv" >
+					<div th:replace="/mobile/report/comp_by_person_grid:: gridByPerson" ></div>
 				</div>
 		    </div>
 		</div>
@@ -44,24 +47,19 @@
 <script th:inline="javascript">
 /*<![CDATA[*/
 $(document).ready(function() {
-	profitToPlanInit();
+	perfomanceToPlanInit();
 });
 
-function profitToPlanInit() {
-	setTitle("계획대비실적");
-	profitToPlanControles();
-	profitToPlanEventBind();
+function perfomanceToPlanInit() {
+	setTitle("계획대비실적_그리드");
+// 	$("#byKindViewDiv").show(); 
+	perfomanceToPlanControles();
 	byKindViewInit();
 	byPersonViewInit();
-	showDivInitialize();
+	perfomanceToPlanEventBind();
 }
 
-function showDivInitialize() {
-	$("#byKindViewDiv").show();
-	$("#byPersonViewDiv").hide();
-}
-
-function profitToPlanControles() {
+function perfomanceToPlanControles() {
 	var thisMon = new Date();
 	var thisMonStr = thisMon.getFullYear() + "-" + setTwinNum(thisMon.getMonth() + 1);
 	$('#start_month').datetimepicker({
@@ -87,38 +85,30 @@ function profitToPlanControles() {
 
 }
 
-function profitToPlanEventBind() {
+function selectChangeFunc() {
+	$("#byKindViewDiv").hide();
+	$("#byPersonViewDiv").hide();
+    console.log($(this).val())
+    switch($(this).val()) {
+        case "1" : 
+        case "2" : $("#byKindViewDiv").show(); 
+          break;
+        case "3" : $("#byPersonViewDiv").show(); 
+            break;
+        default : break;
+    }
+}
+
+function perfomanceToPlanEventBind() {
 	$('#selectPlan').on('rendered.bs.select', selectChangeFunc);
 	
 	$("#data_confirm_view").click(function() {
 		$('#selectPlan').trigger("rendered.bs.select");
 	});
-}
-
-function allHide() {
-	$("#byKindViewDiv").hide();
-	$("#grid_by_kind_div").hide();
- 	$("#chart_by_kind_div").hide();
-	$("#byPersonViewDiv").hide();
-	$("#grid_by_person_div").hide();
-	$("#chart_by_person_div").hide();
-}
-
-function selectChangeFunc() {
-	allHide();
-	console.log($(this).val())
-	switch($(this).val()) {
-		case "1" : 
-		case "2" : $("#byKindViewDiv").show(); 
-		  $("#grid_by_kind_div").show();
-		  $("#chart_by_kind_div").hide();
-		  break;
-		case "3" : $("#byPersonViewDiv").show(); 
-			$("#grid_by_person_div").show();
-			$("#chart_by_person_div").hide();
-			break;
-		default : break;
-	}
+	
+	$("#graph_view").click(function() {
+		location.href = "/report/perfomance_chart_view";
+	});
 }
 /*]]>*/
 </script>

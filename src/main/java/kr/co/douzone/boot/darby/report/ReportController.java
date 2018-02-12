@@ -31,4 +31,10 @@ public class ReportController {
 		return mav.getView();
 	}
 	
+	@RequestMapping(path = "/report/perfomance_chart_view", method = RequestMethod.GET)
+	public View perfomanceChartView(Model model, RedirectAttributes redirect) {
+		ModelAndView mav = new ModelAndView("/report/perfomance_chart_view");
+		return mav.getView();
+	}
+	
 }

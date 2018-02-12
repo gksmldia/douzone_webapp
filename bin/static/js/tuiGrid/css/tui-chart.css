@@ -382,7 +382,7 @@
   top: 6px;
 }
 .tui-chart .tui-chart-series-custom-event-area {
-  z-index: 1000;
+  z-index: 20;
   position: absolute;
   left: 0;
   top: 0;
@@ -435,12 +435,11 @@
   opacity: 0.5;
 }
 .tui-chart .tui-chart-chartExportMenu-area {
-  z-index: 900;
+  z-index: 50;
   position: absolute;
   font-family: Verdana;
   margin: 0;
   padding: 10px 0 0 0;
-  z-index: 5000;
 }
 .tui-chart .tui-chart-chartExportMenu-area .tui-chart-chartExportMenu-button {
   position: absolute;
@@ -593,7 +592,7 @@
 }
 .tui-chart .tui-chart-tooltip-area {
   position: absolute;
-  z-index: 500;
+  z-index: 10;
 }
 .tui-chart .tui-chart-tooltip-area * {
   user-select: none;

@@ -6,14 +6,8 @@
 		<div class="row">
 			 <div class='col-xs-12'>
 				 <form class="form-horizontal">
-		        	<div class="form-group">
-						<button type="button" class="btn col-xs-offset-8 col-xs-4" id="person_view_graph">그래프 보기</button>
-		        	</div>
 		        	<div class="form-group" id="grid_by_person_div">
 						<div id="by_person_grid"></div>
-		        	</div>
-		        	<div class="form-group" id="chart_by_person_div">
-						<div th:replace="/mobile/report/comp_by_person_chart :: chartByPerson" ></div>
 		        	</div>
 		        </form>
 	        </div>
@@ -26,10 +20,8 @@ var byPerson = {
 }
 
 function byPersonViewInit() {
-	$("#chart_by_person_div").hide();
 	byPersonViewGridInit();
 	byPersonViewEventBind();
-	byPersonBarChartInit();
 }
 
 function byPersonViewGridInit() {
@@ -91,10 +83,7 @@ function byPersonViewGridInit() {
 }
 
 function byPersonViewEventBind() {
-	$("#person_view_graph").click(function() {
-		$("#grid_by_person_div").hide();
-		$("#chart_by_person_div").show();
-	});
+
 }
 /*]]>*/
 </script>
