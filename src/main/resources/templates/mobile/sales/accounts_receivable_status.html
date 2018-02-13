@@ -37,7 +37,7 @@
 					<div id="accounts_receivable_status_grid"></div>
 				</div>
 				<div class="row">
-					<div class="btn-group text-center"  role="group" style="padding-left: 10px;">
+					<div class="btn-group text-center"  role="group" style="padding: 16px 35px 16px;">
 						<button type="button"  class="btn btn-default"  id="go_credit_sales" >
 							<i class="fa fa-chevron-left" aria-hidden="true"></i>
 							&nbsp;외상 채권 현황
@@ -59,6 +59,7 @@
 /*<![CDATA[*/
 var accountsReceivableStatus = {
 		grid: null,
+		data: null,
 }
 	
 $(document).ready(function() {
@@ -118,21 +119,35 @@ function accountsReceivableStatusForGetData() {
 	returnObj.FunctionID = "UP_CG_MOB_RECEIVALE_S2";
 	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
 	returnObj.P_BIZ_FIELD = $("#business_part_sel").val();
-	returnObj.P_DT_FROM = $("#credit_shipment_start").val().replace(/-/gi, '').trim();
-	returnObj.P_DT_TO = $("#credit_shipment_end").val().replace(/-/gi, '').trim();
+	returnObj.P_DT_FROM = $("#accounts_receivable_start").val().replace(/-/gi, '').trim();
+	returnObj.P_DT_TO = $("#accounts_receivable_end").val().replace(/-/gi, '').trim();
 	
 	return returnObj;
 }
 
+function accountsReceivableStatusSearch(bodyObj) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		accountsReceivableStatus.data = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S2;
+		console.log(accountsReceivableStatus.data);
+		accountsReceivableStatus.grid.setData(accountsReceivableStatus.data);
+	}).fail(function(err) {
+		console.log(err)
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
+	});
+}
+
 function accountsReceivableStatusGridInit() {
-	var gridData=[{'salesArea':'1A', 'forwardOver': 10000, 'sales':20000, 'deposit':3000, 'balance':27000}
-									, {'salesArea':'1B', 'forwardOver': 3000, 'sales':65000, 'deposit':50000, 'balance': 18000}
-									, {'salesArea':'2A', 'forwardOver': 10000, 'sales':50000, 'deposit':30000, 'balance': -15000}
-									, {'salesArea':'2B', 'forwardOver': '', 'sales':15000, 'deposit':30000, 'balance': -15000}];
-	
 	accountsReceivableStatus.grid = new tui.Grid({
 	el: $('#accounts_receivable_status_grid'),
-	data: gridData,
+	data: [],
 	scrollX: true,
 	scrollY: true,
 	displayRowCount: 10,
@@ -140,42 +155,41 @@ function accountsReceivableStatusGridInit() {
 	columns: [
 		{
 			title: '영업지역',
-			name: 'salesArea',
-			align : "center"
+			name: 'NM_BIZ_PERSON',
+			align : "center",
+			width: 80
 		},{
 			title: '전월이월',
-			name: 'forwardOver',
+			name: 'AMT_PREV',
 			align : "center",
-            formatter: function(value, options, rowData) {
-                return format(value);
-            }
+			width: 100
 		}, {
 			title: '매출액',
-			name: 'sales',
+			name: 'AMT_SALE',
 			align : "center",
-            formatter: function(value, options, rowData) {
-                return format(value);
-            }
+			width: 100
 		}, {
 			title: '입금액',
-			name: 'deposit',
+			name: 'AMT_IN',
 			align : "center",
-            formatter: function(value, options, rowData) {
-                return format(value);
-            }
+			width: 100
 		}, {
 			title: '잔고',
-			name: 'balance',
+			name: 'AMT_REMAIN',
 			align : "center",
-            formatter: function(value, options, rowData) {
-                return format(value);
-            }
+			width: 100
 		}, {
 			title: '세부내역',
-            formatter: function(value, options, rowData) {
-                var id = rowData.id;
-                var url = '/sales/accounts_receivable_status_detail';
-
+			name: 'ID_BIZ_PERSON',
+			width: 80,
+            formatter: function(value, rowData) {
+            	var paramObj = new Object();
+				paramObj.CODE_BIZ_FIELD = $("#business_part_sel").val();
+				paramObj.DT_FROM = $("#accounts_receivable_start").val();
+				paramObj.DT_TO = $("#accounts_receivable_end").val();
+				paramObj.ID_BIZ_PERSON = value;
+				paramObj.NM_BIZ_PERSON = rowData.NM_BIZ_PERSON;
+				var url = '/sales/accounts_receivable_status_detail?accountDetail='+encodedJSON(paramObj);
                 return '<a href="' + url + '" class="btn btn-default">확인</a>';
             }
 		}
@@ -184,27 +198,27 @@ function accountsReceivableStatusGridInit() {
         position: 'bottom',
         height: 50,  // by pixel
         columnContent: {
-        	salesArea: {
+        	NM_BIZ_PERSON: {
                 template: function() {
                     return '합계';
                 }
             },
-            forwardOver: {
+            AMT_PREV: {
                 template: function(valueMap) {
                 	return format(valueMap.sum);
                 }
             },
-            sales: {
+            AMT_SALE: {
                 template: function(valueMap) {
                 	return format(valueMap.sum);
                 }
             },
-            deposit: {
+            AMT_IN: {
                 template: function(valueMap) {
                 	return format(valueMap.sum);
                 }
             },
-            balance: {
+            AMT_REMAIN: {
                 template: function(valueMap) {
                 	return format(valueMap.sum);
                 }
@@ -226,6 +240,12 @@ function accountsReceivableStatusEventBind() {
 	
 	$("#go_collection_status").click(function() {
 		location.href = "/sales/collection_status";
+	});
+	
+	$("#accounts_receivable_search").click(function() {
+		if(accountsReceivableStatusSearchForValidation()) {
+			accountsReceivableStatusSearch(accountsReceivableStatusForGetData());
+		}
 	});
 }
 /*]]>*/

@@ -13,9 +13,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import kr.co.douzone.boot.darby.shipping.ShppingManagementController;
+
 @RestController
 @EnableWebMvc
 public class SalesManagementController extends WebMvcConfigurerAdapter {
+	
+	ShppingManagementController shipping = new ShppingManagementController();
 	
 	@RequestMapping(path = "/sales/partner_detail", method = RequestMethod.GET)
 	public ModelAndView customerInformationDetail(Model model, RedirectAttributes redirect
@@ -65,9 +69,15 @@ public class SalesManagementController extends WebMvcConfigurerAdapter {
 	}
 	
 	@RequestMapping(path = "/sales/accounts_receivable_status_detail", method = RequestMethod.GET)
-	public View accountsReceivableStatusDetail(Model model, RedirectAttributes redirect) {
+	public ModelAndView accountsReceivableStatusDetail(Model model, RedirectAttributes redirect
+			,@RequestParam(value = "accountDetail", required = false, defaultValue = "") String accountDetail) {
+		JSONObject json_return = new JSONObject();
+		json_return = shipping.jsonPasing(accountDetail);
+		
 		ModelAndView mav = new ModelAndView("/sales/accounts_receivable_status_detail");
-		return mav.getView();
+		mav.addObject("accountDetail", json_return.toString());
+		model.addAttribute("accountDetail", json_return.toString());
+		return mav;
 	}
 	
 	@RequestMapping(path = "/sales/accounts_receivable_status", method = RequestMethod.GET)
