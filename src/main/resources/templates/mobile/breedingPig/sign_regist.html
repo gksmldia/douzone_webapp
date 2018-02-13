@@ -156,7 +156,7 @@ function canvasSignInitialize() {
 				}
 				uploadCanvas();
 				var bodyObj = signRegistGetDataForSave();
-				shippingRegistCallRestApi(bodyObj);
+				signRegistCallRestApi(bodyObj);
 			}
 		}
 	});
@@ -188,7 +188,7 @@ function signRegistGetDataForSave() {
 	return returnObj;
 }
 
-function shippingRegistCallRestApi(bodyObj) {
+function signRegistCallRestApi(bodyObj) {
 
 	$.get( "/api/getRest?restUrl=" + getUrl("RequestTx2") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "2000") {

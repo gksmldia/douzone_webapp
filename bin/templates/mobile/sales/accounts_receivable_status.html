@@ -9,7 +9,8 @@
 					<div class="form-group">
 						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
 						<div class="col-xs-9 col-sm-10">
-							<input type="text"  class="form-control" id="businessField" />
+							<select class="form-control selectpicker"  id="business_part_sel"  >
+							</select>
 						</div>
 					</div>
 					<div class="form-group" >
@@ -66,9 +67,14 @@ $(document).ready(function() {
 
 function accountsReceivableStatusInit() {
 	setTitle("미수현황");
+	accountsReceivableStatusSelectInit();
 	accountsReceivableStatusControles();
 	accountsReceivableStatusGridInit();
 	accountsReceivableStatusEventBind();
+}
+
+function accountsReceivableStatusSelectInit() {
+	commonSelectInit('CG_BA_0001', '#business_part_sel', '0', '선택');
 }
 
 function accountsReceivableStatusControles() {
@@ -97,6 +103,25 @@ function accountsReceivableStatusControles() {
         $('#accounts_receivable_start').data("DateTimePicker").maxDate(e.date);
     });
 
+}
+
+function accountsReceivableStatusSearchForValidation() {
+	if($("#business_part_sel").val() == "0" || $("#business_part_sel").val() == null) {
+		bootalert("사업부문 선택은 필수 입니다.");
+		return false;
+	}
+	return true;
+}
+
+function accountsReceivableStatusForGetData() {
+	var returnObj = new Object();
+	returnObj.FunctionID = "UP_CG_MOB_RECEIVALE_S2";
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_BIZ_FIELD = $("#business_part_sel").val();
+	returnObj.P_DT_FROM = $("#credit_shipment_start").val().replace(/-/gi, '').trim();
+	returnObj.P_DT_TO = $("#credit_shipment_end").val().replace(/-/gi, '').trim();
+	
+	return returnObj;
 }
 
 function accountsReceivableStatusGridInit() {

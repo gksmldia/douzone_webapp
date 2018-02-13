@@ -188,7 +188,7 @@ function getSession() {
 		} else {
 			$("#NoUserText").text(JSON.parse(data).resultMessage);
 			$("#NoUserSpan").show();
-			alert(JSON.parse(data).resultMessage);
+			bootalert(JSON.parse(data).resultMessage);
 		}
 	});
 }

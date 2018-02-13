@@ -204,4 +204,19 @@ function commonSelectInit(cd_field, selector, select_callback, option_0) {
 		console.log(err)
 	});
 }
+
+function addComma(value) {
+	var len, point, str; 
+    
+    point = value.length % 3 ;
+    len = value.length; 
+   
+    str = value.substring(0, point); 
+    while (point < len) { 
+        if (str != "") str += ","; 
+        str += value.substring(point, point + 3); 
+        point += 3; 
+    } 
+    return str;
+}
 /*]]>*/

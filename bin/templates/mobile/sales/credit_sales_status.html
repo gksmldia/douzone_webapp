@@ -47,7 +47,9 @@
 					</div>
 				</form>
 				<div class="row">
-					<div id="credit_sales_status_grid"></div>
+					<div class="table-responsive">
+						<table id="credit_sales_status_grid" class="table table-condensed" data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
+					</div>
 				</div>
 				<div class="row">
 					<div class="btn-group text-center"  role="group" style="padding-left: 10px;">
@@ -157,7 +159,7 @@ function creditSalesStatusForGetData() {
 	var returnObj = new Object();
 	returnObj.FunctionID = "UP_CG_MOB_RECEIVALE_S";
 	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
-	returnObj.P_BIZ_FIELD = $("#assignment_area_sel").val();
+	returnObj.P_BIZ_FIELD = $("#business_part_sel").val();
 	returnObj.P_CD_PARTNER = $("#farm").attr("name");
 	returnObj.P_DT_FROM = $("#credit_shipment_start").val().replace(/-/gi, '').trim();
 	returnObj.P_DT_TO = $("#credit_shipment_end").val().replace(/-/gi, '').trim();
@@ -176,8 +178,7 @@ function creditSalesStatusSearch(bodyObj) {
 	}).done(function(data){
 		creditSalesStatus.data = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S;
 		console.log(creditSalesStatus.data);
-// 		creditSalesStatus.grid.loadRows(creditSalesStatus.data);
-		creditSalesStatus.grid.setData(creditSalesStatus.data);
+		creditSalesStatus.grid.loadRows(creditSalesStatus.data);
 	}).fail(function(err) {
 		console.log(err)
 		bootalert(JSON.parse(data).resultMessage);
@@ -187,55 +188,84 @@ function creditSalesStatusSearch(bodyObj) {
 
 function creditSalesStatusGridInit() {
 	
-	creditSalesStatus.grid = new tui.Grid({
-	el: $('#credit_sales_status_grid'),
-	data: [],
-	scrollX: true,
-	scrollY: true,
-	displayRowCount: 10,
-	columnFixIndex: 5,
-// 	minimumColumnWidth: 20,
-	columns: [
-		{
-			title: '일자',
-			name: 'date',
-			align : "center"
-		},{
-			title: '품목',
-			name: 'item',
-			align : "center"
-		}, {
-			title: '전월이월',
-			name: 'forwardOver',
-			align : "center"
-		}, {
-			title: '수량1',
-			name: 'cnt1',
-			align : "center"
-		}, {
-			title: '수량2',
-			name: 'cnt2',
-			align : "center"
-		}, {
-			title: '교환',
-			name: 'exchange',
-			align : "center"
-		}, {
-			title: '매출',
-			name: 'sales',
-			align : "center",
-		}, {
-			title: '입금',
-			name: 'deposit',
-			align : "center",
-		}, {
-			title: '잔고',
-			name: 'balance',
-			align : "center",
-		}
-	] });
-	
-	tui.Grid.applyTheme('striped');
+	$('#credit_sales_status_grid').footable({
+		"empty": "조회된 정보가 없습니다.",
+		"paging": {
+			"size": 5
+		},
+		"columns": [
+			{
+				title: '일자',
+				name: 'DT_OUT',
+				style:{
+					"text-align": "center"
+				},
+				formatter: function(value, options, rowData) {
+					var dtList = [value.substring(0, 4), value.substring(4, 6), value.substring(6, 9)];
+	                return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
+	            }
+			},{
+				title: '품목',
+				name: 'NM_ITEM',
+				style:{
+					"text-align": "center"
+				}
+			}, {
+				title: '전월이월',
+				name: 'AM_PREV',
+				style:{
+					"text-align": "center"
+				}
+			}, {
+				title: '수량1',
+				name: 'QTY_OUT',
+				style:{
+					"text-align": "center"
+				}
+			}, {
+				title: '수량2',
+				name: 'QTY_OUT_ETC',
+				style:{
+					"text-align": "center"
+				}
+			}, {
+				title: '교환',
+				name: 'QTY_OUT_EXCHANGE',
+				style:{
+					"text-align": "center"
+				}
+			}, {
+				title: '매출',
+				name: 'AMT_OUT',
+				style:{
+					"text-align": "center"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
+			}, {
+				title: '입금',
+				name: 'AMT_CREDIT',
+				style:{
+					"text-align": "center"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
+			}, {
+				title: '잔고',
+				name: 'AMT_JAN',
+				style:{
+					"text-align": "center"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
+			}
+		],
+		"rows": []
+	});
+	creditSalesStatus.grid = FooTable.get('#credit_sales_status_grid');
 }
 
 function creditSalesStatusEventBind() {

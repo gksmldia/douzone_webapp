@@ -165,7 +165,12 @@ function shippingRegistSelectInit() {
 			logOutAlert(JSON.parse(data).resultMessage);
 		}
 	}).done(function(e){
-		$('#antibiotic_name_sel').val(shippingRegist.cd_antibio);
+		if(shippingRegist.cd_antibio == "") {
+			$('#antibiotic_name_sel').val(0);
+			$("#withdrawal_period").val("");
+		} else {
+			$('#antibiotic_name_sel').val(shippingRegist.cd_antibio);
+		}
 	    $('#antibiotic_name_sel').selectpicker('render');
 	}).fail(function(err) {
 		console.log(err)
@@ -243,12 +248,12 @@ function shippingRegistGetDataForSave() {
 function shippingRegistSave() {
 	var paramObj = shippingRegistGetDataForSave();
 	console.log(paramObj)
-	shippingRegistCallRestApi(paramObj, "RequestTx2");
+	shippingRegistCallRestApi(paramObj);
 }
 
-function shippingRegistCallRestApi(bodyObj, request) {
+function shippingRegistCallRestApi(bodyObj) {
 	
-	$.get( "/api/getRest?restUrl=" + getUrl(request) + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestTx2") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "2000") {
 			logOutAlert(JSON.parse(data).resultMessage);
 		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
@@ -289,7 +294,6 @@ function shippingRegistSaveForValidation() {
 			idList.push(inputNumberList[i].id);
 		}
 	}
-	console.log(idList)
 	
 	for(var i in idList) {
 		var val = $("#"+idList[i]).val() ;
@@ -332,7 +336,6 @@ function shippingRegistEventBind() {
 	});
 	
 	$("#input_qty_sale, #input_wei_sale").keyup(function(e) {
-		console.log($(this).val())
 		var buyId = this.id.replace("sale", "buy");
 		$("#"+buyId).val($(this).val());
 	});
