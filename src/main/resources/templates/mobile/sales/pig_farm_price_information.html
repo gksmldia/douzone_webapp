@@ -14,7 +14,10 @@
 						<label class="padTop4 text-muted">원</label>
 					</div>
 					<div class="form-group" style="margin-bottom: 50px;">
-						<label for="beforeDay" class="col-xs-4 col-sm-3 control-label padTop4 text-muted"  style="padding-right: 0px;">전일돈가</label>
+						<label for="beforeDay" class="col-xs-4 col-sm-3 control-label padTop4 text-muted"  style="padding-right: 0px;">
+							전일돈가
+							<small id="yesterDay"></small> 
+						</label>
 						<div class="col-xs-7 col-sm-8">
 							<input type="text"  class="form-control" id="beforeDay"  />
 						</div>
@@ -35,7 +38,7 @@
 			            </div>
 					</div>
 					<div class="form-group" style="padding-right: 20px;">
-						<button type="button" class="btn btn-info col-xs-offset-6 col-xs-6 col-sm-offset-4 col-sm-4" id="accounts_receivable_search">
+						<button type="button" class="btn btn-info col-xs-offset-6 col-xs-6 col-sm-offset-4 col-sm-4" id="price_information_search">
 							<i class="fa fa-binoculars" aria-hidden="true"></i>&nbsp;조회
 						</button>
 					</div>
@@ -44,7 +47,7 @@
 					<div id="price_information_grid"></div>
 				</div>
 				<div class="row">
-					<div class="col-xs-offset-3 btn-group text-center"  role="group" style="padding-left: 10px;">
+					<div class="btn-group text-center"  role="group"  style="padding: 16px 20% 16px;">
 						<button type="button"  class="btn btn-default"  id="go_collection_status" >
 							<i class="fa fa-chevron-left" aria-hidden="true"></i>
 							&nbsp;수금 현황
@@ -62,6 +65,7 @@
 /*<![CDATA[*/
 var priceInformation = {
 		grid: null,
+		data: null,
 }
 	
 $(document).ready(function() {
@@ -78,6 +82,7 @@ function priceInformationInit() {
 function priceInformationControles() {
 	var today = new Date();
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
+	$("#yesterDay").text("(" + setTwinNum(today.getMonth() + 1) + "/" + setTwinNum(today.getDate()-1)  + ")" );
 	$('#start_day').datetimepicker({
 		useCurrent: false,  
 		format: "YYYY-MM-DD"
@@ -100,110 +105,132 @@ function priceInformationControles() {
 }
 
 function priceInformationGridInit() {
-	var gridData=[
-		{
-			'weekStart':'17/11/26'
-			, 'weekEnd':'17/12/02'
-			, 'workType': '박피'
-			, _extraData: {
-				rowSpan: { // Merge rows
-					weekStart: 3
-					,weekEnd: 3
-				}
-			}
-		}, {
-			'weekStart':'17/11/26'
-			, 'weekEnd':'17/12/02'
-			, 'workType': '탕박'
-		}, {
-			'weekStart':'17/11/26'
-				, 'weekEnd':'17/12/02'
-				, 'workType': '탕박(제주제외)'
-			}
-	];
-	
 	priceInformation.grid = new tui.Grid({
 		el: $('#price_information_grid'),
-		data: gridData,
+		data: [],
 		scrollX: true,
 		scrollY: true,
-		displayRowCount: 10,
-		columnFixIndex: 5,
 		columns: [
 			{
 				title: '주간시작일',
-				name: 'weekStart',
+				name: 'DT_START',
 				align : "center",
-				width: 80
+				width: 100
 			} ,{
 				title: '주간종료일',
-				name: 'weekEnd',
+				name: 'DT_END',
 				align : "center",
-				width: 80
+				width: 100
 			} ,{
 				title: '작업구분',
-				name: 'workType',
+				name: 'GB_WORK',
 				align : "center",
 				width: 100
 			}, {
 				title: '4주평균',
-				name: '4weekAvg',
+				name: 'AVR_4W',
 				align : "center",
-				width: 70
+				width: 130
 			}, {
 				title: '일',
-				name: 'sun',
+				name: 'SUN',
 				align : "center",
+				width: 60,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '월',
-				name: 'mon',
+				name: 'MON',
 				align : "center",
+				width: 60,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '화',
-				name: 'tue',
+				name: 'TUE',
 				align : "center",
+				width: 60,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '수',
-				name: 'wed',
+				name: 'WED',
 				align : "center",
+				width: 60,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '목',
-				name: 'thur',
+				name: 'THU',
 				align : "center",
+				width: 60,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '금',
-				name: 'fri',
+				name: 'FRI',
 				align : "center",
+				width: 60,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '토',
-				name: 'sat',
+				name: 'SAT',
 				align : "center",
+				width: 60,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
+			}
+			, {
+				title: '주간평균',
+				name: 'AVR_1W',
+				align : "center",
+				width: 130
 			}
 		]
 	});
 	
 // 	tui.Grid.applyTheme('striped');
+}
+
+function creditSalesStatusForGetData() {
+	var returnObj = new Object();
+	returnObj.FunctionID = "UP_CG_MOB_PRICE_PIG_S";
+	returnObj.P_DT_START = $("#start_day").val().replace(/-/gi, '').trim();
+	returnObj.P_DT_END = $("#end_day").val().replace(/-/gi, '').trim();
+	
+	return returnObj;
+}
+
+function creditSalesStatusSearch(bodyObj) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		priceInformation.data = JSON.parse(data).result.List.UP_CG_MOB_PRICE_PIG_S;
+		for(var i in priceInformation.data) {
+			if(i % 3 == 0) {
+				priceInformation.data[i]. _extraData = {"rowSpan": {"DT_START": 3, "DT_END": 3}};
+			}
+		}
+		console.log(priceInformation.data);
+		priceInformation.grid.setData(priceInformation.data);
+	}).fail(function(err) {
+		console.log(err)
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
+	});
 }
 
 function priceInformationEventBind() {
@@ -215,6 +242,9 @@ function priceInformationEventBind() {
 		location.href = "/menu";
 	});
 	
+	$("#price_information_search").click(function() {
+		creditSalesStatusSearch(creditSalesStatusForGetData())
+	});
 }
 /*]]>*/
 </script>

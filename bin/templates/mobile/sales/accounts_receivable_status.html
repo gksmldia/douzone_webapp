@@ -37,7 +37,7 @@
 					<div id="accounts_receivable_status_grid"></div>
 				</div>
 				<div class="row">
-					<div class="btn-group text-center"  role="group" style="padding: 16px 35px 16px;">
+					<div class="btn-group text-center"  role="group" style="padding: 16px 25px 16px;">
 						<button type="button"  class="btn btn-default"  id="go_credit_sales" >
 							<i class="fa fa-chevron-left" aria-hidden="true"></i>
 							&nbsp;외상 채권 현황
@@ -149,9 +149,7 @@ function accountsReceivableStatusGridInit() {
 	el: $('#accounts_receivable_status_grid'),
 	data: [],
 	scrollX: true,
-	scrollY: true,
-	displayRowCount: 10,
-	columnFixIndex: 5,
+	scrollY: false,
 	columns: [
 		{
 			title: '영업지역',
@@ -162,22 +160,34 @@ function accountsReceivableStatusGridInit() {
 			title: '전월이월',
 			name: 'AMT_PREV',
 			align : "center",
-			width: 100
+			width: 130,
+			formatter: function(value, options, rowData) {
+                return format(value);
+            }
 		}, {
 			title: '매출액',
 			name: 'AMT_SALE',
 			align : "center",
-			width: 100
+			width: 100,
+			formatter: function(value, options, rowData) {
+                return format(value);
+            }
 		}, {
 			title: '입금액',
 			name: 'AMT_IN',
 			align : "center",
-			width: 100
+			width: 100,
+			formatter: function(value, options, rowData) {
+                return format(value);
+            }
 		}, {
 			title: '잔고',
 			name: 'AMT_REMAIN',
 			align : "center",
-			width: 100
+			width: 130,
+			formatter: function(value, options, rowData) {
+                return format(value);
+            }
 		}, {
 			title: '세부내역',
 			name: 'ID_BIZ_PERSON',
@@ -226,7 +236,7 @@ function accountsReceivableStatusGridInit() {
         }
     }});
 	
-	tui.Grid.applyTheme('striped');
+// 	tui.Grid.applyTheme('striped');
 }
 
 function accountsReceivableStatusEventBind() {

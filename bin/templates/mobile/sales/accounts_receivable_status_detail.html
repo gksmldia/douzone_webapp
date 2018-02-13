@@ -6,7 +6,7 @@
 		<div th:text="${accountDetail}"  style="display: none;" id="row_data"></div>
 		<div class="row">
 			<div class="col-xs-12 col-sm-12">
-				<form class="form-horizontal">
+				<form class="form-horizontal"  style="font-size: 11pt;">
 					<div class="form-group">
 						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
 						<div class="col-xs-9 col-sm-10">
@@ -39,7 +39,7 @@
 					<div id="accounts_receivable_status_detail_grid"></div>
 				</div>
 				<div class="row">
-					<div class="btn-group text-center"  role="group" style="padding: 16px 30% 16px;">
+					<div class="btn-group text-center"  role="group" style="padding: 16px 25% 16px;">
 						<button type="button"  class="btn btn-default"  id="go_pre_view" >
 							<i class="fa fa-chevron-left" aria-hidden="true"></i>
 							&nbsp;이전
@@ -97,74 +97,58 @@ function accountsReceivableDetailControles() {
 }
 
 function accountsReceivableDetailGridInit() {
-	var gridData=[
-		{
-			'salesArea':'1A'
-			, 'customerName':'진길부(개척)'
-			, 'forwardOver': 2000
-			, 'sales':2000
-			, 'deposit':1000
-			, 'balance':1000
-			, _extraData: {
-				rowSpan: { // Merge rows
-					salesArea: 2
-				}
-			}
-		}, {
-			'salesArea':'1A'
-			, 'customerName':'이범호(성지)'
-			, 'forwardOver': 3000
-			, 'sales':4000
-			, 'deposit':5000
-			, 'balance': 6000
-		}];
-	
 	accountsReceivableDatail.grid = new tui.Grid({
 		el: $('#accounts_receivable_status_detail_grid'),
-		data: gridData,
+		data: [],
 		scrollX: true,
-		scrollY: true,
+		scrollY: false,
 		displayRowCount: 10,
 		columnFixIndex: 5,
 		columns: [
 			{
 				title: '영업지역',
-				name: 'salesArea',
+				name: 'NM_BIZ_PERSON',
 				align : "center",
 				width: 80
 			} ,{
 				title: '단체명',
-				name: 'groupName',
-				align : "center"
+				name: 'NM_PARTNER_GROUP',
+				align : "center",
+				width: 70
 			} ,{
 				title: '거래처명',
-				name: 'customerName',
-				align : "center"
+				name: 'SN_PARTNER',
+				align : "center",
+				width: 110
 			}, {
 				title: '전월이월',
-				name: 'forwardOver',
+				name: 'AMT_PREV',
 				align : "center",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '매출',
-				name: 'sales',
+				name: 'AMT_SALE',
 				align : "center",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '입금',
-				name: 'deposit',
+				name: 'AMT_IN',
 				align : "center",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '잔고',
-				name: 'balance',
+				name: 'AMT_REMAIN',
 				align : "center",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
@@ -184,27 +168,27 @@ function accountsReceivableDetailGridInit() {
 	        position: 'bottom',
 	        height: 50,  // by pixel
 	        columnContent: {
-	        	customerName: {
+	        	SN_PARTNER: {
 	                template: function() {
 	                    return '합계';
 	                }
 	            },
-	            forwardOver: {
+	            AMT_PREV: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
 	            },
-	            sales: {
+	            AMT_SALE: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
 	            },
-	            deposit: {
+	            AMT_IN: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
 	            },
-	            balance: {
+	            AMT_REMAIN: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
@@ -213,7 +197,7 @@ function accountsReceivableDetailGridInit() {
 	    }
 	});
 	
-	tui.Grid.applyTheme('striped');
+// 	tui.Grid.applyTheme('striped');
 }
 
 function accountsReceivableDetailSetData() {
@@ -250,9 +234,10 @@ function detailForGetDataByAjax(bodyObj) {
 			return false
 		}
 	}).done(function(data){
-		accountsReceivableDatail.gridData.data = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S2;
-		console.log(accountsReceivableDatail.gridData.data);
-// 		accountsReceivableDatail.gridData.grid.setData(accountsReceivableStatus.data);
+		accountsReceivableDatail.gridData = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S3;
+		console.log(accountsReceivableDatail.gridData);
+		accountsReceivableDatail.gridData[0]. _extraData = {"rowSpan": {"NM_BIZ_PERSON": accountsReceivableDatail.gridData.length, "NM_PARTNER_GROUP": accountsReceivableDatail.gridData.length}};
+		accountsReceivableDatail.grid.setData(accountsReceivableDatail.gridData);
 	}).fail(function(err) {
 		console.log(err)
 		bootalert(JSON.parse(data).resultMessage);
