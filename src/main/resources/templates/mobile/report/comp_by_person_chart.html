@@ -10,45 +10,62 @@
 var byPerson = {
 		chart: null
 }
-function byPersonChartInit() {
-	var container = document.getElementById('by_person_chart_area');
-	var data = {
-	    categories: ['Apr', 'May', 'June', 'July'],
-	    series: {
-	        column: [
-	            {
-	                name: 'Seoul',
-	                data: [11.3, 17.0, 21.0, 24.4]
-	            },
-	            {
-	                name: 'NewYork',
-	                data: [9.9, 16.0, 21.2, 24.2]
 
-	            },
-	        ],
-	        line: [
-	            {
-	                name: 'Average',
-	                data: [11, 15.1, 17.8, 19.7]
-	            }
-	        ]
-	    }
-	};
+function makeChartDataByPerson(data) {
+	var chartData = {
+	 	    categories: [],
+	 	    series: {
+	 	        column: [
+	 	            {
+	 	                name: '계획',
+	 	                data: []
+	 	            },
+	 	            {
+	 	                name: '실적',
+	 	                data: []
+
+	 	            },
+	 	        ],
+	 	        line: [
+	 	            {
+	 	                name: '계획(누계)',
+	 	                data: []
+	 	            }, {
+	 	                name: '실적(누계)',
+	 	                data: []
+	 	            }
+	 	        ]
+	 	    }
+	 	}
+	for(var i in data) {
+		chartData.categories.push(data[i].NM_BIZ_PERSON);
+		chartData.series.column[0].data.push(data[i].QTY_PLAN);
+		chartData.series.column[1].data.push(data[i].QTY_SALE);
+		chartData.series.line[0].data.push(data[i].QTY_PLAN2);
+		chartData.series.line[1].data.push(data[i].QTY_SALE2);
+	}
+	
+	byPersonChartInit(chartData);
+}
+
+function byPersonChartInit(data) {
+	$("#by_person_chart_area").empty();
+	var container = document.getElementById('by_person_chart_area');
 	var options = {
 	    chart: {
 	        width: 450,
 // 	        height: 500,
-	        title: '24-hr Average Temperature'
+// 	        title: '24-hr Average Temperature'
 	    },
 	    legend: {
 	        align: 'bottom'
 	    },
-	    yAxis: {
-	        title: 'Temperature (Celsius)'
-	    },
-	    xAxis: {
-	        title: 'Month'
-	    },
+// 	    yAxis: {
+// 	        title: 'Temperature (Celsius)'
+// 	    },
+// 	    xAxis: {
+// 	        title: 'Month'
+// 	    },
 	    series: {
 	        line: {
 	            showDot: true
@@ -56,7 +73,7 @@ function byPersonChartInit() {
 	    },
 	    tooltip: {
 	        grouped: true,
-	        suffix: '°C'
+	        suffix: ''
 	    }
 	};
 	var theme = {
@@ -65,7 +82,7 @@ function byPersonChartInit() {
 	            colors: ['#74807B',  '#F7A655']
 	        },
 	        line: {
-	            colors: ['#E05D64']
+	            colors: ['#74807B', '#F7A655']
 	        }
 	    }
 	};
@@ -74,8 +91,10 @@ function byPersonChartInit() {
 
 	tui.chart.registerTheme('myTheme', theme);
 	options.theme = 'myTheme';
-
-	byPerson.chart = tui.chart.comboChart(container, data, options);
+	
+	if(data != null) {
+		byPerson.chart = tui.chart.comboChart(container, data, options);
+	}
 }
 /*]]>*/
 </script>

@@ -3,9 +3,10 @@
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content">
 	<div class="container-fluid" style="padding-top: 20%;">
+		<div th:text="${paramData}"  style="display: none;" id="form_data"></div>
 		<div class="row">
 			<div class='col-xs-12'>
-		        <form  >
+		        <form style="font-size: 11pt;">
 		        	<div class="form-group">
 						<select class="selectpicker" data-width="75%"  data-style="btn-info" id="select_plan">
 						  <optgroup label="품종별">
@@ -17,8 +18,8 @@
 						</select>
 		        	</div>
 			        <div class="form-group">
-						<label class="text-muted">기간</label>
-			            <div class='input-group date'  >
+						<label class="text-muted col-xs-3 col-sm-2 control-label padTop4">기간</label>
+			            <div class='input-group date col-xs-9 col-sm-10'  >
 				            <div class='input-group date' >
 				                <input type='text' class="form-control"  id="start_month"/>
 				            </div>
@@ -27,7 +28,7 @@
 				                <input type='text' class="form-control"  id="end_month"/>
 				            </div>
 				            <span class="input-group-btn">
-				            	<button type="button" class="btn btn-info"  id="data_confirm_view">확인</button>
+				            	<button type="button" class="btn btn-info"  id="confirm_chart_view">확인</button>
 				            </span>
 			            </div>
 			        </div>
@@ -41,7 +42,7 @@
 			<div th:replace="/mobile/report/comp_by_person_chart :: chartByPerson" ></div>
 		</div>
 		<div class="row">
-			<div class="btn-group text-center"  role="group" style="padding: 16px 30% 16px;">
+			<div class="btn-group text-center"  role="group" style="padding: 16px 25% 16px;">
 				<button type="button"  class="btn btn-default"  id="go_pre_view" >
 					<i class="fa fa-chevron-left" aria-hidden="true"></i>
 					&nbsp;이전
@@ -55,19 +56,34 @@
 	</div>
 <script th:inline="javascript">
 /*<![CDATA[*/
+var chartView = {
+		data: null,
+}
+
 $(document).ready(function() {
 	perfomanceToChartInit();
 });
 
 function perfomanceToChartInit() {
 	setTitle("계획대비실적_도표");
+	console.log(JSON.parse($("#form_data").text()).paramJson)
 	perfomanceToChartControles();
+	perfomanceToChartSetInitData();
 	perfomanceToChartEventBind();
 	byKindChartInit();
 	byPersonChartInit();
-// 	$(".tui-chart-chartExportMenu-area").hide();
+	perfomanceToPlanSetChart();
 }
 
+function perfomanceToChartSetInitData() {
+	if($("#form_data").text() != null) {
+		var formData = JSON.parse($("#form_data").text()).paramJson;
+		$("#select_plan").val(formData.sel);
+		$("#select_plan").selectpicker('refresh');
+		$('#start_month').val(formData.from);
+		$('#end_month').val(formData.to);
+	}
+}
 function perfomanceToChartControles() {
 	var thisMon = new Date();
 	var thisMonStr = thisMon.getFullYear() + "-" + setTwinNum(thisMon.getMonth() + 1);
@@ -108,6 +124,54 @@ function selectChangeChanrtFunc() {
     }
 }
 
+function perfomanceToPlanSetChart() {
+	var returnObj = new Object();
+	returnObj.P_ym_FROM = $("#start_month").val().replace(/-/gi, '').trim();
+	returnObj.P_ym_TO = $("#end_month").val().replace(/-/gi, '').trim();
+	
+	switch($("#select_plan").val()) {
+		case "1" : returnObj.FunctionID = "UP_CG_MOB_BIZPLAN_S";
+							ajaxforGetDataByKindChart(returnObj);
+							break;
+		case "2" : returnObj.FunctionID = "UP_CG_MOB_BIZPLAN_S2";
+							ajaxforGetDataByKindChart(returnObj);
+							break;
+		case "3" : returnObj.FunctionID = "UP_CG_MOB_BIZPLAN_S3";
+			break;
+		default :break;
+	}
+}
+
+function ajaxforGetDataByKindChart(bodyObj) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		switch($("#select_plan").val()) {
+			case "1" : chartView.data = JSON.parse(data).result.List.UP_CG_MOB_BIZPLAN_S;
+									makeChartDataByKind(chartView.data);
+									break;
+			case "2" : chartView.data = JSON.parse(data).result.List.UP_CG_MOB_BIZPLAN_S2;
+									makeChartDataByKind(chartView.data);
+									break;
+			case "3" : chartView.data = JSON.parse(data).result.List.UP_CG_MOB_BIZPLAN_S3;
+									makeChartDataByPerson(chartView.data);
+									break;
+			default :break;
+		}
+		console.log(chartView.data);
+	}).fail(function(err) {
+		console.log(err)
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
+	});
+}
+
+
 function perfomanceToChartEventBind() {
 	$('#select_plan').on('rendered.bs.select', selectChangeChanrtFunc);
 	
@@ -122,7 +186,12 @@ function perfomanceToChartEventBind() {
 	$("#go_menu").click(function() {
 		location.href = "/menu";
 	});
+	
+	$("#confirm_chart_view").click(function() {
+		perfomanceToPlanSetChart();
+	});
 }
+
 /*]]>*/
 </script>
 </div>

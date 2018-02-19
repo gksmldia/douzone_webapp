@@ -5,7 +5,7 @@
 	<div class="container-fluid" style="padding-top: 20%;">
 		<div class="row">
 			<div class='col-xs-12'>
-		        <form>
+		        <form style="font-size: 11pt;">
 		        	<div class="form-group">
 						<select class="selectpicker" data-width="75%"  data-style="btn-info" id="selectPlan">
 						  <optgroup label="품종별">
@@ -17,8 +17,8 @@
 						</select>
 		        	</div>
 			        <div class="form-group">
-						<label class="text-muted">기간</label>
-			            <div class='input-group date'  >
+						<label class="text-muted col-xs-3 col-sm-2 control-label padTop4" >기간</label>
+			            <div class='input-group date col-xs-9 col-sm-10' >
 				            <div class='input-group date' >
 				                <input type='text' class="form-control"  id="start_month"/>
 				            </div>
@@ -31,7 +31,7 @@
 				            </span>
 			            </div>
 			        </div>
-			        <div class="form-group col-xs-offset-9">
+			        <div class="form-group"  style="text-align: right;">
 						<button type="button" class="btn"  id="graph_view">그래프 보기</button>
 		        	</div>
 		        </form>
@@ -46,17 +46,21 @@
 	</div>
 <script th:inline="javascript">
 /*<![CDATA[*/
+gridView = {
+		data: null,
+}
 $(document).ready(function() {
 	perfomanceToPlanInit();
 });
 
 function perfomanceToPlanInit() {
 	setTitle("계획대비실적_그리드");
-// 	$("#byKindViewDiv").show(); 
+	$("#darby_title").css("font-size", "28px");
 	perfomanceToPlanControles();
 	byKindViewInit();
 	byPersonViewInit();
 	perfomanceToPlanEventBind();
+	perfomanceToPlanSetGrid();
 }
 
 function perfomanceToPlanControles() {
@@ -107,7 +111,55 @@ function perfomanceToPlanEventBind() {
 	});
 	
 	$("#graph_view").click(function() {
-		location.href = "/report/perfomance_chart_view";
+		var paramObj = new Object();
+		paramObj.sel = $("#selectPlan").val();
+		paramObj.from = $("#start_month").val().trim();
+		paramObj.to = $("#end_month").val().trim();
+		location.href = "/report/perfomance_chart_view?paramData="+encodedJSON(paramObj);
+	});
+	
+	$("#data_confirm_view").click(function() {
+		perfomanceToPlanSetGrid();
+	});
+}
+
+function perfomanceToPlanSetGrid() {
+	var returnObj = new Object();
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_ym_FROM = $("#start_month").val().replace(/-/gi, '').trim();
+	returnObj.P_ym_TO = $("#end_month").val().replace(/-/gi, '').trim();
+	
+	switch($("#selectPlan").val()) {
+		case "1" : returnObj.FunctionID = "UP_CG_MOB_BIZPLAN_S";
+							ajaxForGetDatabyKindView(returnObj, returnObj.FunctionID, byKind.grid);
+							break;
+		case "2" : returnObj.FunctionID = "UP_CG_MOB_BIZPLAN_S2";
+							ajaxForGetDatabyKindView(returnObj, returnObj.FunctionID, byKind.grid);
+							break;
+		case "3" : returnObj.FunctionID = "UP_CG_MOB_BIZPLAN_S3";
+							ajaxForGetDatabyKindView(returnObj, returnObj.FunctionID, byPerson.grid);
+			break;
+		default :break;
+	}
+	
+}
+
+function ajaxForGetDatabyKindView(bodyObj, FunctionID, grid) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		gridView.data = JSON.parse(data).result.List[FunctionID];
+		console.log(gridView.data);
+		grid.setData(gridView.data);
+	}).fail(function(err) {
+		console.log(err)
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
 	});
 }
 /*]]>*/

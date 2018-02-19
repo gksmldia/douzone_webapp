@@ -25,21 +25,10 @@ function byPersonViewInit() {
 }
 
 function byPersonViewGridInit() {
-	var byPersonData = [
-		{"item": "1A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "1B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "2A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "2B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "2C", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "3A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "3B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "4A", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "4B", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-	];
 	
 	byPerson.grid = new tui.Grid({
 		el: $('#by_person_grid'),
-		data: byPersonData,
+		data: [],
 		virtualScrolling: false,
 		scrollX: false,
 		scrollY: false,

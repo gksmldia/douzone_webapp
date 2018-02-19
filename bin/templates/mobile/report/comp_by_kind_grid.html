@@ -17,6 +17,7 @@
 /*<![CDATA[*/
 var byKind = {
 		grid: null,
+		data: null,
 }
 
 function byKindViewInit() {
@@ -25,56 +26,68 @@ function byKindViewInit() {
 }
 
 function byKindViewGridInit() {
-	var byKindData = [
-		{"item": "QS", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "YB", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "YY♀", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "YY♂", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "LL♀", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "LL♂", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "DD♀", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "DD♂", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "기타", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-	];
 	
 	byKind.grid = new tui.Grid({
 		el: $('#by_kind_grid'),
-		data: byKindData,
+		data: [],
 		virtualScrolling: false,
-		scrollX: false,
+		scrollX: true,
 		scrollY: false,
 		displayRowCount: 10,
 		columnFixIndex: 5,
 		columns: [
 			{
 				title: '품종별',
-				name: 'item',
-				align : "center"
+				name: 'NM_ITEM',
+				align : "center",
+				width: 130
 			},{
 				title: '계획',
-				name: 'plan',
+				name: 'QTY_PLAN',
 				align : "center"
 			}, {
 				title: '실적',
-				name: 'perform',
+				name: 'QTY_SALE',
 				align : "center"
 			}, {
 				title: '계획(누계)',
-				name: 'planTotal',
-				align : "center"
+				name: 'QTY_PLAN2',
+				align : "center",
+				width: 80
 			}, {
 				title: '실적(누계)',
-				name: 'performTotal',
-				align : "center"
+				name: 'QTY_SALE2',
+				align : "center",
+				width: 80
 			}
 		] ,
 	    summary: {
 	        position: 'bottom',
 	        height: 30,  // by pixel
 	        columnContent: {
-	        	item: {
+	        	NM_ITEM: {
 	                template: function() {
 	                    return '합계';
+	                }
+	            },
+	            QTY_PLAN: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            QTY_SALE: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            QTY_PLAN2: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            QTY_SALE2: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
 	                }
 	            }
 	        }
