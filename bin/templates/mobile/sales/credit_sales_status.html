@@ -131,11 +131,17 @@ function creditSalesStatusControles() {
     $('#credit_shipment_start').val(todayStr);
     $('#credit_shipment_end').val(todayStr);
     
+	$('#credit_shipment_start').data("DateTimePicker").maxDate(today);
+    
     $("#credit_shipment_start").on("dp.change", function (e) {
         $('#credit_shipment_end').data("DateTimePicker").minDate(e.date);
     });
     $("#credit_shipment_end").on("dp.change", function (e) {
-        $('#credit_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#credit_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#credit_shipment_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }

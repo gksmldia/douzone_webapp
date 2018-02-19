@@ -7,18 +7,18 @@
 			<div class="col-xs-12 col-sm-12">
 				<form class="form-horizontal" style="font-size: 11pt;">
 					<div class="form-group">
-						<label for="thisWeek " class="col-xs-4 col-sm-3 control-label padTop4 text-muted"  style="padding-right: 0px;">이번주적용돈가</label>
-						<div class="col-xs-7 col-sm-8">
+						<label for="thisWeek " class="col-xs-5 col-sm-3 control-label padTop4 text-muted" >이번주적용돈가</label>
+						<div class="col-xs-6 col-sm-8">
 							<input type="text"  class="form-control" id="businessField" />
 						</div>
 						<label class="padTop4 text-muted">원</label>
 					</div>
 					<div class="form-group" style="margin-bottom: 50px;">
-						<label for="beforeDay" class="col-xs-4 col-sm-3 control-label padTop4 text-muted"  style="padding-right: 0px;">
+						<label for="beforeDay" class="col-xs-5 col-sm-3 control-label padTop4 text-muted" >
 							전일돈가
 							<small id="yesterDay"></small> 
 						</label>
-						<div class="col-xs-7 col-sm-8">
+						<div class="col-xs-6 col-sm-8">
 							<input type="text"  class="form-control" id="beforeDay"  />
 						</div>
 						<label class="padTop4 text-muted">원</label>
@@ -101,11 +101,17 @@ function priceInformationControles() {
     $('#start_day').val(todayStr);
     $('#end_day').val(todayStr);
     
+	$('#start_day').data("DateTimePicker").maxDate(today);
+    
     $("#start_day").on("dp.change", function (e) {
         $('#end_day').data("DateTimePicker").minDate(e.date);
     });
     $("#end_day").on("dp.change", function (e) {
-        $('#start_day').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#start_day').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#start_day').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }

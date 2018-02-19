@@ -97,11 +97,17 @@ function accountsReceivableStatusControles() {
     $('#accounts_receivable_start').val(todayStr);
     $('#accounts_receivable_end').val(todayStr);
     
+	$('#accounts_receivable_start').data("DateTimePicker").maxDate(today);
+    
     $("#accounts_receivable_start").on("dp.change", function (e) {
         $('#accounts_receivable_end').data("DateTimePicker").minDate(e.date);
     });
     $("#accounts_receivable_end").on("dp.change", function (e) {
-        $('#accounts_receivable_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#accounts_receivable_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#accounts_receivable_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }

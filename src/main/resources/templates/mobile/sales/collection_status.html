@@ -109,11 +109,17 @@ function collectionStatusControles() {
     $('#income_start').val(todayStr);
     $('#income_end').val(todayStr);
     
+	$('#income_start').data("DateTimePicker").maxDate(today);
+    
     $("#income_start").on("dp.change", function (e) {
         $('#income_end').data("DateTimePicker").minDate(e.date);
     });
     $("#income_end").on("dp.change", function (e) {
-        $('#income_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#income_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#income_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }

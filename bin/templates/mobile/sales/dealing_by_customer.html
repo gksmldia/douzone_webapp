@@ -119,11 +119,17 @@ function dealingByCustomerControles() {
     $('#dealing_shipping_start').val(todayStr);
     $('#dealing_shipping_end').val(todayStr);
     
+	$('#dealing_shipping_start').data("DateTimePicker").maxDate(today);
+    
     $("#dealing_shipping_start").on("dp.change", function (e) {
         $('#dealing_shipping_end').data("DateTimePicker").minDate(e.date);
     });
     $("#dealing_shipping_end").on("dp.change", function (e) {
-        $('#dealing_shipping_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#dealing_shipping_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#dealing_shipping_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }

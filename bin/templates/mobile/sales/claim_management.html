@@ -123,11 +123,17 @@ function clameDetailControles() {
     $('#claim_shipment_start').val(todayStr);
     $('#claim_shipment_end').val(todayStr);
     
+	$('#claim_shipment_start').data("DateTimePicker").maxDate(today);
+    
     $("#claim_shipment_start").on("dp.change", function (e) {
         $('#claim_shipment_end').data("DateTimePicker").minDate(e.date);
     });
     $("#claim_shipment_end").on("dp.change", function (e) {
-        $('#claim_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#claim_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#claim_shipment_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }

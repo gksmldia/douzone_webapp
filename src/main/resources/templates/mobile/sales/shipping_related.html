@@ -127,11 +127,17 @@ function shippingPerformanceControles() {
     $('#shippingDays_start').val(todayStr);
     $('#shippingDays_end').val(todayStr);
     
+    $('#shippingDays_start').data("DateTimePicker").maxDate(today);
+    
     $("#shippingDays_start").on("dp.change", function (e) {
         $('#shippingDays_end').data("DateTimePicker").minDate(e.date);
     });
     $("#shippingDays_end").on("dp.change", function (e) {
-        $('#shippingDays_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#shippingDays_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#shippingDays_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }
