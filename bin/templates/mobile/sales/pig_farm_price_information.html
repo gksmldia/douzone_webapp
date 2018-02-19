@@ -44,7 +44,9 @@
 					</div>
 				</form>
 				<div class="row">
-					<div id="price_information_grid"></div>
+					<div class="table-responsive">
+						<table id="price_information_grid" class="table table-condensed" data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
+					</div>
 				</div>
 				<div class="row">
 					<div class="btn-group text-center"  role="group"  style="padding: 16px 20% 16px;">
@@ -105,85 +107,120 @@ function priceInformationControles() {
 }
 
 function priceInformationGridInit() {
-	priceInformation.grid = new tui.Grid({
-		el: $('#price_information_grid'),
-		data: [],
-		scrollX: true,
-		scrollY: true,
-		columns: [
+	
+	$('#price_information_grid').footable({
+		"on": {
+			"after.ft.paging": function(e, ft){
+				for(var i =0; i < $('#price_information_grid tbody tr').length; i++) {
+					if(i % 3 == 0) {
+						$($('#price_information_grid tbody tr')[i].children[0]).css("border-bottom", "hidden")
+						$($('#price_information_grid tbody tr')[i+1].children[0]).css("border-bottom", "hidden")
+						$($('#price_information_grid tbody tr')[i].children[1]).css("border-bottom", "hidden")
+						$($('#price_information_grid tbody tr')[i+1].children[1]).css("border-bottom", "hidden")
+					}
+				}
+			}
+		},
+		"empty": "조회된 정보가 없습니다.",
+		"paging": {
+			"size": 6
+		},
+		"columns": [
 			{
 				title: '주간시작일',
 				name: 'DT_START',
-				align : "center",
-				width: 100
+				style:{
+					"text-align": "center",
+					"width": 100
+				},
 			} ,{
 				title: '주간종료일',
 				name: 'DT_END',
-				align : "center",
-				width: 100
+				style:{
+					"text-align": "center",
+					"width": 100
+				},
 			} ,{
 				title: '작업구분',
 				name: 'GB_WORK',
-				align : "center",
-				width: 100
+				style:{
+					"text-align": "center",
+					"width": 100
+				},
 			}, {
 				title: '4주평균',
 				name: 'AVR_4W',
-				align : "center",
-				width: 130
+				style:{
+					"text-align": "center",
+					"width": 130
+				},
 			}, {
 				title: '일',
 				name: 'SUN',
-				align : "center",
-				width: 60,
+				style:{
+					"text-align": "center",
+					"width": 60
+				},
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '월',
 				name: 'MON',
-				align : "center",
-				width: 60,
+				style:{
+					"text-align": "center",
+					"width": 60
+				},
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '화',
 				name: 'TUE',
-				align : "center",
-				width: 60,
+				style:{
+					"text-align": "center",
+					"width": 60
+				},
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '수',
 				name: 'WED',
-				align : "center",
-				width: 60,
+				style:{
+					"text-align": "center",
+					"width": 60
+				},
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '목',
 				name: 'THU',
-				align : "center",
-				width: 60,
+				style:{
+					"text-align": "center",
+					"width": 60
+				},
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '금',
 				name: 'FRI',
-				align : "center",
-				width: 60,
+				style:{
+					"text-align": "center",
+					"width": 60
+				},
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '토',
 				name: 'SAT',
-				align : "center",
-				width: 60,
+				style:{
+					"text-align": "center",
+					"width": 60
+				},
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
@@ -191,13 +228,17 @@ function priceInformationGridInit() {
 			, {
 				title: '주간평균',
 				name: 'AVR_1W',
-				align : "center",
-				width: 130
+				style:{
+					"text-align": "center",
+					"width": 130
+				},
 			}
-		]
+		],
+		"rows": []
 	});
 	
-// 	tui.Grid.applyTheme('striped');
+	priceInformation.grid = FooTable.get('#price_information_grid');
+	
 }
 
 function creditSalesStatusForGetData() {
@@ -220,12 +261,21 @@ function creditSalesStatusSearch(bodyObj) {
 	}).done(function(data){
 		priceInformation.data = JSON.parse(data).result.List.UP_CG_MOB_PRICE_PIG_S;
 		for(var i in priceInformation.data) {
-			if(i % 3 == 0) {
-				priceInformation.data[i]. _extraData = {"rowSpan": {"DT_START": 3, "DT_END": 3}};
+			if(i % 3 != 1) {
+				delete priceInformation.data[i]["DT_START"];
+				delete priceInformation.data[i]["DT_END"];
 			}
 		}
 		console.log(priceInformation.data);
-		priceInformation.grid.setData(priceInformation.data);
+		priceInformation.grid.loadRows(priceInformation.data);
+		for(var i =0; i < $('#price_information_grid tbody tr').length; i++) {
+			if(i % 3 == 0) {
+				$($('#price_information_grid tbody tr')[i].children[0]).css("border-bottom", "hidden")
+				$($('#price_information_grid tbody tr')[i+1].children[0]).css("border-bottom", "hidden")
+				$($('#price_information_grid tbody tr')[i].children[1]).css("border-bottom", "hidden")
+				$($('#price_information_grid tbody tr')[i+1].children[1]).css("border-bottom", "hidden")
+			}
+		}
 	}).fail(function(err) {
 		console.log(err)
 		bootalert(JSON.parse(data).resultMessage);
