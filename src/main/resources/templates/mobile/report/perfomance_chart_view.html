@@ -105,16 +105,16 @@ function perfomanceToChartControles() {
     $('#start_month').val(thisMonStr);
     $('#end_month').val(thisMonStr);
     
-	$('#start_month').data("DateTimePicker").maxDate(today);
+	$('#start_month').data("DateTimePicker").maxDate(thisMon);
     
     $("#start_month").on("dp.change", function (e) {
         $('#end_month').data("DateTimePicker").minDate(e.date);
     });
     $("#end_month").on("dp.change", function (e) {
-    	if(today > e.date) {
+    	if(thisMon > e.date) {
 	    	$('#start_month').data("DateTimePicker").maxDate(e.date);
     	} else {
-    		$('#start_month').data("DateTimePicker").maxDate(today);
+    		$('#start_month').data("DateTimePicker").maxDate(thisMon);
     	}
     });
 
