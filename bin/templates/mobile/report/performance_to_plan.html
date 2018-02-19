@@ -56,6 +56,7 @@ $(document).ready(function() {
 function perfomanceToPlanInit() {
 	setTitle("계획대비실적_그리드");
 	$("#darby_title").css("font-size", "28px");
+	$("input[type='text']").css("height", $("#data_confirm_view").css("height"));
 	perfomanceToPlanControles();
 	byKindViewInit();
 	byPersonViewInit();
@@ -69,7 +70,11 @@ function perfomanceToPlanControles() {
 	$('#start_month').datetimepicker({
 		useCurrent: false,  
 		format: "YYYY-MM",
-		viewMode: 'months'
+		viewMode: 'months',
+		widgetPositioning: {
+            horizontal: 'left',
+            vertical: 'bottom'
+        }
 	 });
 	
     $('#end_month').datetimepicker({
@@ -106,10 +111,6 @@ function selectChangeFunc() {
 function perfomanceToPlanEventBind() {
 	$('#selectPlan').on('rendered.bs.select', selectChangeFunc);
 	
-	$("#data_confirm_view").click(function() {
-		$('#selectPlan').trigger("rendered.bs.select");
-	});
-	
 	$("#graph_view").click(function() {
 		var paramObj = new Object();
 		paramObj.sel = $("#selectPlan").val();
@@ -119,6 +120,7 @@ function perfomanceToPlanEventBind() {
 	});
 	
 	$("#data_confirm_view").click(function() {
+		$('#selectPlan').trigger("rendered.bs.select");
 		perfomanceToPlanSetGrid();
 	});
 }

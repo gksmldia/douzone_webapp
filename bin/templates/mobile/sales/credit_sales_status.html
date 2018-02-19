@@ -117,7 +117,11 @@ function creditSalesStatusControles() {
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
 	$('#credit_shipment_start').datetimepicker({
 		useCurrent: false,  
-		format: "YYYY-MM-DD"
+		format: "YYYY-MM-DD",
+		widgetPositioning: {
+            horizontal: 'left',
+            vertical: 'bottom'
+        }
 	 });
 	
     $('#credit_shipment_end').datetimepicker({

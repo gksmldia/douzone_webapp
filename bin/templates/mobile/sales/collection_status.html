@@ -95,7 +95,11 @@ function collectionStatusControles() {
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
 	$('#income_start').datetimepicker({
 		useCurrent: false,  
-		format: "YYYY-MM-DD"
+		format: "YYYY-MM-DD",
+		widgetPositioning: {
+            horizontal: 'left',
+            vertical: 'bottom'
+        }
 	 });
 	
     $('#income_end').datetimepicker({

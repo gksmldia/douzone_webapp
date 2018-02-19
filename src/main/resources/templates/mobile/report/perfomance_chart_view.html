@@ -66,7 +66,7 @@ $(document).ready(function() {
 
 function perfomanceToChartInit() {
 	setTitle("계획대비실적_도표");
-	console.log(JSON.parse($("#form_data").text()).paramJson)
+	$("input[type='text']").css("height", $("#confirm_chart_view").css("height"));
 	perfomanceToChartControles();
 	perfomanceToChartSetInitData();
 	perfomanceToChartEventBind();
@@ -90,7 +90,11 @@ function perfomanceToChartControles() {
 	$('#start_month').datetimepicker({
 		useCurrent: false,  
 		format: "YYYY-MM",
-		viewMode: 'months'
+		viewMode: 'months',
+		widgetPositioning: {
+            horizontal: 'left',
+            vertical: 'bottom'
+        }
 	 });
 	
     $('#end_month').datetimepicker({
@@ -175,9 +179,6 @@ function ajaxforGetDataByKindChart(bodyObj) {
 function perfomanceToChartEventBind() {
 	$('#select_plan').on('rendered.bs.select', selectChangeChanrtFunc);
 	
-	$("#data_confirm_view").click(function() {
-		$('#selectPlan').trigger("rendered.bs.select");
-	});
 	
 	$("#go_pre_view").click(function() {
 		history.back();
@@ -188,6 +189,7 @@ function perfomanceToChartEventBind() {
 	});
 	
 	$("#confirm_chart_view").click(function() {
+		$('#selectPlan').trigger("rendered.bs.select");
 		perfomanceToPlanSetChart();
 	});
 }
