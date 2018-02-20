@@ -178,21 +178,10 @@ function creditSalesStatusForGetData() {
 }
 
 function creditSalesStatusSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		creditSalesStatus.data = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S;
+	commonAjaxForGetData(bodyObj, function(data) {
+		creditSalesStatus.data = data.UP_CG_MOB_RECEIVALE_S;
 		console.log(creditSalesStatus.data);
 		creditSalesStatus.grid.loadRows(creditSalesStatus.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 

@@ -153,23 +153,10 @@ function earTaggedForGetData() {
 }
 
 function AjaxForearTaggedSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		if(JSON.parse(data).resultCode == "1000") {
-			earTagged.data = JSON.parse(data).result.List.UP_CG_MOB_EAR_NO;
-			console.log(earTagged.data)
-			earTagged.grid.setData(earTagged.data)
-		}
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
+	commonAjaxForGetData(bodyObj, function(data) {
+		earTagged.data = data.UP_CG_MOB_EAR_NO;
+		console.log(earTagged.data)
+		earTagged.grid.setData(earTagged.data)
 	});
 }
 

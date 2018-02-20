@@ -219,4 +219,42 @@ function addComma(value) {
     } 
     return str;
 }
+
+function commonAjaxForGetData(bodyObj, callBackFunction) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert(JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		if(JSON.parse(data).resultCode == "1000") {
+			callBackFunction(JSON.parse(data).result.List);
+		}
+	}).fail(function(err) {
+		console.log(err);
+		bootalert(JSON.parse(data).resultMessage);
+		return false;
+	});
+}
+
+function commonAjaxForRegist(bodyObj, callBackFunction) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestTx2") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "2000") {
+			logOutAlert(JSON.parse(data).resultMessage);
+		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
+			bootalert("데이터가 저장되지 않았습니다. 다시 시도부탁드립니다. \n"+JSON.parse(data).resultMessage);
+			return false
+		}
+	}).done(function(data){
+		if(JSON.parse(data).resultCode == "1000") {
+			callBackFunction(JSON.parse(data).result.List);
+		} 
+	}).fail(function(err) {
+		bootalert("데이터가 저장되지 않았습니다. 다시 시도부탁드립니다. \n"+JSON.parse(data).resultMessage);
+		return false
+		console.log(err)
+	});
+}
 /*]]>*/

@@ -252,31 +252,17 @@ function shippingRegistSave() {
 }
 
 function shippingRegistCallRestApi(bodyObj) {
-	
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestTx2") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert("데이터가 저장되지 않았습니다. 다시 시도부탁드립니다. \n"+JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		if(JSON.parse(data).resultCode == "1000") {
-			BootstrapDialog.show({
-				 message: "저장되었습니다.",
-				 buttons: [{
-					 label: '닫기',
-					 action: function() {
-						 var shippingDate = shippingRegist.rowData.DT_SHIP_PLAN.substring(0,4)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(4,6)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(6,8);
-						 location.href = "/breedingPig/shipping_plan?date=" + shippingDate;
-					 }
-				 }]
-			 });
-		} 
-	}).fail(function(err) {
-		bootalert("데이터가 저장되지 않았습니다. 다시 시도부탁드립니다. \n"+JSON.parse(data).resultMessage);
-		return false
-		console.log(err)
+	commonAjaxForRegist(bodyObj, function(data) {
+		BootstrapDialog.show({
+			 message: "저장되었습니다.",
+			 buttons: [{
+				 label: '닫기',
+				 action: function() {
+					 var shippingDate = shippingRegist.rowData.DT_SHIP_PLAN.substring(0,4)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(4,6)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(6,8);
+					 location.href = "/breedingPig/shipping_plan?date=" + shippingDate;
+				 }
+			 }]
+		 });
 	});
 }
 

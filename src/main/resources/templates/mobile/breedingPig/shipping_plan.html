@@ -83,26 +83,15 @@ function shippingPlanGetData() {
 	return returnObj;
 }
 // 데이터 받아오는 function
-function shippingPlanGetDataByAjax(body) {
-	
-	var header = headerInfo();
-	var dataObj = new Object();
-	
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(header) + "&body=" + encodedJSON(body), function( data ) {
-		if(JSON.parse(data).resultCode == "1000") {
-			shippingPlan.gridData = JSON.parse(data).result.List.UP_CG_MOB_SHIP_PLAN_S;
-			for(var i in shippingPlan.gridData) {
-				shippingPlan.gridData[i].index = i*1;
-			}
-			console.log(shippingPlan.gridData)
-			shippingPlan.grid.loadRows(shippingPlan.gridData);
-		} else if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
+function shippingPlanGetDataByAjax(bodyObj) {
+	commonAjaxForGetData(bodyObj, function(data) {
+		shippingPlan.gridData = data.UP_CG_MOB_SHIP_PLAN_S;
+		for(var i in shippingPlan.gridData) {
+			shippingPlan.gridData[i].index = i*1;
 		}
-	}).fail(function(err) {
-		console.log(err)
+		console.log(shippingPlan.gridData)
+		shippingPlan.grid.loadRows(shippingPlan.gridData);
 	});
-	
 }
 // 그리드 
 function shippingPlangridInitialize(gridDataSource) {

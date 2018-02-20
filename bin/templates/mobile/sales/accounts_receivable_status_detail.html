@@ -226,22 +226,11 @@ function detailForGetData() {
 }
 
 function detailForGetDataByAjax(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		accountsReceivableDatail.gridData = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S3;
+	commonAjaxForGetData(bodyObj, function(data) {
+		accountsReceivableDatail.gridData = data.UP_CG_MOB_RECEIVALE_S3;
 		console.log(accountsReceivableDatail.gridData);
 		accountsReceivableDatail.gridData[0]. _extraData = {"rowSpan": {"NM_BIZ_PERSON": accountsReceivableDatail.gridData.length, "NM_PARTNER_GROUP": accountsReceivableDatail.gridData.length}};
 		accountsReceivableDatail.grid.setData(accountsReceivableDatail.gridData);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 

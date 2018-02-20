@@ -61,7 +61,7 @@ function perfomanceToPlanInit() {
 	byKindViewInit();
 	byPersonViewInit();
 	perfomanceToPlanEventBind();
-	perfomanceToPlanSetGrid();
+// 	perfomanceToPlanSetGrid();
 }
 
 function perfomanceToPlanControles() {
@@ -103,8 +103,8 @@ function perfomanceToPlanControles() {
 function selectChangeFunc() {
 	$("#byKindViewDiv").hide();
 	$("#byPersonViewDiv").hide();
-    console.log($(this).val())
-    switch($(this).val()) {
+    console.log($('#selectPlan').val())
+    switch($('#selectPlan').val()) {
         case "1" : 
         case "2" : $("#byKindViewDiv").show(); 
           break;
@@ -112,23 +112,7 @@ function selectChangeFunc() {
             break;
         default : break;
     }
-}
-
-function perfomanceToPlanEventBind() {
-	$('#selectPlan').on('rendered.bs.select', selectChangeFunc);
-	
-	$("#graph_view").click(function() {
-		var paramObj = new Object();
-		paramObj.sel = $("#selectPlan").val();
-		paramObj.from = $("#start_month").val().trim();
-		paramObj.to = $("#end_month").val().trim();
-		location.href = "/report/perfomance_chart_view?paramData="+encodedJSON(paramObj);
-	});
-	
-	$("#data_confirm_view").click(function() {
-		$('#selectPlan').trigger("rendered.bs.select");
-		perfomanceToPlanSetGrid();
-	});
+    perfomanceToPlanSetGrid();
 }
 
 function perfomanceToPlanSetGrid() {
@@ -153,21 +137,26 @@ function perfomanceToPlanSetGrid() {
 }
 
 function ajaxForGetDatabyKindView(bodyObj, FunctionID, grid) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		gridView.data = JSON.parse(data).result.List[FunctionID];
+	commonAjaxForGetData(bodyObj, function(data) {
+		gridView.data = data[FunctionID];
 		console.log(gridView.data);
 		grid.setData(gridView.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
+	});
+}
+
+function perfomanceToPlanEventBind() {
+	$('#selectPlan').on('rendered.bs.select', selectChangeFunc);
+	
+	$("#graph_view").click(function() {
+		var paramObj = new Object();
+		paramObj.sel = $("#selectPlan").val();
+		paramObj.from = $("#start_month").val().trim();
+		paramObj.to = $("#end_month").val().trim();
+		location.href = "/report/perfomance_chart_view?paramData="+encodedJSON(paramObj);
+	});
+	
+	$("#data_confirm_view").click(function() {
+		selectChangeFunc();
 	});
 }
 /*]]>*/

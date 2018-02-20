@@ -132,21 +132,10 @@ function accountsReceivableStatusForGetData() {
 }
 
 function accountsReceivableStatusSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		accountsReceivableStatus.data = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S2;
+	commonAjaxForGetData(bodyObj, function(data) {
+		accountsReceivableStatus.data = data.UP_CG_MOB_RECEIVALE_S2;
 		console.log(accountsReceivableStatus.data);
 		accountsReceivableStatus.grid.setData(accountsReceivableStatus.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 

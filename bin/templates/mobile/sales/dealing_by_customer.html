@@ -160,21 +160,10 @@ function dealingByCustomerForGetData() {
 }
 
 function dealingByCustomerSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		dealingByCustomer.data = JSON.parse(data).result.List.UP_CG_MOB_SHIP_SALE_P;
+	commonAjaxForGetData(bodyObj, function(data) {
+		dealingByCustomer.data = data.UP_CG_MOB_SHIP_SALE_P;
 		console.log(dealingByCustomer.data);
 		dealingByCustomer.grid.loadRows(dealingByCustomer.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 

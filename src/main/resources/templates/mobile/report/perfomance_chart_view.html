@@ -72,7 +72,7 @@ function perfomanceToChartInit() {
 	perfomanceToChartEventBind();
 	byKindChartInit();
 	byPersonChartInit();
-	perfomanceToPlanSetChart();
+// 	perfomanceToPlanSetChart();
 }
 
 function perfomanceToChartSetInitData() {
@@ -82,6 +82,8 @@ function perfomanceToChartSetInitData() {
 		$("#select_plan").selectpicker('refresh');
 		$('#start_month').val(formData.from);
 		$('#end_month').val(formData.to);
+		selectChangeChartFunc();
+// 		$('#select_plan').trigger("rendered.bs.select");
 	}
 }
 function perfomanceToChartControles() {
@@ -120,11 +122,11 @@ function perfomanceToChartControles() {
 
 }
 
-function selectChangeChanrtFunc() {
+function selectChangeChartFunc() {
 	$("#byKindViewDiv").hide();
 	$("#byPersonViewDiv").hide();
-    console.log($(this).val())
-    switch($(this).val()) {
+    console.log($('#select_plan').val())
+    switch($('#select_plan').val()) {
         case "1" : 
         case "2" : $("#byKindViewDiv").show(); 
           break;
@@ -132,6 +134,8 @@ function selectChangeChanrtFunc() {
             break;
         default : break;
     }
+    
+    perfomanceToPlanSetChart();
 }
 
 function perfomanceToPlanSetChart() {
@@ -154,37 +158,27 @@ function perfomanceToPlanSetChart() {
 }
 
 function ajaxforGetDataByKindChart(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
+	commonAjaxForGetData(bodyObj, function(data) {
 		switch($("#select_plan").val()) {
-			case "1" : chartView.data = JSON.parse(data).result.List.UP_CG_MOB_BIZPLAN_S;
+			case "1" : chartView.data = data.UP_CG_MOB_BIZPLAN_S;
 									makeChartDataByKind(chartView.data);
 									break;
-			case "2" : chartView.data = JSON.parse(data).result.List.UP_CG_MOB_BIZPLAN_S2;
+			case "2" : chartView.data = data.UP_CG_MOB_BIZPLAN_S2;
 									makeChartDataByKind(chartView.data);
 									break;
-			case "3" : chartView.data = JSON.parse(data).result.List.UP_CG_MOB_BIZPLAN_S3;
+			case "3" : chartView.data = data.UP_CG_MOB_BIZPLAN_S3;
 									makeChartDataByPerson(chartView.data);
 									break;
 			default :break;
 		}
 		console.log(chartView.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
+	
 }
 
 
 function perfomanceToChartEventBind() {
-	$('#select_plan').on('rendered.bs.select', selectChangeChanrtFunc);
+	$('#select_plan').on('rendered.bs.select', selectChangeChartFunc);
 	
 	
 	$("#go_pre_view").click(function() {
@@ -196,7 +190,7 @@ function perfomanceToChartEventBind() {
 	});
 	
 	$("#confirm_chart_view").click(function() {
-		$('#selectPlan').trigger("rendered.bs.select");
+		$('#select_plan').trigger("rendered.bs.select");
 		perfomanceToPlanSetChart();
 	});
 }

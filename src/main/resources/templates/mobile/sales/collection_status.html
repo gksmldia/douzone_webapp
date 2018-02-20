@@ -196,21 +196,10 @@ function collectionStatusForGetData() {
 }
 
 function collectionStatusSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		collectionStatus.data = JSON.parse(data).result.List.UP_CG_MOB_INCOME_S;
+	commonAjaxForGetData(bodyObj, function(data) {
+		collectionStatus.data = data.UP_CG_MOB_INCOME_S;
 		console.log(collectionStatus.data);
 		collectionStatus.grid.loadRows(collectionStatus.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 

@@ -216,20 +216,9 @@ function confirmationFormGetData() {
 	bodyObj.P_no_ship_plan = getData.no_ship_plan;
 	bodyObj.p_cd_partner = getData.cd_partner;
 	
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		confirmation.data = JSON.parse(data).result.List.UP_CG_MOB_SHIP_CHECK_R[0];
+	commonAjaxForGetData(bodyObj, function(data) {
+		confirmation.data = data.UP_CG_MOB_SHIP_CHECK_R[0];
 		confirmationFormSetData(confirmation.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 

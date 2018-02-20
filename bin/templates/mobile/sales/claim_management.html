@@ -162,21 +162,10 @@ function clameDetailForGetData() {
 }
 
 function clameDetailSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		clameDetail.data = JSON.parse(data).result.List.UP_CG_MOB_CLAIM_SELECT1;
+	commonAjaxForGetData(bodyObj, function(data) {
+		clameDetail.data = data.UP_CG_MOB_CLAIM_SELECT1;
 		console.log(clameDetail.data);
 		clameDetail.grid.loadRows(clameDetail.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 
