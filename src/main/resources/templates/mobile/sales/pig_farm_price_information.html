@@ -156,7 +156,9 @@ function priceInformationGridInit() {
 					"width": 100
 				},
 				formatter: function(value, options, rowData) {
-	                return makeDateFormat(value);
+					if(value != null) {
+						return makeDateFormat(value);
+					}
 	            }
 			} ,{
 				title: '주간종료일',
@@ -166,7 +168,9 @@ function priceInformationGridInit() {
 					"width": 100
 				},
 				formatter: function(value, options, rowData) {
-	                return makeDateFormat(value);
+					if(value != null) {
+						return makeDateFormat(value);
+					}
 	            }
 			} ,{
 				title: '작업구분',
