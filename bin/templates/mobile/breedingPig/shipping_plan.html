@@ -79,6 +79,7 @@ function shippingPlanGetData() {
 	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
 	returnObj.P_DT_PLAN = $("#start_date").val().replace( /-/gi, '');
 	returnObj.P_CD_DRIVER = userInfo().ID_USER;
+	returnObj.P_CD_GROUP = JSON.parse(sessionStorage.getItem("userInfo")).CD_GROUP;
 
 	return returnObj;
 }
