@@ -45,7 +45,7 @@ public class ReportController {
 		
 		ModelAndView mav = new ModelAndView("/report/perfomance_chart_view");
 		mav.addObject("paramData", json_return.toString());
-		model.addAttribute("paramData", json_return.toString());
+//		model.addAttribute("paramData", json_return.toString());
 		return mav.getView();
 	}
 	

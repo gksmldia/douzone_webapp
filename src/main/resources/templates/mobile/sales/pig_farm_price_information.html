@@ -99,8 +99,20 @@ function priceInformationControles() {
     	format: "YYYY-MM-DD"
     });
     
+    
+    var thisWeek = [];
+    
+    for(var i=0; i<7; i++) {
+		var resultDay = new Date(today.getFullYear(), (today.getMonth() + 1), today.getDate() + (i - today.getDay()));
+		var yyyy = resultDay.getFullYear();
+		var mm = Number(resultDay.getMonth()) + 1;
+		var dd = resultDay.getDate();
+     
+		thisWeek[i] = yyyy + '-' + setTwinNum(mm) + '-' + setTwinNum(dd);
+    }
+     
     $('#start_day').val(todayStr);
-    $('#end_day').val(todayStr);
+    $('#end_day').val(thisWeek[6]);
     
 	$('#start_day').data("DateTimePicker").maxDate(today);
     
@@ -123,8 +135,8 @@ function getPigPriceInit() {
 	commonAjaxForGetData(bodyObj, function(data) {
 		console.log(data.UP_CG_MOB_PRICE_PIG_S2[0]);
 		var getData = data.UP_CG_MOB_PRICE_PIG_S2[0];
-		$("#thisWeek").val(getData.P_AVR_1W).attr("readonly", true);
-		$("#beforeDay").val(getData.P_AVR_4W).attr("readonly", true);
+		$("#thisWeek").val(getData.P_AVR_PW).attr("readonly", true);
+		$("#beforeDay").val(getData.P_AVR_1W).attr("readonly", true);
 	});
 }
 

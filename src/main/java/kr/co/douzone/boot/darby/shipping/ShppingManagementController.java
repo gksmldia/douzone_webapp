@@ -66,10 +66,10 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		String ymd = sdf.format(today);
 		if(date.equals("")) {
 			mav.addObject("date", ymd);
-			model.addAttribute("date", ymd);
+//			model.addAttribute("date", ymd);
 		} else {
 			mav.addObject("date", date);
-			model.addAttribute("date", date);
+//			model.addAttribute("date", date);
 		}
 		return mav;
 	}
@@ -83,7 +83,7 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 
 		ModelAndView mav = new ModelAndView("/breedingPig/shipping_regist");
 		mav.addObject("jsonObj", json_return.toString());
-		model.addAttribute("jsonObj", json_return.toString());
+//		model.addAttribute("jsonObj", json_return.toString());
 		return mav;
 	}
 
@@ -98,9 +98,9 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		
 		ModelAndView mav = new ModelAndView("/breedingPig/sign_regist");
 		mav.addObject("jsonObj", json_return.toString());
-		model.addAttribute("jsonObj", json_return.toString());
+//		model.addAttribute("jsonObj", json_return.toString());
 		mav.addObject("sign", "http://1.244.192.47:85/ERP-U/Upload/ship_sign/"+sign);
-		model.addAttribute("sign", "http://1.244.192.47:85/ERP-U/Upload/ship_sign/"+sign);
+//		model.addAttribute("sign", "http://1.244.192.47:85/ERP-U/Upload/ship_sign/"+sign);
 		return mav;
 	}
 
@@ -120,8 +120,8 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		ModelAndView mav = new ModelAndView("/breedingPig/pig_confirmation_form");
 		mav.addObject("jsonObj", json_return.toString());
 		mav.addObject("imageData", imageData);
-		model.addAttribute("jsonObj", json_return.toString());
-		model.addAttribute("imageData", imageData);
+//		model.addAttribute("jsonObj", json_return.toString());
+//		model.addAttribute("imageData", imageData);
 		return mav;
 	}
 
@@ -133,7 +133,7 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 
 		ModelAndView mav = new ModelAndView("breedingPig/pig_confirmation_form");
 		mav.addObject("jsonObj", json_return.toString());
-		model.addAttribute("jsonObj", json_return.toString());
+//		model.addAttribute("jsonObj", json_return.toString());
 		return mav.getModelMap();
 	}
 

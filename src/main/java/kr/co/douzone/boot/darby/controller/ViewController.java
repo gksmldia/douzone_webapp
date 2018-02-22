@@ -51,7 +51,7 @@ public class ViewController extends WebMvcConfigurerAdapter {
 			,@RequestParam(value = "web", required = false, defaultValue = "") String web) {
 		ModelAndView mav = new ModelAndView("/home");
 		if(web != "") {
-			model.addAttribute("web", "web");
+//			model.addAttribute("web", "web");
 			mav.addObject("web", "web");
 		}
 		return mav;
@@ -60,7 +60,7 @@ public class ViewController extends WebMvcConfigurerAdapter {
 	@RequestMapping(path = "/menu", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	public ModelAndView menuList(HttpServletRequest request, Model model, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView("/menu_list");
-		model.addAttribute("userObj", request.getAttribute("userObj"));
+//		model.addAttribute("userObj", request.getAttribute("userObj"));
 		mav.addObject("userObj", request.getAttribute("userObj"));
 		return mav;
 	}
@@ -70,7 +70,7 @@ public class ViewController extends WebMvcConfigurerAdapter {
 			,@RequestParam(value = "web", required = false, defaultValue = "") String web) {
 		ModelAndView mav = new ModelAndView("/loading");
 		if(web != "") {
-			model.addAttribute("web", "web");
+//			model.addAttribute("web", "web");
 			mav.addObject("web", "web");
 		}
 		return mav;

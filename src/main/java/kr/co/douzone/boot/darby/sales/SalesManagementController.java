@@ -26,7 +26,7 @@ public class SalesManagementController extends WebMvcConfigurerAdapter {
 			, @RequestParam(value = "partner", required = false, defaultValue = "") String partner) {
 		ModelAndView mav = new ModelAndView("/sales/partner_detail");
 		mav.addObject("partner", partner);
-		model.addAttribute("partner", partner);
+//		model.addAttribute("partner", partner);
 		return mav;
 	}
 	
@@ -76,7 +76,7 @@ public class SalesManagementController extends WebMvcConfigurerAdapter {
 		
 		ModelAndView mav = new ModelAndView("/sales/accounts_receivable_status_detail");
 		mav.addObject("accountDetail", json_return.toString());
-		model.addAttribute("accountDetail", json_return.toString());
+//		model.addAttribute("accountDetail", json_return.toString());
 		return mav;
 	}
 	
@@ -108,9 +108,9 @@ public class SalesManagementController extends WebMvcConfigurerAdapter {
 		mav.addObject("addr", addr);
 		mav.addObject("lat", lat);
 		mav.addObject("lng", lng);
-		model.addAttribute("addr", addr);
-		model.addAttribute("lat", lat);
-		model.addAttribute("lng", lng);
+//		model.addAttribute("addr", addr);
+//		model.addAttribute("lat", lat);
+//		model.addAttribute("lng", lng);
 		return mav;
 		
 	}
