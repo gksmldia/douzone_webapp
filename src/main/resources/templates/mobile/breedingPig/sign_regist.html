@@ -227,7 +227,7 @@ function goOutputConfirmaionForm() {
 	jsonObj.cd_partner = signRegist.rowData.CD_PARTNER;
 	jsonObj.img_sign_file = signRegist.rowData.IMG_SIGN_FILE;
 	sessionStorage.setItem("sign", signRegist.rowData.signImg);
-	location.href = "/breedingPig/pig_confirmation_form?data=" + encodeURI(JSON.stringify(jsonObj));
+	location.href = "/breedingPig/pig_confirmation_form?data=" +encodedJSON(jsonObj);
 }
 
 function signRegistEventBind() {
