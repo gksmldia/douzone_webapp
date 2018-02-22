@@ -138,8 +138,7 @@ function collectionStatusGridInit() {
 					"text-align": "center"
 				},
 				formatter: function(value, options, rowData) {
-					var dtList = [value.substring(0, 4), value.substring(4, 6), value.substring(6, 9)];
-	                return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
+					 return makeDateFormat(value);
 	            }
 			} ,{
 				title: '영업지역',

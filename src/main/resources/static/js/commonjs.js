@@ -257,4 +257,9 @@ function commonAjaxForRegist(bodyObj, callBackFunction) {
 		console.log(err)
 	});
 }
+
+function makeDateFormat(val) {
+	var dtList = [val.substring(0, 4), val.substring(4, 6), val.substring(6, 9)];
+    return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
+}
 /*]]>*/
