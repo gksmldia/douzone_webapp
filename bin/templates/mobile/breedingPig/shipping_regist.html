@@ -363,7 +363,6 @@ function shippingRegistEventBind() {
 	});
 	
 	$("#antibiotic_name_sel").on('changed.bs.select', function (e) {
-		  console.log($(this).find("option:selected").attr("data"))
 		  $("#days_vaccine").val($(this).find("option:selected").attr("data"));
 	});
 }
