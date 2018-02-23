@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layout/default" lang="ko">
+<div  layout:fragment="content">
+	<div class="container-fluid" style="padding-top: 25%;">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="infoDays" class="col-xs-2 col-sm-4 control-label padTop4 text-muted" style="padding-right: 0px">기간</label>
+						<div class="col-xs-10 col-sm-8">
+							 <div class='input-group date  input-daterange' >
+					            <div class='input-group date' >
+					                <input type='text' class="form-control"   id="start_day"/>
+					            </div>
+						            <span class="input-group-addon">-</span>
+					             <div class='input-group date' >
+					                <input type='text' class="form-control"  id="end_day" />
+					            </div>
+				            </div>
+			            </div>
+					</div>
+					<div class="form-group">
+						<label for="account" class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  >거래처</label>
+						<div class="col-xs-9 col-sm-10">
+							<div class='input-group' >
+								<input type="text"  class="form-control" id="farm"/>
+								<span class="input-group-btn">
+									<button type="button"  class="btn btn-default" id="farm_search" data-toggle="modal" data-target="#search_popup"  >
+										<i class="fa fa-search" aria-hidden="true"></i>&nbsp;검색
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</form>
+				<div class="row text-center" style="padding-bottom: 10px;">
+					<button type="button" class="btn btn-info"  id="supply_search">확인</button>
+					<button type="button" class="btn btn-info"  data-toggle="modal" data-target="#supplyOutput" id="output_img">출력</button>
+				</div>
+				<div id="supplyStatementCanvas" >
+					<div th:replace="/mobile/report/supply_statement_form :: supplyStatement" ></div>
+				</div>
+				<div class="modal fade"  id="supplyOutput">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" >종돈공급내역서</h4>
+				      </div>
+				      <div class="modal-body">
+				        <img id="supply_Img"  style="width: 100%"/>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-info" data-dismiss="modal">닫기</button>
+				      </div>
+				    </div><!-- /.modal-content -->
+				  </div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<div class="modal fade"  id="search_popup">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title">고객 정보 검색</h4>
+				      </div>
+				      <div class="modal-body">
+				        <div th:replace="/mobile/breedingPig/partner_search_popup:: partnerSearch" ></div>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-info" id="modal_confirm">확인</button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+				      </div>
+				    </div><!-- /.modal-content -->
+				  </div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			</div>
+		</div>
+	</div>
+<style>
+#supplyStatementCanvas {
+	padding: 10px; 
+	border: 1px solid #d3d3d3; 
+	width: max-content; 
+	font-size: 13pt; 
+	margin-bottom: 20px;
+}
+</style>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var supplyStatement = {
+		
+}
+
+$(document).ready(function() {
+	supplyStatementInit();
+});
+
+function supplyStatementInit() {
+	setTitle("종돈공급내역서");
+	supplyStatementControles();
+	supplyStatementFormInit();
+	$("#supplyStatementCanvas").hide();
+	partnerInit();
+	supplyStatementEventBind();
+}
+
+function supplyStatementControles() {
+	var today = new Date();
+	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
+	$('#start_day').datetimepicker({
+		useCurrent: false,  
+		format: "YYYY-MM-DD"
+	 });
+	
+    $('#end_day').datetimepicker({
+    	format: "YYYY-MM-DD"
+    });
+    
+    $('#start_day').val(todayStr);
+    $('#end_day').val(todayStr);
+    
+    $("#start_day").on("dp.change", function (e) {
+        $('#end_day').data("DateTimePicker").minDate(e.date);
+    });
+    $("#end_day").on("dp.change", function (e) {
+        $('#start_day').data("DateTimePicker").maxDate(e.date);
+    });
+
+}
+
+function supplyStatementValidation() {
+	if($("#farm").attr("name") == "" || $("#farm").attr("name") == null) {
+		bootalert("조회 할 거래처를 검색 후 선택해 주십시오.");
+		return false;
+	}
+	
+	return true;
+}
+
+function supplyStatementGetData() {
+	var returnObj = {};
+	returnObj.FunctionID = "UP_CG_MOB_PIG_LIST_RPT1";
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_DT_PLAN = $("#start_date").val().replace( /-/gi, '');
+	returnObj.P_CD_DRIVER = userInfo().ID_USER;
+	returnObj.P_CD_GROUP = JSON.parse(sessionStorage.getItem("userInfo")).CD_GROUP;
+
+	return returnObj;
+}
+
+function supplyStatementEventBind() {
+	$("#supply_search").click(function() {
+		if(supplyStatementValidation()) {
+			$("#supplyStatementCanvas").show();
+			
+		}
+	});
+	
+	$("#output_img").click(function() {
+		if($("#supplyStatementCanvas").css("display") == "none") {
+			BootstrapDialog.alert( '검색 후 출력 가능합니다.');
+			return false;
+		}
+		
+		html2canvas(document.querySelector("#supplyStatementCanvas")).then(canvas => {
+			var image = document.getElementById("supply_Img");
+			image.src = canvas.toDataURL("image/png");
+		});
+	});
+	
+	$("#search_popup").on('shown.bs.modal', function () {
+		$("#ln_partner").val($("#farm").val());
+	});
+	
+	$("#modal_confirm").click(function() {
+		if($('input:radio[name="selectRadio"]:checked').val() == undefined) {
+			bootalert("선택 할 거래처를 선택해 주세요.");
+			return false
+		} else {
+			if($('input:radio[name="selectRadio"]:checked').val() != undefined) {
+				var index = $('input:radio[name="selectRadio"]:checked').val()*1;
+				var rowData = partner.grid.rows.all[index].value
+				$("#farm").val(rowData.LN_PARTNER + "[" + rowData.NM_CEO + "]");
+				$("#farm").attr("name", "");
+				$("#farm").attr("name", rowData.CD_PARTNER);
+				$("#sales_area_sel").val(rowData.ID_BIZ_PERSON);
+				$("#sales_area_sel").selectpicker('refresh');
+			}
+			$("#search_popup").modal('hide');
+		}
+	});
+}
+/*]]>*/
+</script>
+</div>
+</html>

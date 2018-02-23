@@ -243,7 +243,7 @@ function shippingPerformanceEventBind() {
 	
 	$("#modal_confirm").click(function() {
 		if($('input:radio[name="selectRadio"]:checked').val() == undefined) {
-			bootalert("선택 할 거래처를 선택해 주세요.");
+			bootalert("거래처를 선택해 주세요.");
 			return false
 		} else {
 			if($('input:radio[name="selectRadio"]:checked').val() != undefined) {

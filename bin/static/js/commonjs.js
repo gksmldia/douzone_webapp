@@ -240,7 +240,7 @@ function commonAjaxForGetData(bodyObj, callBackFunction) {
 }
 
 function makeDateFormat(val) {
-	var dtList = [val.substring(0, 4), val.substring(4, 6), val.substring(6, 9)];
+	var dtList = [val.substring(0, 4), val.substring(4, 6), val.substring(6, 8)];
     return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
 }
 /*]]>*/

@@ -20,9 +20,15 @@ public class ReportController {
 	ShppingManagementController shipping = new ShppingManagementController();
 	
 	@RequestMapping(path = "/report/breeding_pig_supply_statement", method = RequestMethod.GET)
-	public View breedingPigSupplyStatement(Model model, RedirectAttributes redirect) {
+	public ModelAndView breedingPigSupplyStatement(Model model, RedirectAttributes redirect
+			,@RequestParam(value = "CD_PARTNER", required = false, defaultValue = "") String CD_PARTNER
+			,@RequestParam(value = "DT_SHIP", required = false, defaultValue = "") String DT_SHIP) {
+		
 		ModelAndView mav = new ModelAndView("/report/breeding_pig_supply_statement");
-		return mav.getView();
+		mav.addObject("CD_PARTNER", CD_PARTNER);
+		mav.addObject("DT_SHIP", DT_SHIP);
+//		model.addAttribute("paramData", json_return.toString());
+		return mav;
 	}
 	
 	@RequestMapping(path = "/report/flat_rate_account", method = RequestMethod.GET)
@@ -38,7 +44,7 @@ public class ReportController {
 	}
 	
 	@RequestMapping(path = "/report/perfomance_chart_view", method = RequestMethod.GET)
-	public View perfomanceChartView(Model model, RedirectAttributes redirect
+	public ModelAndView perfomanceChartView(Model model, RedirectAttributes redirect
 			,@RequestParam(value = "paramData", required = false, defaultValue = "") String paramData) {
 		JSONObject json_return = new JSONObject();
 		json_return = shipping.jsonPasing(paramData);
@@ -46,7 +52,7 @@ public class ReportController {
 		ModelAndView mav = new ModelAndView("/report/perfomance_chart_view");
 		mav.addObject("paramData", json_return.toString());
 //		model.addAttribute("paramData", json_return.toString());
-		return mav.getView();
+		return mav;
 	}
 	
 }

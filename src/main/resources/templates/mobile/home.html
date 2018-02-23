@@ -194,6 +194,7 @@ function getSession() {
 }
 
 function getUserInfo() {
+	getGroupFlag();
 	var bodyObj = new Object();
 	bodyObj.FunctionID = "UP_MB_COM_BROWSER_USERINFO_S"; //프로시저 명
 	//프로시저 파라미터
@@ -227,6 +228,29 @@ function getUserInfo() {
 		}
 	}).fail(function() {
 		$("#NoUserText").show();
+	});
+}
+
+function getGroupFlag() {
+	var bodyObj = new Object();
+	bodyObj.FunctionID = "UP_CG_MOB_YESNO_S";
+	bodyObj.P_CD_GROUP = $("#group_code").val().trim();
+	
+	var userUrl = "";
+	for(var i in  hom01.apiTable) {
+		if(hom01.apiTable[i].CD_API == "RequestNtx") {
+			userUrl = hom01.hostUrl + "/" + hom01.apiTable[i].NM_API;
+		}
+	}
+	
+	$.get( "/api/getRest?restUrl=" + userUrl + "&header=" + encodedJSON(hom01.headerObj) + "&body=" + encodedJSON(bodyObj), function( data ) {
+		if(JSON.parse(data).resultCode == "1000") {
+			sessionStorage.setItem("groupFlag", JSON.parse(data).result.List.UP_CG_MOB_YESNO_S[0].P_YESNO);
+		}else {
+			sessionStorage.setItem("groupFlag", data);
+		}
+	}).fail(function() {
+			console.log(data);
 	});
 }
 

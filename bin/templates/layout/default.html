@@ -57,7 +57,6 @@
 			</a>
 			<div class="collapse" id="side_report">
 		      <ul class="nav">
-		        <li><a href="/report/breeding_pig_supply_statement"> - 종돈공급내역서</a></li>
 		        <li><a href="/report/flat_rate_account"> - 청구서(정액)</a></li> 
 		        <li><a href="/report/performance_to_plan"> - 계획대비실적</a></li> 
 		      </ul>
@@ -107,7 +106,7 @@ $(".nav_trigger").click(function() {
 	 $("#sessionName").html("<a href='/home' id='login'>로그인</a>");
  } else {
 	 $("#sessionName").text(userInfo().ID_USER);
-	 if(JSON.parse(sessionStorage.getItem("userInfo")).CD_GROUP == "8030") {
+	 if(sessionStorage.getItem("groupFlag") == "1") {
 		 $("#li_eartag, #li_report").hide();
 		 $("#side_ul_sales li").hide();
 		 $("#side_li_partner").show();

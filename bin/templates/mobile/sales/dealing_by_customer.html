@@ -224,9 +224,9 @@ function dealingByCustomerGridInit() {
 					"text-align": "center"
 				},
 	            formatter: function(value, options, rowData) {
-	                var url = '/report/breeding_pig_supply_statement';
+	            	var url = '/report/breeding_pig_supply_statement?CD_PARTNER='+rowData.CD_PARTNER+"&DT_SHIP=" + rowData.DT_SHIP;
 
-	                return '<a href="' + url + '" class="btn btn-sm btn-default">확인</a>';
+	                return '<a href="' + url + '" class="btn btn-sm btn-default">조회</a>';
 	            }
 			}, {
 				name: 'CD_FARM_SUB',
