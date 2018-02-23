@@ -233,10 +233,14 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-6"  style="padding-right: 0;">
-			<table id="odd_grid" class="table table-condensed"  data-sorting="true" style="font-size: 15px; margin-bottom: 30px;"></table>
+			<div class="table-bordered">
+				<table id="odd_grid" class="table table-condensed"  data-sorting="true" style="font-size: 14px; margin-bottom: 0;"></table>
+			</div>
 		</div>
 		<div class="col-xs-6"  style="padding-left: 0;">
-			<table id="even_grid" class="table table-condensed"  data-sorting="true" style="font-size: 15px; margin-bottom: 30px;"></table>
+			<div class="table-bordered">
+				<table id="even_grid" class="table table-condensed"  data-sorting="true" style="font-size: 14px; margin-bottom: 0;"></table>
+			</div>
 		</div>
 	</div>
 <style>
@@ -266,40 +270,25 @@ function supplyStatementFormGrid() {
 				title: '번호',
 				name: 'ROW_COUNT',
 				style:{
+					"width": "70px",
 					"text-align" : "center",
 				},
 				"sorted": true,
-				"data-type": "number",
 			} ,{
 				title: '품종',
 				name: 'NM_RACE',
-				style:{
-					"text-align" : "center",
-				},
 			} ,{
 				title: '성별',
 				name: 'CD_SEX',
-				style:{
-					"text-align" : "center",
-				},
 			}, {
 				title: '태그번호',
 				name: 'NO_TAG',
-				style:{
-					"text-align" : "center",
-				},
 			}, {
 				title: '개체번호',
 				name: 'CD_EAR',
-				style:{
-					"text-align" : "center",
-				},
 			}, {
 				title: '생년월일',
 				name: 'DT_BIRTH',
-				style:{
-					"text-align" : "center",
-				},
 			}
 		],
 		"rows": []
@@ -313,40 +302,25 @@ function supplyStatementFormGrid() {
 				title: '번호',
 				name: 'ROW_COUNT',
 				style:{
+					"width": "70px",
 					"text-align" : "center",
 				},
 				"sorted": true,
-				"data-type": "number",
 			} ,{
 				title: '품종',
 				name: 'NM_RACE',
-				style:{
-					"text-align" : "center",
-				},
 			} ,{
 				title: '성별',
 				name: 'CD_SEX',
-				style:{
-					"text-align" : "center",
-				},
 			}, {
 				title: '태그번호',
 				name: 'NO_TAG',
-				style:{
-					"text-align" : "center",
-				},
 			}, {
 				title: '개체번호',
 				name: 'CD_EAR',
-				style:{
-					"text-align" : "center",
-				},
 			}, {
 				title: '생년월일',
 				name: 'DT_BIRTH',
-				style:{
-					"text-align" : "center",
-				},
 			}
 		],
 		"rows": []
