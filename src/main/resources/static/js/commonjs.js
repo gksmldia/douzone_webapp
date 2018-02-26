@@ -207,17 +207,33 @@ function commonSelectInit(cd_field, selector, select_callback, option_0) {
 
 function addComma(value) {
 	var len, point, str; 
+    if(value != "" && value != null) {
+	    	if(value.indexOf(".") ==  -1) {
+	    		point = value.length % 3 ;
+	    		len = value.length; 
+	    		str = value.substring(0, point); 
+	    		
+	    		while (point < len) { 
+	    			if (str != "") str += ","; 
+	    			str += value.substring(point, point + 3); 
+	    			point += 3; 
+	    		} 
+	    		return str;
+	    	} else {
+	    		var valueList = value.split(".");
+	    		point = valueList[0].length % 3 ;
+	    		len = valueList[0].length; 
+	    		str = valueList[0].substring(0, point); 
+	    		
+	    		while (point < len) { 
+	    			if (str != "") str += ","; 
+	    			str += valueList[0].substring(point, point + 3); 
+	    			point += 3; 
+	    		} 
+	    		return str + "." + valueList[1];
+	    	}
+    }
     
-    point = value.length % 3 ;
-    len = value.length; 
-   
-    str = value.substring(0, point); 
-    while (point < len) { 
-        if (str != "") str += ","; 
-        str += value.substring(point, point + 3); 
-        point += 3; 
-    } 
-    return str;
 }
 
 function commonAjaxForGetData(bodyObj, callBackFunction) {
@@ -245,7 +261,7 @@ function makeDateFormat(val) {
 }
 
 function Num(val) {
-	if(val == "") {
+	if(val == "" ) {
 		return 0;
 	} else {
 		return val*1;

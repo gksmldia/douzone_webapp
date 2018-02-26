@@ -335,6 +335,7 @@ function supplyStatementFormGrid() {
 }
 
 function supplyStatementFormSetData(data, functionList) {
+	var prc_repay, prc_this;
 	for(var i =0; i < functionList.length; i++) {
 		var dataObj = new Object();
 		switch(functionList[i]) {
@@ -364,22 +365,27 @@ function supplyStatementFormSetData(data, functionList) {
 			}
 			for(var k =0; k < $(".data_text").length; k++) {
 				var dataText = "TEXT" + k;
-				$("#"+dataText).text(dataObj[dataText])
+				if(isNaN(dataObj[dataText])) {
+					$("#"+dataText).text(dataObj[dataText])
+				} else {
+					$("#"+dataText).text(addComma(dataObj[dataText]))
+				}
 			}
 			for(var l =0; l < $(".data_remark").length; l++) {
 				var dataRemark = "REMARK" + l;
 				$("#"+dataRemark).text(dataObj[dataRemark])
 			}
 			$("#DC_AMT").text(dataObj.DC_AMT);
-			$("#PRC_SUPPLY").text(dataObj.PRC_SUPPLY);
-			$("#PRC_UNIT_DC").text(dataObj.PRC_UNIT_DC);
-			$("#PRC_UNIT_PIG").text(dataObj.PRC_UNIT_PIG);
-			$("#AMT").text(dataObj.AMT);
-			$("#AMT_CLAIM").text(dataObj.AMT_CLAIM);
-			$("#AMT_DC").text(dataObj.AMT_DC);
-			$("#AMT_DED_ETC").text(dataObj.AMT_DED_ETC);
-			$("#AMT_LAST").text(dataObj.AMT_LAST);
-			$("#PRC_THIS").text(dataObj.AMT_LAST);
+			$("#PRC_SUPPLY").text(addComma(dataObj.PRC_SUPPLY));
+			$("#PRC_UNIT_DC").text(addComma(dataObj.PRC_UNIT_DC));
+			$("#PRC_UNIT_PIG").text(addComma(dataObj.PRC_UNIT_PIG));
+			$("#AMT").text(addComma(dataObj.AMT));
+			$("#AMT_CLAIM").text(addComma(dataObj.AMT_CLAIM));
+			$("#AMT_DC").text(addComma(dataObj.AMT_DC));
+			$("#AMT_DED_ETC").text(addComma(dataObj.AMT_DED_ETC));
+			$("#AMT_LAST").text(addComma(dataObj.AMT_LAST));
+			prc_this = dataObj.AMT_LAST;
+			$("#PRC_THIS").text(addComma(prc_this));
 			$("#AVG_TOTAL").text(dataObj.AVG_TOTAL);
 			$("#QTY_CLAIM").text(dataObj.QTY_CLAIM);
 			$("#WEI_CLAIM").text(dataObj.WEI_CLAIM);
@@ -389,7 +395,8 @@ function supplyStatementFormSetData(data, functionList) {
 			break;
 		case "UP_CG_MOB_PIG_LIST_RPT3" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT3[0];
-			$("#PRC_REPAY").text(dataObj.PRC_REPAY);
+			prc_repay = dataObj.PRC_REPAY;
+			$("#PRC_REPAY").text(addComma(prc_repay));
 			break;
 		case "UP_CG_MOB_PIG_LIST_RPT4" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT4[0];
@@ -403,6 +410,7 @@ function supplyStatementFormSetData(data, functionList) {
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT5[0];
 			$("#NM_BANK_TITLE").text(dataObj.NM_BANK_TITLE);
 			$("#NM_BANK").text(dataObj.NM_BANK);
+			$("#BANK").text(dataObj.BANK);
 			$("#NM_OWNER").text(dataObj.NM_OWNER);
 			$("#NO_TEL").text(dataObj.NO_TEL);
 			$("#NO_FAX").text(dataObj.NO_FAX);
@@ -427,7 +435,9 @@ function supplyStatementFormSetData(data, functionList) {
 			break;
 		}
 	}
-	$("#PRC_SUM").text(($("#PRC_REPAY").text()*1) + ($("#PRC_THIS").text()*1));
+	
+	var prc_sum = Num(prc_repay) + Num(prc_this);
+	$("#PRC_SUM").text(addComma(prc_sum.toString()));
 }
 
 function supplyStatementFormGetDataByAjax() {
