@@ -48,14 +48,13 @@
 								</span>
 							</div>
 						</div>
-						
 						<div class="col-xs-6 col-sm-7">
 						</div>
 					</div>
 				</form>
 				<div class="row">
 					<form id="data-form">
-						<div id="grid"></div>
+						<table id="ear_tag_grid" class="table table-condensed" data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
 					</form>
 				</div>
 				<div class="modal fade"  id="search_popup">
@@ -156,42 +155,45 @@ function AjaxForearTaggedSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		earTagged.data = data.UP_CG_MOB_EAR_NO;
 		console.log(earTagged.data)
-		earTagged.grid.setData(earTagged.data)
+		earTagged.grid.loadRows(earTagged.data);
+		$(".pagination").css("width", "max-content");
 	});
 }
 
 function earTagGridInitalize() {
-
-	earTagged.grid = new tui.Grid({
-		el: $('#grid'),
-	    columnFixCount: 1,
-	    bodyHeight: 250,
-		scrollX: false,
-		scrollY: true,
-		columnFixIndex: 5,
-        displayRowCount: 10,
-        minimumColumnWidth: 20,
-        data:  [],
-//         pagination: true,
-		columns: [
+	$('#ear_tag_grid').footable({
+		"empty": "조회된 정보가 없습니다.",
+		"paging": {
+			"size": 5
+		},
+		"columns": [
 			{
 				title: '이각번호',
 				name: 'CD_EAR',
-				align : "center"
+				style:{
+					"text-align" : "center",
+				}
 			}, {
 				title: '생년월일',
 				name: 'DT_BIRTH',
-				align : "center"
+				style:{
+					"text-align" : "center",
+				},
+				formatter: function(value, options, rowData) {
+					 return makeDateFormat(value);
+	            }
 			}, {
 				title: '일령',
 				name: 'DAY_OUT',
-				align : "center"
+				style:{
+					"text-align" : "center",
+				}
 			}
-		]
+		],
+		"rows": []
 	});
-
-	tui.Grid.applyTheme('striped');
-
+	earTagged.grid = FooTable.get('#ear_tag_grid');
+	
 }
 
 function earTaggedEventbind() {

@@ -85,7 +85,7 @@ function priceInformationInit() {
 function priceInformationControles() {
 	var today = new Date();
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
-	$("#yesterDay").text("(" + setTwinNum(today.getMonth() + 1) + "/" + setTwinNum(today.getDate()-1)  + ")" );
+	
 	$('#start_day').datetimepicker({
 		useCurrent: false,  
 		format: "YYYY-MM-DD",
@@ -135,6 +135,7 @@ function getPigPriceInit() {
 	commonAjaxForGetData(bodyObj, function(data) {
 		console.log(data.UP_CG_MOB_PRICE_PIG_S2[0]);
 		var getData = data.UP_CG_MOB_PRICE_PIG_S2[0];
+		$("#yesterDay").text("(" + (getData.P_PDATE == "null" ? "" :  getData.P_PDATE) + ")" );
 		$("#thisWeek").val(getData.P_AVR_PW).attr("readonly", true);
 		$("#beforeDay").val(getData.P_AVR_1W).attr("readonly", true);
 	});
