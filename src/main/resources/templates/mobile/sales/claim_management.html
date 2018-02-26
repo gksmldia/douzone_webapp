@@ -21,7 +21,7 @@
 			            </div>
 					</div>
 					<div class="form-group">
-						<label for="account" class="col-xs-3 col-sm-2 control-label padTop4  text-muted">거래처</label>
+						<label for="farm" class="col-xs-3 col-sm-2 control-label padTop4  text-muted">거래처</label>
 						<div class="col-xs-9 col-sm-9">
 							<div class='input-group' >
 								<input type="text"  class="form-control" id="farm"/>
@@ -139,6 +139,11 @@ function clameDetailControles() {
 }
 
 function clameDetailSearchForValidation() {
+	if($("#farm").val().trim() == "") {
+		bootalert("거래처를 검색 후 조회 해 주십시오.");
+		return false;
+	}
+	
 	if($("#farm").val().trim() != "" && $("#farm").attr("name") == null) {
 		bootalert("[ 거래처 명 : " + $("#farm").val() + " ]로 검색을 원하신다면 농장 조회 후 선택하여 조회하여 주십시오.");
 		return false;

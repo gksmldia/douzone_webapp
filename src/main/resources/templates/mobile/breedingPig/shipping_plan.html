@@ -88,7 +88,7 @@ function shippingPlanGetDataByAjax(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		shippingPlan.gridData = data.UP_CG_MOB_SHIP_PLAN_S;
 		for(var i in shippingPlan.gridData) {
-			shippingPlan.gridData[i].index = i*1;
+			shippingPlan.gridData[i].index = Num(i);
 		}
 		console.log(shippingPlan.gridData)
 		shippingPlan.grid.loadRows(shippingPlan.gridData);

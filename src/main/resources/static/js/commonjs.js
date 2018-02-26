@@ -243,4 +243,12 @@ function makeDateFormat(val) {
 	var dtList = [val.substring(0, 4), val.substring(4, 6), val.substring(6, 8)];
     return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
 }
+
+function Num(val) {
+	if(val == "") {
+		return 0;
+	} else {
+		return val*1;
+	}
+}
 /*]]>*/
