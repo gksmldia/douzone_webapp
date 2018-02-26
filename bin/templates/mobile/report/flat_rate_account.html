@@ -113,7 +113,11 @@ function accountControles() {
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
 	$('#start_day').datetimepicker({
 		useCurrent: false,  
-		format: "YYYY-MM-DD"
+		format: "YYYY-MM-DD",
+		widgetPositioning: {
+            horizontal: 'left',
+            vertical: 'bottom'
+        }
 	 });
 	
     $('#end_day').datetimepicker({
