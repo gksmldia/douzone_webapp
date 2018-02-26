@@ -99,8 +99,8 @@ $(document).ready(function() {
 
 function accountInit() {
 	setTitle("청구서(정액)");
-	$("#start_day, #end_day").css("height", $(".input-group-addon").css("height"));
-	$("#farm_search").css("height", $("#farm").css("height"));
+	$("#start_day, #end_day").css("height", $("#farm_search").css("height"));
+	$("#farm").css("height", $("#farm_search").css("height"));
 	accountControles();
 	accountFormInit();
 	$("#accountCanvas").hide();
