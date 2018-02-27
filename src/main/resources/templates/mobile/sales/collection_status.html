@@ -44,7 +44,7 @@
 				</form>
 				<div class="row">
 					<div class="table-responsive">
-						<table id="collection_status_grid" class="table table-condensed" data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
+						<table id="collection_status_grid" class="table table-condensed" data-paging="true"  data-sorting="true"  style="font-size: 15px; margin-bottom: 30px;"></table>
 					</div>
 				</div>
 				<div class="row">
@@ -139,7 +139,8 @@ function collectionStatusGridInit() {
 				},
 				formatter: function(value, options, rowData) {
 					 return makeDateFormat(value);
-	            }
+	            },
+	            "sorted": true,
 			} ,{
 				title: '영업지역',
 				name: 'NM_BIZ_PERSON',
@@ -156,7 +157,7 @@ function collectionStatusGridInit() {
 				title: '입금액',
 				name: 'AMT_CREDIT',
 				style:{
-					"text-align": "center"
+					"text-align": "right"
 				},
 	            formatter: function(value, rowData) {
 	                return format(value);
@@ -171,11 +172,6 @@ function collectionStatusGridInit() {
 function collectionStatusSearchForValidation() {
 	if($("#business_part_sel").val() == "0" || $("#business_part_sel").val() == null) {
 		bootalert("사업부문 선택은 필수 입니다.");
-		return false;
-	}
-	
-	if($("#sales_area_sel").val() == "0" || $("#sales_area_sel").val() == null) {
-		bootalert("영업지역 선택은 필수 입니다.");
 		return false;
 	}
 	
@@ -197,7 +193,6 @@ function collectionStatusForGetData() {
 function collectionStatusSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		collectionStatus.data = data.UP_CG_MOB_INCOME_S;
-		console.log(collectionStatus.data);
 		collectionStatus.grid.loadRows(collectionStatus.data);
 	});
 }

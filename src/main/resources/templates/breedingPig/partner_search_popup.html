@@ -52,6 +52,9 @@ function partnerInit() {
 	partnerEventBind();
 }
 
+/**
+ * selectpicker를 동적으로 만드는 공통 함수(commonjs에 있음)
+ */
 function partnerSelectInit() {
 	commonSelectInit('CG_BS_0010', '#assignment_area_sel', '0');
 }
@@ -62,11 +65,12 @@ function partnerGetData() {
 		commonAjaxForPatnerSerach(paramObj, partnerGetDataCallback);
 	}
 }
+
 function partnerGetDataCallback(data) {
 	gridData = new Array();
 	gridData = JSON.parse(data).result.List.UP_CG_MOB_PARTNER_POP_S;
 	for(var i in gridData) {
-		gridData[i].index = i*1;
+		gridData[i].index = Num(i);
 	}
 	partner.grid.loadRows(gridData);
 }
@@ -96,8 +100,6 @@ function partnerGridInit() {
 					"vertical-align" : "middle"
 				},
 				formatter: function(value, options, rowData) {
-					console.log(rowData)
-
 	                return '<input type="radio" name="selectRadio" value="'+value+'" />';
 	            }
 			}, {
@@ -141,12 +143,9 @@ function partnerGridInit() {
 }
 
 function partnerEventBind() {
-	
 	$("#search_costomer").click(function() {
 		partnerGetData();
 	});
-	
-	
 }
 /*]]>*/
 </script>

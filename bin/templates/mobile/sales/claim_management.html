@@ -169,7 +169,6 @@ function clameDetailForGetData() {
 function clameDetailSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		clameDetail.data = data.UP_CG_MOB_CLAIM_SELECT1;
-		console.log(clameDetail.data);
 		clameDetail.grid.loadRows(clameDetail.data);
 	});
 }

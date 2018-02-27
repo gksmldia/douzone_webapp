@@ -157,7 +157,6 @@ function shippingPerformanceForGetData() {
 function shippingPerformanceSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		shippingPerformance.data = data.UP_CG_MOB_SHIP_TEMP_R;
-		console.log(shippingPerformance.data)
 		shippingPerformance.grid.loadRows(shippingPerformance.data);
 	});
 }

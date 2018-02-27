@@ -6,14 +6,8 @@
 		<div class="row">
 			 <div class='col-xs-12'>
 				 <form class="form-horizontal">
-		        	<div class="form-group">
-						<button type="button" class="btn col-xs-offset-8 col-xs-4" id="kind_view_graph">그래프 보기</button>
-		        	</div>
 		        	<div class="form-group" id="grid_by_kind_div">
 						<div id="by_kind_grid"></div>
-		        	</div>
-		        	<div class="form-group" id="chart_by_kind_div">
-						<div th:replace="/mobile/report/comp_by_kind_chart :: chartByKind" ></div>
 		        	</div>
 		        </form>
 	        </div>
@@ -23,66 +17,79 @@
 /*<![CDATA[*/
 var byKind = {
 		grid: null,
+		data: null,
 }
 
 function byKindViewInit() {
-	$("#chart_by_kind_div").hide();
 	byKindViewGridInit();
 	byKindViewEventBind();
-	byKindBarChartInit();
 }
 
 function byKindViewGridInit() {
-	var byKindData = [
-		{"item": "QS", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "YB", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "YY♀", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "YY♂", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "LL♀", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "LL♂", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "DD♀", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "DD♂", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-		{"item": "기타", "plan": "", "perform": "", "planTotal": "", "performTotal": ""},
-	];
 	
 	byKind.grid = new tui.Grid({
 		el: $('#by_kind_grid'),
-		data: byKindData,
+		data: [],
 		virtualScrolling: false,
-		scrollX: false,
+		scrollX: true,
 		scrollY: false,
 		displayRowCount: 10,
 		columnFixIndex: 5,
 		columns: [
 			{
 				title: '품종별',
-				name: 'item',
-				align : "center"
+				name: 'NM_ITEM',
+				align : "center",
+				width: 150
 			},{
 				title: '계획',
-				name: 'plan',
-				align : "center"
+				name: 'QTY_PLAN',
+				align : "center",
+				width: 80
 			}, {
 				title: '실적',
-				name: 'perform',
-				align : "center"
+				name: 'QTY_SALE',
+				align : "center",
+				width: 80
 			}, {
 				title: '계획(누계)',
-				name: 'planTotal',
-				align : "center"
+				name: 'QTY_PLAN2',
+				align : "center",
+				width: 100
 			}, {
 				title: '실적(누계)',
-				name: 'performTotal',
-				align : "center"
+				name: 'QTY_SALE2',
+				align : "center",
+				width: 100
 			}
 		] ,
 	    summary: {
 	        position: 'bottom',
 	        height: 30,  // by pixel
 	        columnContent: {
-	        	item: {
+	        	NM_ITEM: {
 	                template: function() {
 	                    return '합계';
+	                }
+	            },
+	            QTY_PLAN: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            QTY_SALE: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            QTY_PLAN2: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
+	                }
+	            },
+	            QTY_SALE2: {
+	                template: function(valueMap) {
+	                	return format(valueMap.sum);
 	                }
 	            }
 	        }
@@ -91,10 +98,7 @@ function byKindViewGridInit() {
 }
 
 function byKindViewEventBind() {
-	$("#kind_view_graph").click(function() {
-		$("#grid_by_kind_div").hide();
-		$("#chart_by_kind_div").show();
-	});
+
 }
 /*]]>*/
 </script>

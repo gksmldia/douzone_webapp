@@ -127,11 +127,17 @@ function shippingPerformanceControles() {
     $('#shippingDays_start').val(todayStr);
     $('#shippingDays_end').val(todayStr);
     
+    $('#shippingDays_start').data("DateTimePicker").maxDate(today);
+    
     $("#shippingDays_start").on("dp.change", function (e) {
         $('#shippingDays_end').data("DateTimePicker").minDate(e.date);
     });
     $("#shippingDays_end").on("dp.change", function (e) {
-        $('#shippingDays_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#shippingDays_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#shippingDays_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }
@@ -149,21 +155,9 @@ function shippingPerformanceForGetData() {
 }
 
 function shippingPerformanceSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		shippingPerformance.data = JSON.parse(data).result.List.UP_CG_MOB_SHIP_TEMP_R;
-		console.log(shippingPerformance.data)
-		shippingPerformance.grid.loadRows(shippingPerformance.data)
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
+	commonAjaxForGetData(bodyObj, function(data) {
+		shippingPerformance.data = data.UP_CG_MOB_SHIP_TEMP_R;
+		shippingPerformance.grid.loadRows(shippingPerformance.data);
 	});
 }
 
@@ -248,7 +242,7 @@ function shippingPerformanceEventBind() {
 	
 	$("#modal_confirm").click(function() {
 		if($('input:radio[name="selectRadio"]:checked').val() == undefined) {
-			bootalert("선택 할 거래처를 선택해 주세요.");
+			bootalert("거래처를 선택해 주세요.");
 			return false
 		} else {
 			if($('input:radio[name="selectRadio"]:checked').val() != undefined) {

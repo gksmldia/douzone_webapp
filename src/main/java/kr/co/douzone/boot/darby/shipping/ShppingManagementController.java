@@ -52,12 +52,9 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 	@Autowired
 	ShppingManagementService service;
 
-	@RequestMapping(path = "/breedingPig/test", method = RequestMethod.GET, produces = "application/text; charset=utf8")
-	public View test(Model model, RedirectAttributes redirect) {
-		ModelAndView mav = new ModelAndView("/breedingPig/test");
-		return mav.getView();
-	}
-
+	/*
+	 * 출하 계획
+	 */
 	@RequestMapping(path = "/breedingPig/shipping_plan", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	public ModelAndView shippingPlan(Model model, RedirectAttributes redirect
 			,@RequestParam(value = "date", required = false, defaultValue = "") String date) {
@@ -75,6 +72,9 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return mav;
 	}
 
+	/*
+	 * 출하 등록
+	 */
 	@RequestMapping(path = "/breedingPig/shipping_regist", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	public ModelAndView shippingRegistGet(ModelMap model,
 			@RequestParam(value = "rowData", required = false, defaultValue = "") String rowData,
@@ -88,6 +88,9 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return mav;
 	}
 
+	/*
+	 * 사인 등록
+	 */
 	@RequestMapping(path = "/breedingPig/sign_regist", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	public ModelAndView signRegist(ModelMap model, RedirectAttributes redirect
 			, @RequestParam(value = "rowData", required = false, defaultValue = "") String rowData) {
@@ -105,6 +108,9 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return mav;
 	}
 
+	/*
+	 * 종돈 입식 확인서
+	 */
 	@RequestMapping(path = "/breedingPig/pig_confirmation_form", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	public ModelAndView outputForm(ModelMap model, RedirectAttributes redirect
 			, @RequestParam(value = "data", required = false, defaultValue = "") String data) {
@@ -138,12 +144,19 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return mav.getModelMap();
 	}
 
+	/*
+	 * 이각 확인
+	 */
 	@RequestMapping(path = "/breedingPig/earTagged_check", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	public View earTaggedCheck(Model model, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView("/breedingPig/earTagged_check");
 		return mav.getView();
 	}
 
+	/*
+	 * rest api 받아옴
+	 * 모든 api는 여기로 헤더와 바디 맞추어 넣어 보냄
+	 */
 	@RequestMapping(value = "/api/getRest", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String getUserInfo(HttpServletResponse res, ModelMap model, @RequestParam("restUrl") String restUrl,
@@ -157,6 +170,10 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return response;
 	}
 
+	/*
+	 * 사인 등록
+	 * 이미지 저장
+	 */
 	@RequestMapping(value = "/canv/canvasUploadProc", method = RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String canvasUploadProc(HttpServletRequest request, @RequestParam("strImg") String strImg,
@@ -193,6 +210,11 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return fullpath;
 	}
 	
+	/*
+	 * 종돈 입식 확인서
+	 * 이미지 저장
+	 * 화면 다 뜬 후 저장하고 불러올 때는 서버에서 불러온다.
+	 */
 	@RequestMapping(value = "/canv/confirmationUploadProc", method = RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String confirmationUploadProc(HttpServletRequest request, @RequestParam("strImg") String strImg,
@@ -235,6 +257,10 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return fullpath;
 	}
 	
+	/*
+	 * 스트링으로 받아온 데이터를 
+	 * JSON으로 파싱하는 공통 부분
+	 */
 	public JSONObject jsonPasing(String data) {
 		JSONObject json_return = new JSONObject();
 		try {
@@ -248,22 +274,4 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		return json_return;
 	}
 	
-	public static Image makeColorTransparent(BufferedImage im, final Color color, float threshold) {
-	    ImageFilter filter = new RGBImageFilter() {
-			
-			public float markerAlpha = color.getRGB() | 0xFF000000;
-	        public final int filterRGB(int x, int y, int rgb) {
-	            int currentAlpha = rgb | 0xFF000000;           // just to make it clear, stored the value in new variable
-	            float diff = Math.abs((currentAlpha - markerAlpha) / markerAlpha);  // Now get the difference
-	            if (diff <= threshold) {                      // Then compare that threshold value
-	                return 0x00FFFFFF & rgb;
-	            } else {
-	                return rgb;
-	            }
-	        }
-		};
-	    ImageProducer ip = new FilteredImageSource(im.getSource(), filter);
-	    return Toolkit.getDefaultToolkit().createImage(ip);
-	}
-
 }

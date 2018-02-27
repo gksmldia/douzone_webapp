@@ -21,7 +21,7 @@
 			            </div>
 					</div>
 					<div class="form-group">
-						<label for="account" class="col-xs-3 col-sm-2 control-label padTop4  text-muted">거래처</label>
+						<label for="farm" class="col-xs-3 col-sm-2 control-label padTop4  text-muted">거래처</label>
 						<div class="col-xs-9 col-sm-9">
 							<div class='input-group' >
 								<input type="text"  class="form-control" id="farm"/>
@@ -123,16 +123,27 @@ function clameDetailControles() {
     $('#claim_shipment_start').val(todayStr);
     $('#claim_shipment_end').val(todayStr);
     
+	$('#claim_shipment_start').data("DateTimePicker").maxDate(today);
+    
     $("#claim_shipment_start").on("dp.change", function (e) {
         $('#claim_shipment_end').data("DateTimePicker").minDate(e.date);
     });
     $("#claim_shipment_end").on("dp.change", function (e) {
-        $('#claim_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#claim_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#claim_shipment_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }
 
 function clameDetailSearchForValidation() {
+	if($("#farm").val().trim() == "") {
+		bootalert("거래처를 검색 후 조회 해 주십시오.");
+		return false;
+	}
+	
 	if($("#farm").val().trim() != "" && $("#farm").attr("name") == null) {
 		bootalert("[ 거래처 명 : " + $("#farm").val() + " ]로 검색을 원하신다면 농장 조회 후 선택하여 조회하여 주십시오.");
 		return false;
@@ -156,21 +167,9 @@ function clameDetailForGetData() {
 }
 
 function clameDetailSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		clameDetail.data = JSON.parse(data).result.List.UP_CG_MOB_CLAIM_SELECT1;
-		console.log(clameDetail.data);
+	commonAjaxForGetData(bodyObj, function(data) {
+		clameDetail.data = data.UP_CG_MOB_CLAIM_SELECT1;
 		clameDetail.grid.loadRows(clameDetail.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 
@@ -191,8 +190,7 @@ function clameDetailGridInit() {
 					"width": "90px",
 				},
 				formatter: function(value, options, rowData) {
-					var dtList = [value.substring(0, 4), value.substring(4, 6), value.substring(6, 9)];
-	                return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
+					 return makeDateFormat(value);
 	            }
 			}, {
 				title: '출고농장',

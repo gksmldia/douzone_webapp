@@ -48,14 +48,13 @@
 								</span>
 							</div>
 						</div>
-						
 						<div class="col-xs-6 col-sm-7">
 						</div>
 					</div>
 				</form>
 				<div class="row">
 					<form id="data-form">
-						<div id="grid"></div>
+						<table id="ear_tag_grid" class="table table-condensed" data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
 					</form>
 				</div>
 				<div class="modal fade"  id="search_popup">
@@ -99,6 +98,9 @@ function earTaggedCheckInitialize() {
 	partnerInit();
 }
 
+/**
+ * 화면마다 높이가 달라서 높이를 하나로 맞춥니다.
+ */
 function inputFixHeight() {
 	var buttonList = [$("button")[0], $("button")[1]];
 	for(var i in buttonList) {
@@ -109,6 +111,9 @@ function inputFixHeight() {
 	}
 }
 
+/**
+ * Date Controls 초기화
+ */
 function referenceDatePickerInitialize() {
 	$("#referenceDate").datetimepicker({
 		useCurrent: true, 
@@ -120,6 +125,9 @@ function referenceDatePickerInitialize() {
 	$("#referenceDate").val(todayStr);
 }
 
+/**
+ * 필수 조건 확인
+ */
 function earTaggedValidation() {
 	if($("#farm").val() == null || $("#farm").val() == "") {
 		bootalert("농장명은 필수 입력입니다.");
@@ -139,6 +147,10 @@ function earTaggedValidation() {
 	return true;
 }
 
+/**
+ * Ajax 보내기 위한 body data 수집
+ * FunctionID = 프로시저 명
+ */
 function earTaggedForGetData() {
 	var returnObj = new Object();
 	returnObj.FunctionID = "UP_CG_MOB_EAR_NO";
@@ -153,58 +165,55 @@ function earTaggedForGetData() {
 }
 
 function AjaxForearTaggedSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		earTagged.data = JSON.parse(data).result.List.UP_CG_MOB_EAR_NO;
-		console.log(earTagged.data)
-		earTagged.grid.setData(earTagged.data)
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
+	commonAjaxForGetData(bodyObj, function(data) {
+		earTagged.data = data.UP_CG_MOB_EAR_NO;
+		earTagged.grid.loadRows(earTagged.data);
+		$(".pagination").css("width", "max-content");
 	});
 }
 
+/**
+ * 그리드 초기화
+ */
 function earTagGridInitalize() {
-
-	earTagged.grid = new tui.Grid({
-		el: $('#grid'),
-	    columnFixCount: 1,
-	    bodyHeight: 250,
-		scrollX: false,
-		scrollY: true,
-		columnFixIndex: 5,
-        displayRowCount: 10,
-        minimumColumnWidth: 20,
-        data:  [],
-//         pagination: true,
-		columns: [
+	$('#ear_tag_grid').footable({
+		"empty": "조회된 정보가 없습니다.",
+		"paging": {
+			"size": 5
+		},
+		"columns": [
 			{
 				title: '이각번호',
 				name: 'CD_EAR',
-				align : "center"
+				style:{
+					"text-align" : "center",
+				}
 			}, {
 				title: '생년월일',
 				name: 'DT_BIRTH',
-				align : "center"
+				style:{
+					"text-align" : "center",
+				},
+				formatter: function(value, options, rowData) {
+					 return makeDateFormat(value);
+	            }
 			}, {
 				title: '일령',
 				name: 'DAY_OUT',
-				align : "center"
+				style:{
+					"text-align" : "center",
+				}
 			}
-		]
+		],
+		"rows": []
 	});
-
-	tui.Grid.applyTheme('striped');
-
+	earTagged.grid = FooTable.get('#ear_tag_grid');
+	
 }
 
+/**
+ * 이벤트(click, change 등)
+ */
 function earTaggedEventbind() {
 	$("#search_popup").on('shown.bs.modal', function () {
 		$("#ln_partner").val($("#farm").val());
@@ -226,7 +235,11 @@ function earTaggedEventbind() {
 		}
 	});
 	
+	/**
+	 * 조회 버튼 클릭시 AJAX function 호출
+	 */
 	$("#ear_tag_search").click(function() {
+		// Validation function 에서 true 가 리턴되면 데이터를 모아서 ajax를 호출한다.
 		if(earTaggedValidation()) {
 			AjaxForearTaggedSearch(earTaggedForGetData())
 		}

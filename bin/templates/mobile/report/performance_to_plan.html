@@ -103,7 +103,6 @@ function perfomanceToPlanControles() {
 function selectChangeFunc() {
 	$("#byKindViewDiv").hide();
 	$("#byPersonViewDiv").hide();
-    console.log($('#selectPlan').val())
     switch($('#selectPlan').val()) {
         case "1" : 
         case "2" : $("#byKindViewDiv").show(); 
@@ -139,7 +138,6 @@ function perfomanceToPlanSetGrid() {
 function ajaxForGetDatabyKindView(bodyObj, FunctionID, grid) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		gridView.data = data[FunctionID];
-		console.log(gridView.data);
 		grid.setData(gridView.data);
 	});
 }

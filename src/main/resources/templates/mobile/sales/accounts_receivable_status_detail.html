@@ -106,11 +106,6 @@ function accountsReceivableDetailGridInit() {
 		columnFixIndex: 5,
 		columns: [
 			{
-				title: '영업지역',
-				name: 'NM_BIZ_PERSON',
-				align : "center",
-				width: 80
-			} ,{
 				title: '단체명',
 				name: 'NM_PARTNER_GROUP',
 				align : "center",
@@ -123,7 +118,7 @@ function accountsReceivableDetailGridInit() {
 			}, {
 				title: '전월이월',
 				name: 'AMT_PREV',
-				align : "center",
+				align : "right",
 				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
@@ -131,7 +126,7 @@ function accountsReceivableDetailGridInit() {
 			}, {
 				title: '매출',
 				name: 'AMT_SALE',
-				align : "center",
+				align : "right",
 				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
@@ -139,7 +134,7 @@ function accountsReceivableDetailGridInit() {
 			}, {
 				title: '입금',
 				name: 'AMT_IN',
-				align : "center",
+				align : "right",
 				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
@@ -147,7 +142,7 @@ function accountsReceivableDetailGridInit() {
 			}, {
 				title: '잔고',
 				name: 'AMT_REMAIN',
-				align : "center",
+				align : "right",
 				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
@@ -156,12 +151,21 @@ function accountsReceivableDetailGridInit() {
 				title: '매출채권',
 				width: 80,
 				align : "center",
-	            formatter: function(value, options, rowData) {
-	                var id = rowData.id;
-	                var url = '/report/credit_sales_status';
+	            formatter: function(value, rowData) {
+	            	var initData = JSON.parse($("#row_data").text()).paramJson;
+	            	var paramData = new Object();
+	                paramData.CODE_BIZ_FIELD = initData.CODE_BIZ_FIELD;
+	                paramData.DT_FROM = initData.DT_FROM;
+	                paramData.DT_TO = initData.DT_TO;
+	                paramData.SN_PARTNER = rowData.SN_PARTNER;
+	                paramData.CD_PARTNER = rowData.CD_PARTNER;
+	                var url = '/sales/credit_sales_status?rowData='+encodedJSON(paramData);
 	
 	                return '<a href="' + url + '" class="btn btn-default">확인</a>';
 	            }
+			}, {
+				name: 'CD_PARTNER',
+				"visible": false
 			}
 		] ,
 	    summary: {
@@ -221,15 +225,13 @@ function detailForGetData() {
 	returnObj.P_DT_FROM = accountsReceivableDatail.rowData.DT_FROM.replace(/-/gi, '').trim();
 	returnObj.P_DT_TO = accountsReceivableDatail.rowData.DT_TO.replace(/-/gi, '').trim();
 	returnObj.P_ID_BIZ_PERSON = accountsReceivableDatail.rowData.ID_BIZ_PERSON;
-	console.log(returnObj)
 	return returnObj;
 }
 
 function detailForGetDataByAjax(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		accountsReceivableDatail.gridData = data.UP_CG_MOB_RECEIVALE_S3;
-		console.log(accountsReceivableDatail.gridData);
-		accountsReceivableDatail.gridData[0]. _extraData = {"rowSpan": {"NM_BIZ_PERSON": accountsReceivableDatail.gridData.length, "NM_PARTNER_GROUP": accountsReceivableDatail.gridData.length}};
+// 		accountsReceivableDatail.gridData[0]. _extraData = {"rowSpan": {"NM_BIZ_PERSON": accountsReceivableDatail.gridData.length, "NM_PARTNER_GROUP": accountsReceivableDatail.gridData.length}};
 		accountsReceivableDatail.grid.setData(accountsReceivableDatail.gridData);
 	});
 }

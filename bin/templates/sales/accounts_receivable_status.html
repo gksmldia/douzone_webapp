@@ -9,7 +9,8 @@
 					<div class="form-group">
 						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
 						<div class="col-xs-9 col-sm-10">
-							<input type="text"  class="form-control" id="businessField" />
+							<select class="form-control selectpicker"  id="business_part_sel"  >
+							</select>
 						</div>
 					</div>
 					<div class="form-group" >
@@ -36,7 +37,7 @@
 					<div id="accounts_receivable_status_grid"></div>
 				</div>
 				<div class="row">
-					<div class="btn-group text-center"  role="group" style="padding-left: 10px;">
+					<div class="btn-group text-center"  role="group" style="padding: 16px 25px 16px;">
 						<button type="button"  class="btn btn-default"  id="go_credit_sales" >
 							<i class="fa fa-chevron-left" aria-hidden="true"></i>
 							&nbsp;외상 채권 현황
@@ -58,6 +59,7 @@
 /*<![CDATA[*/
 var accountsReceivableStatus = {
 		grid: null,
+		data: null,
 }
 	
 $(document).ready(function() {
@@ -66,9 +68,14 @@ $(document).ready(function() {
 
 function accountsReceivableStatusInit() {
 	setTitle("미수현황");
+	accountsReceivableStatusSelectInit();
 	accountsReceivableStatusControles();
 	accountsReceivableStatusGridInit();
 	accountsReceivableStatusEventBind();
+}
+
+function accountsReceivableStatusSelectInit() {
+	commonSelectInit('CG_BA_0001', '#business_part_sel', '0', '선택');
 }
 
 function accountsReceivableStatusControles() {
@@ -90,67 +97,103 @@ function accountsReceivableStatusControles() {
     $('#accounts_receivable_start').val(todayStr);
     $('#accounts_receivable_end').val(todayStr);
     
+	$('#accounts_receivable_start').data("DateTimePicker").maxDate(today);
+    
     $("#accounts_receivable_start").on("dp.change", function (e) {
         $('#accounts_receivable_end').data("DateTimePicker").minDate(e.date);
     });
     $("#accounts_receivable_end").on("dp.change", function (e) {
-        $('#accounts_receivable_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#accounts_receivable_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#accounts_receivable_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }
 
-function accountsReceivableStatusGridInit() {
-	var gridData=[{'salesArea':'1A', 'forwardOver': 10000, 'sales':20000, 'deposit':3000, 'balance':27000}
-									, {'salesArea':'1B', 'forwardOver': 3000, 'sales':65000, 'deposit':50000, 'balance': 18000}
-									, {'salesArea':'2A', 'forwardOver': 10000, 'sales':50000, 'deposit':30000, 'balance': -15000}
-									, {'salesArea':'2B', 'forwardOver': '', 'sales':15000, 'deposit':30000, 'balance': -15000}];
+function accountsReceivableStatusSearchForValidation() {
+	if($("#business_part_sel").val() == "0" || $("#business_part_sel").val() == null) {
+		bootalert("사업부문 선택은 필수 입니다.");
+		return false;
+	}
+	return true;
+}
+
+function accountsReceivableStatusForGetData() {
+	var returnObj = new Object();
+	returnObj.FunctionID = "UP_CG_MOB_RECEIVALE_S2";
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_BIZ_FIELD = $("#business_part_sel").val();
+	returnObj.P_DT_FROM = $("#accounts_receivable_start").val().replace(/-/gi, '').trim();
+	returnObj.P_DT_TO = $("#accounts_receivable_end").val().replace(/-/gi, '').trim();
 	
+	return returnObj;
+}
+
+function accountsReceivableStatusSearch(bodyObj) {
+	commonAjaxForGetData(bodyObj, function(data) {
+		accountsReceivableStatus.data = data.UP_CG_MOB_RECEIVALE_S2;
+		accountsReceivableStatus.grid.setData(accountsReceivableStatus.data);
+	});
+}
+
+function accountsReceivableStatusGridInit() {
 	accountsReceivableStatus.grid = new tui.Grid({
 	el: $('#accounts_receivable_status_grid'),
-	data: gridData,
+	data: [],
 	scrollX: true,
-	scrollY: true,
-	displayRowCount: 10,
-	columnFixIndex: 5,
+	scrollY: false,
 	columns: [
 		{
 			title: '영업지역',
-			name: 'salesArea',
-			align : "center"
+			name: 'NM_BIZ_PERSON',
+			align : "center",
+			width: 80
 		},{
 			title: '전월이월',
-			name: 'forwardOver',
-			align : "center",
-            formatter: function(value, options, rowData) {
+			name: 'AMT_PREV',
+			align : "right",
+			width: 130,
+			formatter: function(value, options, rowData) {
                 return format(value);
             }
 		}, {
 			title: '매출액',
-			name: 'sales',
-			align : "center",
-            formatter: function(value, options, rowData) {
+			name: 'AMT_SALE',
+			align : "right",
+			width: 100,
+			formatter: function(value, options, rowData) {
                 return format(value);
             }
 		}, {
 			title: '입금액',
-			name: 'deposit',
-			align : "center",
-            formatter: function(value, options, rowData) {
+			name: 'AMT_IN',
+			align : "right",
+			width: 100,
+			formatter: function(value, options, rowData) {
                 return format(value);
             }
 		}, {
 			title: '잔고',
-			name: 'balance',
-			align : "center",
-            formatter: function(value, options, rowData) {
+			name: 'AMT_REMAIN',
+			align : "right",
+			width: 130,
+			formatter: function(value, options, rowData) {
                 return format(value);
             }
 		}, {
 			title: '세부내역',
-            formatter: function(value, options, rowData) {
-                var id = rowData.id;
-                var url = '/sales/accounts_receivable_status_detail';
-
+			name: 'ID_BIZ_PERSON',
+			width: 80,
+            formatter: function(value, rowData) {
+            	var paramObj = new Object();
+				paramObj.CODE_BIZ_FIELD = $("#business_part_sel").val();
+				paramObj.DT_FROM = $("#accounts_receivable_start").val();
+				paramObj.DT_TO = $("#accounts_receivable_end").val();
+				paramObj.ID_BIZ_PERSON = value;
+				paramObj.NM_BIZ_PERSON = rowData.NM_BIZ_PERSON;
+				var url = '/sales/accounts_receivable_status_detail?accountDetail='+encodedJSON(paramObj);
                 return '<a href="' + url + '" class="btn btn-default">확인</a>';
             }
 		}
@@ -159,35 +202,35 @@ function accountsReceivableStatusGridInit() {
         position: 'bottom',
         height: 50,  // by pixel
         columnContent: {
-        	salesArea: {
+        	NM_BIZ_PERSON: {
                 template: function() {
                     return '합계';
                 }
             },
-            forwardOver: {
+            AMT_PREV: {
+                template: function(valueMap) {
+                	return format(valueMap.sum);
+                },
+            },
+            AMT_SALE: {
                 template: function(valueMap) {
                 	return format(valueMap.sum);
                 }
             },
-            sales: {
+            AMT_IN: {
                 template: function(valueMap) {
                 	return format(valueMap.sum);
                 }
             },
-            deposit: {
-                template: function(valueMap) {
-                	return format(valueMap.sum);
-                }
-            },
-            balance: {
+            AMT_REMAIN: {
                 template: function(valueMap) {
                 	return format(valueMap.sum);
                 }
             }
         }
     }});
-	
-	tui.Grid.applyTheme('striped');
+
+// 	tui.Grid.applyTheme('striped');
 }
 
 function accountsReceivableStatusEventBind() {
@@ -201,6 +244,12 @@ function accountsReceivableStatusEventBind() {
 	
 	$("#go_collection_status").click(function() {
 		location.href = "/sales/collection_status";
+	});
+	
+	$("#accounts_receivable_search").click(function() {
+		if(accountsReceivableStatusSearchForValidation()) {
+			accountsReceivableStatusSearch(accountsReceivableStatusForGetData());
+		}
 	});
 }
 /*]]>*/

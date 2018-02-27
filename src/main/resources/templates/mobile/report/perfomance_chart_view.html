@@ -125,7 +125,6 @@ function perfomanceToChartControles() {
 function selectChangeChartFunc() {
 	$("#byKindViewDiv").hide();
 	$("#byPersonViewDiv").hide();
-    console.log($('#select_plan').val())
     switch($('#select_plan').val()) {
         case "1" : 
         case "2" : $("#byKindViewDiv").show(); 
@@ -171,7 +170,6 @@ function ajaxforGetDataByKindChart(bodyObj) {
 									break;
 			default :break;
 		}
-		console.log(chartView.data);
 	});
 	
 }

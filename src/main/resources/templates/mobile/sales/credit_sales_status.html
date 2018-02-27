@@ -3,6 +3,7 @@
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content">
 	<div class="container-fluid" style="padding-top: 25%;">
+		<div th:text="${rowData}"  style="display: none;" id="row_data"></div>
 		<div class="row">
 			<div class="col-xs-12 col-sm-12">
 				<form class="form-horizontal" style="font-size: 11pt;">
@@ -48,7 +49,7 @@
 				</form>
 				<div class="row">
 					<div class="table-responsive">
-						<table id="credit_sales_status_grid" class="table table-condensed" data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
+						<table id="credit_sales_status_grid" class="table table-condensed"   data-sorting="true"  data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
 					</div>
 				</div>
 				<div class="row">
@@ -90,6 +91,7 @@
 <script th:inline="javascript">
 /*<![CDATA[*/
 var creditSalesStatus = {
+		rowData: null,
 		grid: null,
 		data: null,
 }
@@ -101,11 +103,15 @@ $(document).ready(function() {
 function creditSalesStatusInit() {
 	$("#farm_search").css("height", $("#farm").css("height"));
 	setTitle("매출채권명세");
+	creditSalesStatus.rowData = JSON.parse($("#row_data").text()).paramJson;
 	creditSalesStatusSelectInit();
 	creditSalesStatusControles();
 	creditSalesStatusGridInit();
 	partnerInit();
 	creditSalesStatusEventBind();
+	setTimeout(function(){ 
+		creditSalesStatusInitSetData();
+	}, 100);
 }
 
 function creditSalesStatusSelectInit() {
@@ -146,6 +152,21 @@ function creditSalesStatusControles() {
 
 }
 
+function creditSalesStatusInitSetData() {
+	if(creditSalesStatus.rowData != null && creditSalesStatus.rowData != "") {
+		$("#business_part_sel").val(creditSalesStatus.rowData.CODE_BIZ_FIELD);
+		$("#business_part_sel").selectpicker('refresh');
+		
+		$('#credit_shipment_start').val(creditSalesStatus.rowData.DT_FROM);
+		$('#credit_shipment_end').val(creditSalesStatus.rowData.DT_TO);
+		
+		$('#farm').val(creditSalesStatus.rowData.SN_PARTNER);
+		$('#farm').attr("name", creditSalesStatus.rowData.CD_PARTNER);
+		
+		creditSalesStatusSearch(creditSalesStatusForGetData());
+	}
+}
+
 function creditSalesStatusSearchForValidation() {
 	if($("#business_part_sel").val() == "0" || $("#business_part_sel").val() == null) {
 		bootalert("사업부문 선택은 필수 입니다.");
@@ -180,7 +201,6 @@ function creditSalesStatusForGetData() {
 function creditSalesStatusSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		creditSalesStatus.data = data.UP_CG_MOB_RECEIVALE_S;
-		console.log(creditSalesStatus.data);
 		creditSalesStatus.grid.loadRows(creditSalesStatus.data);
 	});
 }
@@ -199,9 +219,10 @@ function creditSalesStatusGridInit() {
 				style:{
 					"text-align": "center"
 				},
-				formatter: function(value, options, rowData) {
-					 return makeDateFormat(value);
-	            }
+// 				formatter: function(value, options, rowData) {
+// 					return makeDateFormat(value);
+// 	            },
+// 				"sorted": true,
 			},{
 				title: '품목',
 				name: 'NM_ITEM',
@@ -212,31 +233,34 @@ function creditSalesStatusGridInit() {
 				title: '전월이월',
 				name: 'AM_PREV',
 				style:{
-					"text-align": "center"
-				}
+					"text-align": "right"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
 			}, {
 				title: '수량1',
 				name: 'QTY_OUT',
 				style:{
-					"text-align": "center"
+					"text-align": "right"
 				}
 			}, {
 				title: '수량2',
 				name: 'QTY_OUT_ETC',
 				style:{
-					"text-align": "center"
+					"text-align": "right"
 				}
 			}, {
 				title: '교환',
 				name: 'QTY_OUT_EXCHANGE',
 				style:{
-					"text-align": "center"
+					"text-align": "right"
 				}
 			}, {
 				title: '매출',
 				name: 'AMT_OUT',
 				style:{
-					"text-align": "center"
+					"text-align": "right"
 				},
 				formatter: function(value, options, rowData) {
 	                return addComma(value);
@@ -245,7 +269,7 @@ function creditSalesStatusGridInit() {
 				title: '입금',
 				name: 'AMT_CREDIT',
 				style:{
-					"text-align": "center"
+					"text-align": "right"
 				},
 				formatter: function(value, options, rowData) {
 	                return addComma(value);
@@ -254,7 +278,7 @@ function creditSalesStatusGridInit() {
 				title: '잔고',
 				name: 'AMT_JAN',
 				style:{
-					"text-align": "center"
+					"text-align": "right"
 				},
 				formatter: function(value, options, rowData) {
 	                return addComma(value);

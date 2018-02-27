@@ -37,6 +37,7 @@ public class ReportController {
 	
 	ShppingManagementController shipping = new ShppingManagementController();
 	
+	/* 종돈공급 내역서 */
 	@RequestMapping(path = "/report/breeding_pig_supply_statement", method = RequestMethod.GET)
 	public ModelAndView breedingPigSupplyStatement(Model model, RedirectAttributes redirect
 			,@RequestParam(value = "CD_PARTNER", required = false, defaultValue = "") String CD_PARTNER
@@ -49,18 +50,27 @@ public class ReportController {
 		return mav;
 	}
 	
+	/* 청구서(정액) */
 	@RequestMapping(path = "/report/flat_rate_account", method = RequestMethod.GET)
 	public View flatRateAccount(Model model, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView("/report/flat_rate_account");
 		return mav.getView();
 	}
 	
+	/* 
+	 * 계회대비 실적
+	 * 그리드 뷰
+	  */
 	@RequestMapping(path = "/report/performance_to_plan", method = RequestMethod.GET)
 	public View performanceToPlan(Model model, RedirectAttributes redirect) {
 		ModelAndView mav = new ModelAndView("/report/performance_to_plan");
 		return mav.getView();
 	}
 	
+	/* 
+	 * 계회대비 실적
+	 * 차트 뷰
+	  */
 	@RequestMapping(path = "/report/perfomance_chart_view", method = RequestMethod.GET)
 	public ModelAndView perfomanceChartView(Model model, RedirectAttributes redirect
 			,@RequestParam(value = "paramData", required = false, defaultValue = "") String paramData) {
@@ -73,6 +83,10 @@ public class ReportController {
 		return mav;
 	}
 	
+	/* 
+	 * 종돈공급내역서
+	 * 이미지 업로드
+	  */
 	@RequestMapping(value = "/canv/supplyUploadProc", method = RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String supplyUploadProc(HttpServletRequest request, @RequestParam("strImg") String strImg,
@@ -87,6 +101,46 @@ public class ReportController {
 		String rstStrimg = strParts[1];
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String fileNm = cd_company + dt_ship + cd_partner;
+
+		BufferedImage image = null;
+		byte[] byteImg;
+
+		Decoder decoder = java.util.Base64.getDecoder();
+		byteImg = decoder.decode(rstStrimg);
+
+		ByteArrayInputStream bis = new ByteArrayInputStream(byteImg);
+		image = ImageIO.read(bis);
+		bis.close();
+		fullpath = folder + fileNm + ".png";
+		File folderObj = new File(folder);
+		if (!folderObj.isDirectory())
+			folderObj.mkdir();
+		File outputFile = new File(fullpath);
+		if (outputFile.exists())
+			outputFile.delete();
+		ImageIO.write(image, "png", outputFile);
+
+		return fullpath;
+	}
+	
+	/* 
+	 * 청구서
+	 * 이미지 업로드
+	  */
+	@RequestMapping(value = "/canv/accountUploadProc", method = RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String accountUploadProc(HttpServletRequest request, @RequestParam("strImg") String strImg,
+			@RequestParam("cd_company") String cd_company, @RequestParam("dt_start_end") String dt_start_end,
+			@RequestParam("cd_partner") String cd_partner) throws Throwable {
+		
+		logger.info("page_canvasUpload > " + strImg);
+		String uploadPath = "\\bill\\";
+		String folder = System.getProperty("catalina.home") + uploadPath;
+		String fullpath = "";
+		String[] strParts = strImg.split(",");
+		String rstStrimg = strParts[1];
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String fileNm = cd_company + dt_start_end + cd_partner;
 
 		BufferedImage image = null;
 		byte[] byteImg;

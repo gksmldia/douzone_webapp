@@ -162,7 +162,6 @@ function dealingByCustomerForGetData() {
 function dealingByCustomerSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		dealingByCustomer.data = data.UP_CG_MOB_SHIP_SALE_P;
-		console.log(dealingByCustomer.data);
 		dealingByCustomer.grid.loadRows(dealingByCustomer.data);
 	});
 }

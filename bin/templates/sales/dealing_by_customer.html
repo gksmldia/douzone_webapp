@@ -119,11 +119,17 @@ function dealingByCustomerControles() {
     $('#dealing_shipping_start').val(todayStr);
     $('#dealing_shipping_end').val(todayStr);
     
+	$('#dealing_shipping_start').data("DateTimePicker").maxDate(today);
+    
     $("#dealing_shipping_start").on("dp.change", function (e) {
         $('#dealing_shipping_end').data("DateTimePicker").minDate(e.date);
     });
     $("#dealing_shipping_end").on("dp.change", function (e) {
-        $('#dealing_shipping_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#dealing_shipping_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#dealing_shipping_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
 }
@@ -154,21 +160,9 @@ function dealingByCustomerForGetData() {
 }
 
 function dealingByCustomerSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		dealingByCustomer.data = JSON.parse(data).result.List.UP_CG_MOB_SHIP_SALE_P;
-		console.log(dealingByCustomer.data);
+	commonAjaxForGetData(bodyObj, function(data) {
+		dealingByCustomer.data = data.UP_CG_MOB_SHIP_SALE_P;
 		dealingByCustomer.grid.loadRows(dealingByCustomer.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 
@@ -186,8 +180,7 @@ function dealingByCustomerGridInit() {
 					"width": "100px",
 				},
 				formatter: function(value, options, rowData) {
-					var dtList = [value.substring(0, 4), value.substring(4, 6), value.substring(6, 9)];
-	                return dtList[0] + "-" + dtList[1] + "-" + dtList[2];
+					return makeDateFormat(value);
 	            }
 			}, {
 				title: '출고지',
@@ -220,18 +213,7 @@ function dealingByCustomerGridInit() {
 					"width": "100px",
 				},
 				formatter: function(value, options, rowData) {
-					var len, point, str; 
-				       
-				    point = value.length % 3 ;
-				    len = value.length; 
-				   
-				    str = value.substring(0, point); 
-				    while (point < len) { 
-				        if (str != "") str += ","; 
-				        str += value.substring(point, point + 3); 
-				        point += 3; 
-				    } 
-	                return str;
+	                return addComma(value);
 	            }
 			}, {
 				title: '종돈공급내역서',
@@ -241,9 +223,9 @@ function dealingByCustomerGridInit() {
 					"text-align": "center"
 				},
 	            formatter: function(value, options, rowData) {
-	                var url = '/report/breeding_pig_supply_statement';
+	            	var url = '/report/breeding_pig_supply_statement?CD_PARTNER='+rowData.CD_PARTNER+"&DT_SHIP=" + rowData.DT_SHIP;
 
-	                return '<a href="' + url + '" class="btn btn-sm btn-default">확인</a>';
+	                return '<a href="' + url + '" class="btn btn-sm btn-default">조회</a>';
 	            }
 			}, {
 				name: 'CD_FARM_SUB',

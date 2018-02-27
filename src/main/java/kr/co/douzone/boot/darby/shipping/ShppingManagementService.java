@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShppingManagementService {
 	
+	/*
+	 * ImageURL 을
+	 * ByteArray로 변환
+	 */
 	public String getByteArrayFromImageURL(String imageUrl) {
 
 //		String imageUrl = imgUrl.replace("jpg", "png");

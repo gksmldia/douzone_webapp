@@ -65,22 +65,5 @@ public class ViewController extends WebMvcConfigurerAdapter {
 		return mav;
 	}
 	
-	@RequestMapping(path = "/load", method = RequestMethod.GET, produces = "application/text; charset=utf8")
-	public ModelAndView load(RedirectAttributes redirect, Model model
-			,@RequestParam(value = "web", required = false, defaultValue = "") String web) {
-		ModelAndView mav = new ModelAndView("/loading");
-		if(web != "") {
-//			model.addAttribute("web", "web");
-			mav.addObject("web", "web");
-		}
-		return mav;
-	}
-	
-	@RequestMapping(path = "/homeEx", method = RequestMethod.GET, produces = "application/text; charset=utf8")
-	public View load(RedirectAttributes redirect, Model model) {
-		ModelAndView mav = new ModelAndView("/homeEx");
-
-		return mav.getView();
-	}
 	
 }

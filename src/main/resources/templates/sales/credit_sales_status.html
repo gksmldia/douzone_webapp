@@ -3,6 +3,7 @@
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content">
 	<div class="container-fluid" style="padding-top: 25%;">
+		<div th:text="${rowData}"  style="display: none;" id="row_data"></div>
 		<div class="row">
 			<div class="col-xs-12 col-sm-12">
 				<form class="form-horizontal" style="font-size: 11pt;">
@@ -47,7 +48,9 @@
 					</div>
 				</form>
 				<div class="row">
-					<div id="credit_sales_status_grid"></div>
+					<div class="table-responsive">
+						<table id="credit_sales_status_grid" class="table table-condensed"   data-sorting="true"  data-paging="true" style="font-size: 15px; margin-bottom: 30px;"></table>
+					</div>
 				</div>
 				<div class="row">
 					<div class="btn-group text-center"  role="group" style="padding-left: 10px;">
@@ -88,6 +91,7 @@
 <script th:inline="javascript">
 /*<![CDATA[*/
 var creditSalesStatus = {
+		rowData: null,
 		grid: null,
 		data: null,
 }
@@ -99,11 +103,15 @@ $(document).ready(function() {
 function creditSalesStatusInit() {
 	$("#farm_search").css("height", $("#farm").css("height"));
 	setTitle("매출채권명세");
+	creditSalesStatus.rowData = JSON.parse($("#row_data").text()).paramJson;
 	creditSalesStatusSelectInit();
 	creditSalesStatusControles();
 	creditSalesStatusGridInit();
 	partnerInit();
 	creditSalesStatusEventBind();
+	setTimeout(function(){ 
+		creditSalesStatusInitSetData();
+	}, 100);
 }
 
 function creditSalesStatusSelectInit() {
@@ -115,7 +123,11 @@ function creditSalesStatusControles() {
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
 	$('#credit_shipment_start').datetimepicker({
 		useCurrent: false,  
-		format: "YYYY-MM-DD"
+		format: "YYYY-MM-DD",
+		widgetPositioning: {
+            horizontal: 'left',
+            vertical: 'bottom'
+        }
 	 });
 	
     $('#credit_shipment_end').datetimepicker({
@@ -125,13 +137,34 @@ function creditSalesStatusControles() {
     $('#credit_shipment_start').val(todayStr);
     $('#credit_shipment_end').val(todayStr);
     
+	$('#credit_shipment_start').data("DateTimePicker").maxDate(today);
+    
     $("#credit_shipment_start").on("dp.change", function (e) {
         $('#credit_shipment_end').data("DateTimePicker").minDate(e.date);
     });
     $("#credit_shipment_end").on("dp.change", function (e) {
-        $('#credit_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	if(today > e.date) {
+	    	$('#credit_shipment_start').data("DateTimePicker").maxDate(e.date);
+    	} else {
+    		$('#credit_shipment_start').data("DateTimePicker").maxDate(today);
+    	}
     });
 
+}
+
+function creditSalesStatusInitSetData() {
+	if(creditSalesStatus.rowData != null && creditSalesStatus.rowData != "") {
+		$("#business_part_sel").val(creditSalesStatus.rowData.CODE_BIZ_FIELD);
+		$("#business_part_sel").selectpicker('refresh');
+		
+		$('#credit_shipment_start').val(creditSalesStatus.rowData.DT_FROM);
+		$('#credit_shipment_end').val(creditSalesStatus.rowData.DT_TO);
+		
+		$('#farm').val(creditSalesStatus.rowData.SN_PARTNER);
+		$('#farm').attr("name", creditSalesStatus.rowData.CD_PARTNER);
+		
+		creditSalesStatusSearch(creditSalesStatusForGetData());
+	}
 }
 
 function creditSalesStatusSearchForValidation() {
@@ -157,7 +190,7 @@ function creditSalesStatusForGetData() {
 	var returnObj = new Object();
 	returnObj.FunctionID = "UP_CG_MOB_RECEIVALE_S";
 	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
-	returnObj.P_BIZ_FIELD = $("#assignment_area_sel").val();
+	returnObj.P_BIZ_FIELD = $("#business_part_sel").val();
 	returnObj.P_CD_PARTNER = $("#farm").attr("name");
 	returnObj.P_DT_FROM = $("#credit_shipment_start").val().replace(/-/gi, '').trim();
 	returnObj.P_DT_TO = $("#credit_shipment_end").val().replace(/-/gi, '').trim();
@@ -166,76 +199,95 @@ function creditSalesStatusForGetData() {
 }
 
 function creditSalesStatusSearch(bodyObj) {
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		creditSalesStatus.data = JSON.parse(data).result.List.UP_CG_MOB_RECEIVALE_S;
-		console.log(creditSalesStatus.data);
-// 		creditSalesStatus.grid.loadRows(creditSalesStatus.data);
-		creditSalesStatus.grid.setData(creditSalesStatus.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
+	commonAjaxForGetData(bodyObj, function(data) {
+		creditSalesStatus.data = data.UP_CG_MOB_RECEIVALE_S;
+		creditSalesStatus.grid.loadRows(creditSalesStatus.data);
 	});
 }
 
 function creditSalesStatusGridInit() {
 	
-	creditSalesStatus.grid = new tui.Grid({
-	el: $('#credit_sales_status_grid'),
-	data: [],
-	scrollX: true,
-	scrollY: true,
-	displayRowCount: 10,
-	columnFixIndex: 5,
-// 	minimumColumnWidth: 20,
-	columns: [
-		{
-			title: '일자',
-			name: 'date',
-			align : "center"
-		},{
-			title: '품목',
-			name: 'item',
-			align : "center"
-		}, {
-			title: '전월이월',
-			name: 'forwardOver',
-			align : "center"
-		}, {
-			title: '수량1',
-			name: 'cnt1',
-			align : "center"
-		}, {
-			title: '수량2',
-			name: 'cnt2',
-			align : "center"
-		}, {
-			title: '교환',
-			name: 'exchange',
-			align : "center"
-		}, {
-			title: '매출',
-			name: 'sales',
-			align : "center",
-		}, {
-			title: '입금',
-			name: 'deposit',
-			align : "center",
-		}, {
-			title: '잔고',
-			name: 'balance',
-			align : "center",
-		}
-	] });
-	
-	tui.Grid.applyTheme('striped');
+	$('#credit_sales_status_grid').footable({
+		"empty": "조회된 정보가 없습니다.",
+		"paging": {
+			"size": 5
+		},
+		"columns": [
+			{
+				title: '일자',
+				name: 'DT_OUT',
+				style:{
+					"text-align": "center"
+				},
+// 				formatter: function(value, options, rowData) {
+// 					return makeDateFormat(value);
+// 	            },
+// 				"sorted": true,
+			},{
+				title: '품목',
+				name: 'NM_ITEM',
+				style:{
+					"text-align": "center"
+				}
+			}, {
+				title: '전월이월',
+				name: 'AM_PREV',
+				style:{
+					"text-align": "right"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
+			}, {
+				title: '수량1',
+				name: 'QTY_OUT',
+				style:{
+					"text-align": "right"
+				}
+			}, {
+				title: '수량2',
+				name: 'QTY_OUT_ETC',
+				style:{
+					"text-align": "right"
+				}
+			}, {
+				title: '교환',
+				name: 'QTY_OUT_EXCHANGE',
+				style:{
+					"text-align": "right"
+				}
+			}, {
+				title: '매출',
+				name: 'AMT_OUT',
+				style:{
+					"text-align": "right"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
+			}, {
+				title: '입금',
+				name: 'AMT_CREDIT',
+				style:{
+					"text-align": "right"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
+			}, {
+				title: '잔고',
+				name: 'AMT_JAN',
+				style:{
+					"text-align": "right"
+				},
+				formatter: function(value, options, rowData) {
+	                return addComma(value);
+	            }
+			}
+		],
+		"rows": []
+	});
+	creditSalesStatus.grid = FooTable.get('#credit_sales_status_grid');
 }
 
 function creditSalesStatusEventBind() {

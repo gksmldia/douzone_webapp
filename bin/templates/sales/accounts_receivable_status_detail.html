@@ -3,13 +3,15 @@
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content">
 	<div class="container-fluid" style="padding-top: 25%;">
+		<div th:text="${accountDetail}"  style="display: none;" id="row_data"></div>
 		<div class="row">
 			<div class="col-xs-12 col-sm-12">
-				<form class="form-horizontal">
+				<form class="form-horizontal"  style="font-size: 11pt;">
 					<div class="form-group">
 						<label for="businessField " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">사업부문</label>
 						<div class="col-xs-9 col-sm-10">
-							<input type="text"  class="form-control" id="businessField" />
+							<select class="form-control selectpicker"  id="business_part_sel"  >
+							</select>
 						</div>
 					</div>
 					<div class="form-group">
@@ -29,33 +31,58 @@
 					<div class="form-group">
 						<label for="salesArea " class="col-xs-3 col-sm-2 control-label padTop4 text-muted"  style="padding-right: 0px;">영업지역</label>
 						<div class="col-xs-9 col-sm-10">
-							<input type="text"  class="form-control" id="salesArea"  value="1A"/>
+							<input type="text"  class="form-control" id="salesArea" />
 						</div>
 					</div>
 				</form>
 				<div class="row">
 					<div id="accounts_receivable_status_detail_grid"></div>
 				</div>
+				<div class="row">
+					<div class="btn-group text-center"  role="group" style="padding: 16px 25% 16px;">
+						<button type="button"  class="btn btn-default"  id="go_pre_view" >
+							<i class="fa fa-chevron-left" aria-hidden="true"></i>
+							&nbsp;이전
+						</button>
+						<button type="button"  class="btn btn-default"  id="go_menu" >
+							<i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+							메뉴
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 <script th:inline="javascript">
 /*<![CDATA[*/
-var accountsReceivableStatusDatail = {
+var accountsReceivableDatail = {
 		grid: null,
+		rowData: null,
+		gridData: null,
 }
-	
+
 $(document).ready(function() {
-	accountsReceivableStatusDatailInit();
+	accountsReceivableDetailInit();
 });
 
-function accountsReceivableStatusDatailInit() {
+function accountsReceivableDetailInit() {
 	setTitle("미수현황(세부내역)");
-	accountsReceivableStatusDatailControles();
-	accountsReceivableStatusDatailGridInit();
+	accountsReceivableDatail.rowData  = JSON.parse($("#row_data").text()).paramJson;
+	accountsReceivableDetailSelectInit();
+	accountsReceivableDetailControles();
+	accountsReceivableDetailGridInit();
+	accountsReceivableDetailEventBinde();
+	setTimeout(function(){ 
+		accountsReceivableDetailSetData();
+		detailForGetDataByAjax(detailForGetData())
+	}, 300);
 }
 
-function accountsReceivableStatusDatailControles() {
+function accountsReceivableDetailSelectInit() {
+	commonSelectInit('CG_BA_0001', '#business_part_sel', '0', '선택');
+}
+
+function accountsReceivableDetailControles() {
 	var today = new Date();
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + setTwinNum(today.getDate());
 	$('#shipmentDays_start').datetimepicker({
@@ -66,87 +93,57 @@ function accountsReceivableStatusDatailControles() {
     $('#shipmentDays_end').datetimepicker({
     	format: "YYYY-MM-DD"
     });
-    
-    $('#shipmentDays_start').val(todayStr);
-    $('#shipmentDays_end').val(todayStr);
-    
-    $("#shipmentDays_start").on("dp.change", function (e) {
-        $('#shipmentDays_end').data("DateTimePicker").minDate(e.date);
-    });
-    $("#shipmentDays_end").on("dp.change", function (e) {
-        $('#shipmentDays_start').data("DateTimePicker").maxDate(e.date);
-    });
 
 }
 
-function accountsReceivableStatusDatailGridInit() {
-	var gridData=[
-		{
-			'salesArea':'1A'
-			, 'customerName':'진길부(개척)'
-			, 'forwardOver': 2000
-			, 'sales':2000
-			, 'deposit':1000
-			, 'balance':1000
-			, _extraData: {
-				rowSpan: { // Merge rows
-					salesArea: 2
-				}
-			}
-		}, {
-			'salesArea':'1A'
-			, 'customerName':'이범호(성지)'
-			, 'forwardOver': 3000
-			, 'sales':4000
-			, 'deposit':5000
-			, 'balance': 6000
-		}];
-	
-	accountsReceivableStatusDatail.grid = new tui.Grid({
+function accountsReceivableDetailGridInit() {
+	accountsReceivableDatail.grid = new tui.Grid({
 		el: $('#accounts_receivable_status_detail_grid'),
-		data: gridData,
+		data: [],
 		scrollX: true,
-		scrollY: true,
+		scrollY: false,
 		displayRowCount: 10,
 		columnFixIndex: 5,
 		columns: [
 			{
-				title: '영업지역',
-				name: 'salesArea',
-				align : "center"
-			} ,{
 				title: '단체명',
-				name: 'groupName',
-				align : "center"
+				name: 'NM_PARTNER_GROUP',
+				align : "center",
+				width: 70
 			} ,{
 				title: '거래처명',
-				name: 'customerName',
-				align : "center"
+				name: 'SN_PARTNER',
+				align : "center",
+				width: 110
 			}, {
 				title: '전월이월',
-				name: 'forwardOver',
-				align : "center",
+				name: 'AMT_PREV',
+				align : "right",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '매출',
-				name: 'sales',
-				align : "center",
+				name: 'AMT_SALE',
+				align : "right",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '입금',
-				name: 'deposit',
-				align : "center",
+				name: 'AMT_IN',
+				align : "right",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
 			}, {
 				title: '잔고',
-				name: 'balance',
-				align : "center",
+				name: 'AMT_REMAIN',
+				align : "right",
+				width: 120,
 	            formatter: function(value, options, rowData) {
 	                return format(value);
 	            }
@@ -154,39 +151,48 @@ function accountsReceivableStatusDatailGridInit() {
 				title: '매출채권',
 				width: 80,
 				align : "center",
-	            formatter: function(value, options,, rowData) {
-	                var id = rowData.id;
-	                var url = '/report/credit_sales_status';
+	            formatter: function(value, rowData) {
+	            	var initData = JSON.parse($("#row_data").text()).paramJson;
+	            	var paramData = new Object();
+	                paramData.CODE_BIZ_FIELD = initData.CODE_BIZ_FIELD;
+	                paramData.DT_FROM = initData.DT_FROM;
+	                paramData.DT_TO = initData.DT_TO;
+	                paramData.SN_PARTNER = rowData.SN_PARTNER;
+	                paramData.CD_PARTNER = rowData.CD_PARTNER;
+	                var url = '/sales/credit_sales_status?rowData='+encodedJSON(paramData);
 	
 	                return '<a href="' + url + '" class="btn btn-default">확인</a>';
 	            }
+			}, {
+				name: 'CD_PARTNER',
+				"visible": false
 			}
 		] ,
 	    summary: {
 	        position: 'bottom',
 	        height: 50,  // by pixel
 	        columnContent: {
-	        	customerName: {
+	        	SN_PARTNER: {
 	                template: function() {
 	                    return '합계';
 	                }
 	            },
-	            forwardOver: {
+	            AMT_PREV: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
 	            },
-	            sales: {
+	            AMT_SALE: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
 	            },
-	            deposit: {
+	            AMT_IN: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
 	            },
-	            balance: {
+	            AMT_REMAIN: {
 	                template: function(valueMap) {
 	                	return format(valueMap.sum);
 	                }
@@ -195,7 +201,49 @@ function accountsReceivableStatusDatailGridInit() {
 	    }
 	});
 	
-	tui.Grid.applyTheme('striped');
+// 	tui.Grid.applyTheme('striped');
+}
+
+function accountsReceivableDetailSetData() {
+	if(accountsReceivableDatail.rowData != null && accountsReceivableDatail.rowData != "") {
+		$("#business_part_sel").val(accountsReceivableDatail.rowData.CODE_BIZ_FIELD);
+		$("#business_part_sel").prop('disabled', true);;
+		$("#business_part_sel").selectpicker('refresh');
+		
+		$('#shipmentDays_start').val(accountsReceivableDatail.rowData.DT_FROM).attr("readonly","readonly");
+		$('#shipmentDays_end').val(accountsReceivableDatail.rowData.DT_TO).attr("readonly","readonly");
+		
+		$('#salesArea').val(accountsReceivableDatail.rowData.NM_BIZ_PERSON).attr("readonly","readonly");
+	}
+}
+
+function detailForGetData() {
+	var returnObj = new Object();
+	returnObj.FunctionID = "UP_CG_MOB_RECEIVALE_S3";
+	returnObj.P_CD_COMPANY = userInfo().CD_COMPANY;
+	returnObj.P_BIZ_FIELD = accountsReceivableDatail.rowData.CODE_BIZ_FIELD;
+	returnObj.P_DT_FROM = accountsReceivableDatail.rowData.DT_FROM.replace(/-/gi, '').trim();
+	returnObj.P_DT_TO = accountsReceivableDatail.rowData.DT_TO.replace(/-/gi, '').trim();
+	returnObj.P_ID_BIZ_PERSON = accountsReceivableDatail.rowData.ID_BIZ_PERSON;
+	return returnObj;
+}
+
+function detailForGetDataByAjax(bodyObj) {
+	commonAjaxForGetData(bodyObj, function(data) {
+		accountsReceivableDatail.gridData = data.UP_CG_MOB_RECEIVALE_S3;
+// 		accountsReceivableDatail.gridData[0]. _extraData = {"rowSpan": {"NM_BIZ_PERSON": accountsReceivableDatail.gridData.length, "NM_PARTNER_GROUP": accountsReceivableDatail.gridData.length}};
+		accountsReceivableDatail.grid.setData(accountsReceivableDatail.gridData);
+	});
+}
+
+function accountsReceivableDetailEventBinde() {
+	$("#go_pre_view").click(function() {
+		history.back();
+	});
+	
+	$("#go_menu").click(function() {
+		location.href = "/menu";
+	});
 }
 /*]]>*/
 </script>

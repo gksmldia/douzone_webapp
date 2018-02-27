@@ -190,6 +190,7 @@ function accountEventBind() {
 		if(accountForValidation()) {
 			ajaxForAccountForm(accountForGetData());
 		}
+		
 	});
 	
 	$("#output_img").click(function() {
@@ -197,11 +198,7 @@ function accountEventBind() {
 			BootstrapDialog.alert( '검색 후 출력 가능합니다.');
 			return false;
 		}
-		
-		html2canvas(document.querySelector("#accountCanvas")).then(canvas => {
-			var image = document.getElementById("supply_Img");
-			image.src = canvas.toDataURL("image/png");
-		});
+		$("#supply_Img").attr('src', accountForm.src);
 	});
 }
 /*]]>*/

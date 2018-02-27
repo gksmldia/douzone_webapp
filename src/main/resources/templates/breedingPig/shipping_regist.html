@@ -70,16 +70,16 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="capacity" class="col-xs-4 col-sm-2 control-label padTop4 text-muted">용량</label>
+						<label for="qty_antibio" class="col-xs-4 col-sm-2 control-label padTop4 text-muted">용량</label>
 						<div class="col-xs-7 col-sm-8 pad-left-0">
-							<input type="number"  class="form-control" id="capacity" />
+							<input type="number"  class="form-control" id="qty_antibio" />
 						</div>
 						<label class="padTop4" id="unit_antibio"></label>
 					</div>
 					<div class="form-group">
-						<label for="withdrawal_period" class="col-xs-4  col-sm-2 control-label padTop4 text-muted">휴약일수</label>
+						<label for="days_vaccine" class="col-xs-4  col-sm-2 control-label padTop4 text-muted">휴약일수</label>
 						<div class="col-xs-8 col-sm-9  pad-left-0">
-							<input type="number"  class="form-control" id="withdrawal_period" />
+							<input type="number"  class="form-control" id="days_vaccine" />
 						</div>
 					</div>
 				</form>
@@ -145,7 +145,10 @@ function shippingRegistControlInit() {
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + today.getDate();
 	$('#shipping_date').val(todayStr);
 }
-
+/**
+ * 셀렉트 피커 초기화
+ * 콜백 부분 달라서 common으로 처리 안 함
+ */
 function shippingRegistSelectInit() {
 	var bodyObj = new Object();
 	bodyObj.FunctionID = "UP_CG_MOB_CODE_S";
@@ -153,7 +156,6 @@ function shippingRegistSelectInit() {
 	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "1000") {
 			shippingRegist.option = JSON.parse(data).result.List.UP_CG_MOB_CODE_S;
-			console.log(shippingRegist.option)
 			$('#antibiotic_name_sel').empty();
 			$('#antibiotic_name_sel').append('<option value="'+ 0 +'">없음</option>');
 			for(var i in shippingRegist.option){
@@ -165,7 +167,12 @@ function shippingRegistSelectInit() {
 			logOutAlert(JSON.parse(data).resultMessage);
 		}
 	}).done(function(e){
-		$('#antibiotic_name_sel').val(shippingRegist.cd_antibio);
+		if(shippingRegist.cd_antibio == "") {
+			$('#antibiotic_name_sel').val(0);
+			$("#days_vaccine").val("");
+		} else {
+			$('#antibiotic_name_sel').val(shippingRegist.cd_antibio);
+		}
 	    $('#antibiotic_name_sel').selectpicker('render');
 	}).fail(function(err) {
 		console.log(err)
@@ -176,7 +183,6 @@ function shippingRegistSetData() {
 	var con = $("#row_data").text();
 	if($("#row_data").text() != "{}") {
 		shippingRegist.rowData = JSON.parse($("#row_data").text()).paramJson;
-		console.log(shippingRegist.rowData)
 
 		var shippingDate = shippingRegist.rowData.DT_SHIP_PLAN.substring(0,4)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(4,6)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(6,8);
 	    $("#shipping_date").val(shippingDate);
@@ -208,9 +214,9 @@ function shippingRegistSetData() {
 	    }
 	   
 	    shippingRegist.cd_antibio = shippingRegist.rowData.CD_ANTIBIO;
-	    $("#capacity").val(shippingRegist.rowData.QTY_ANTIBIO);
+	    $("#qty_antibio").val(shippingRegist.rowData.QTY_ANTIBIO);
 	    $("#unit_antibio").text(shippingRegist.rowData.UNIT_ANTIBIO);
-	    $("#withdrawal_period").val(shippingRegist.rowData.DAYS_VACCINE);
+	    $("#days_vaccine").val(shippingRegist.rowData.DAYS_VACCINE);
 	}
 }
 
@@ -221,57 +227,54 @@ function shippingRegistGetDataForSave() {
 	returnObj.P_NO_SHIP_PLAN = shippingRegist.rowData.NO_SHIP_PLAN;
 	returnObj.P_ID_BIZ_PERSON = shippingRegist.rowData.ID_BIZ_PERSON;
 	returnObj.P_CD_PARTNER = shippingRegist.rowData.CD_PARTNER;
-	
-	if(shippingRegist.rowData.CD_PARTNER == $("#farm_name").attr("name")) {
-		returnObj.P_CD_PARTNER_NEW = shippingRegist.rowData.CD_PARTNER;
-	} else {
-		returnObj.P_CD_PARTNER_NEW = $("#farm_name").attr("name")
-	}
-// 	returnObj.P_CD_PARTNER = shippingRegist.rowData.CD_PARTNER;
-
-// 	returnObj.p_cd_farm_sub = "";
-// 	if($("#farm_name").attr("name") != null) {
-// 		returnObj.p_cd_farm_sub = $("#farm_name").attr("name");
-// 	}
 	returnObj.P_DT_SHIP = $("#shipping_date").val().replace(/-/gi, '');
+	
 	returnObj.P_QTY_SALE = $("#input_qty_sale").val();
 	returnObj.P_WEI_SALE = $("#input_wei_sale").val();
 	returnObj.p_qty_buy = $("#input_qty_buy").val();
 	returnObj.p_wei_buy = $("#input_wei_buy").val();
 	returnObj.p_cd_antibio = $('#antibiotic_name_sel').val() == "0" ? "" : $('#antibiotic_name_sel').val();
-	returnObj.p_QTY_ANTIBIO =  $("#capacity").val();
+	returnObj.p_QTY_ANTIBIO =  $("#qty_antibio").val();
+	returnObj.P_DAYS_VACCINE = $("#days_vaccine").val() == "" ? null : $("#days_vaccine").val();
+	
+	if(shippingRegist.rowData.CD_PARTNER == $("#farm_name").attr("name")) {
+		returnObj.P_CD_PARTNER_NEW = shippingRegist.rowData.CD_PARTNER;
+	} else {
+		returnObj.P_CD_PARTNER_NEW = $("#farm_name").attr("name");
+	}
+	
 	returnObj.P_ID_UPDATE = userInfo().ID_USER;
 	return returnObj;
 }
 
 function shippingRegistSave() {
 	var paramObj = shippingRegistGetDataForSave();
-	console.log(paramObj)
-	shippingRegistCallRestApi(paramObj, "RequestTx2");
+	shippingRegistCallRestApi(paramObj);
 }
 
-function shippingRegistCallRestApi(bodyObj, request) {
-	
-	$.get( "/api/getRest?restUrl=" + getUrl(request) + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
+function shippingRegistCallRestApi(bodyObj) {
+	$.get( "/api/getRest?restUrl=" + getUrl("RequestTx2") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "2000") {
 			logOutAlert(JSON.parse(data).resultMessage);
 		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
+			bootalert("데이터가 저장되지 않았습니다. 다시 시도부탁드립니다. \n"+JSON.parse(data).resultMessage);
 			return false
 		}
 	}).done(function(data){
-		BootstrapDialog.show({
-			 message: "저장되었습니다.",
-			 buttons: [{
-				 label: '닫기',
-				 action: function() {
-					 var shippingDate = shippingRegist.rowData.DT_SHIP_PLAN.substring(0,4)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(4,6)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(6,8);
-					 location.href = "/breedingPig/shipping_plan?date=" + shippingDate;
-				 }
-			 }]
-		 });
+		if(JSON.parse(data).resultCode == "1000") {
+			BootstrapDialog.show({
+				 message: "저장되었습니다.",
+				 buttons: [{
+					 label: '닫기',
+					 action: function() {
+						 var shippingDate = shippingRegist.rowData.DT_SHIP_PLAN.substring(0,4)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(4,6)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(6,8);
+						 location.href = "/breedingPig/shipping_plan?date=" + shippingDate;
+					 }
+				 }]
+			 });
+		} 
 	}).fail(function(err) {
-		bootalert(JSON.parse(data).resultMessage);
+		bootalert("데이터가 저장되지 않았습니다. 다시 시도부탁드립니다. \n"+JSON.parse(data).resultMessage);
 		return false
 		console.log(err)
 	});
@@ -293,12 +296,11 @@ function shippingRegistSaveForValidation() {
 			idList.push(inputNumberList[i].id);
 		}
 	}
-	console.log(idList)
 	
 	for(var i in idList) {
 		var val = $("#"+idList[i]).val() ;
 		if(val == "" || val == null || val == "undefined" ) {
-			if(idList[i] == "withdrawal_period" && $("#antibiotic_name_sel").val() != 0) {
+			if(idList[i] == "days_vaccine" && $("#antibiotic_name_sel").val() != 0) {
 				bootalert("데이터에 빈 값이 있습니다. 빈 값을 채워주세요.");
 				return false;
 			}
@@ -336,7 +338,6 @@ function shippingRegistEventBind() {
 	});
 	
 	$("#input_qty_sale, #input_wei_sale").keyup(function(e) {
-		console.log($(this).val())
 		var buyId = this.id.replace("sale", "buy");
 		$("#"+buyId).val($(this).val());
 	});
@@ -362,8 +363,7 @@ function shippingRegistEventBind() {
 	});
 	
 	$("#antibiotic_name_sel").on('changed.bs.select', function (e) {
-		  console.log($(this).find("option:selected").attr("data"))
-		  $("#withdrawal_period").val($(this).find("option:selected").attr("data"));
+		  $("#days_vaccine").val($(this).find("option:selected").attr("data"));
 	});
 }
 /*]]>*/

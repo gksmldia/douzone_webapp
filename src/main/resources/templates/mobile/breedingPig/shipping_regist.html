@@ -145,7 +145,10 @@ function shippingRegistControlInit() {
 	var todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth() + 1) + "-" + today.getDate();
 	$('#shipping_date').val(todayStr);
 }
-
+/**
+ * 셀렉트 피커 초기화
+ * 콜백 부분 달라서 common으로 처리 안 함
+ */
 function shippingRegistSelectInit() {
 	var bodyObj = new Object();
 	bodyObj.FunctionID = "UP_CG_MOB_CODE_S";
@@ -153,7 +156,6 @@ function shippingRegistSelectInit() {
 	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
 		if(JSON.parse(data).resultCode == "1000") {
 			shippingRegist.option = JSON.parse(data).result.List.UP_CG_MOB_CODE_S;
-			console.log(shippingRegist.option)
 			$('#antibiotic_name_sel').empty();
 			$('#antibiotic_name_sel').append('<option value="'+ 0 +'">없음</option>');
 			for(var i in shippingRegist.option){
@@ -181,7 +183,6 @@ function shippingRegistSetData() {
 	var con = $("#row_data").text();
 	if($("#row_data").text() != "{}") {
 		shippingRegist.rowData = JSON.parse($("#row_data").text()).paramJson;
-		console.log(shippingRegist.rowData)
 
 		var shippingDate = shippingRegist.rowData.DT_SHIP_PLAN.substring(0,4)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(4,6)+"-"+shippingRegist.rowData.DT_SHIP_PLAN.substring(6,8);
 	    $("#shipping_date").val(shippingDate);
@@ -248,7 +249,6 @@ function shippingRegistGetDataForSave() {
 
 function shippingRegistSave() {
 	var paramObj = shippingRegistGetDataForSave();
-	console.log(paramObj)
 	shippingRegistCallRestApi(paramObj);
 }
 

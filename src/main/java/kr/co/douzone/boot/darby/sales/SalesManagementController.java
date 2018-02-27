@@ -63,9 +63,14 @@ public class SalesManagementController extends WebMvcConfigurerAdapter {
 	}
 	
 	@RequestMapping(path = "/sales/credit_sales_status", method = RequestMethod.GET)
-	public View creditSalesStatus(Model model, RedirectAttributes redirect) {
+	public ModelAndView creditSalesStatus(Model model, RedirectAttributes redirect
+			,@RequestParam(value = "rowData", required = false, defaultValue = "") String rowData) {
+		JSONObject json_return = new JSONObject();
+		json_return = shipping.jsonPasing(rowData);
+		
 		ModelAndView mav = new ModelAndView("/sales/credit_sales_status");
-		return mav.getView();
+		mav.addObject("rowData", json_return.toString());
+		return mav;
 	}
 	
 	@RequestMapping(path = "/sales/accounts_receivable_status_detail", method = RequestMethod.GET)

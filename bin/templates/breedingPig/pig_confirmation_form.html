@@ -123,19 +123,25 @@
 				</div>
 			</div>
 		</div>
-		<div class="row text-center" style="margin-top: 10px; margin-bottom: 10px;">
-			<div class="col-xs-offset-2 col-xs-12 btn-group text-center"  role="group" >
+		<div class="row" style="margin: 16px 2px 10px; padding-left: 20px;">
+			<div class="col-xs-12  btn-group ">
+				<button type="button"  class="btn btn-default"  id="confirmation_pre_view"  >
+					<i class="fa fa-chevron-left"  aria-hidden="true" ></i>&nbsp;
+					이전
+				</button>
 				<button type="button" class="btn btn-default"  data-toggle="modal" data-target="#confirmationOutput" id="output_img">
-					<i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;이미지 저장
+					<i class="fa fa-floppy-o"  aria-hidden="true" ></i>&nbsp;이미지 저장
 				</button>
 				<button type="button" class="btn btn-info"  id="output_print">
 					<i class="fa fa-print" aria-hidden="true"></i>&nbsp;출력
 				</button>
-				<button type="button"  class="btn btn-default"  id="confirmation_pre_view"  style="width: 20%;" >
-					<i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;
-					이전
-				</button>
 			</div>
+		</div>
+		<div class="row text-center" style="margin-bottom: 16px;">
+			<button type="button"  class="btn btn-default"  id="connect_print"  >
+				<i class="fa fa-plug" aria-hidden="true"></i>&nbsp;
+				프린터 연결
+			</button>
 		</div>
 		<div class="modal fade"  id="confirmationOutput">
 		  <div class="modal-dialog">
@@ -170,9 +176,6 @@ var confirmation = {
 }
 $(document).ready(function() {
 	confirmationFormInit();
-});
-
-$(window).load(function() {
 	setTimeout(function(){ 
 		html2canvas(document.querySelector('#confirmation_text')).then(canvas => {
 			setTimeout(function(){ 
@@ -185,7 +188,6 @@ $(window).load(function() {
 				$.post('/canv/confirmationUploadProc'
 					, {strImg : cavImgStr, cd_company: cd_company, no_ship_plan: no_ship_plan, cd_partner: cd_partner}
 					, function(data) {
-						console.log(data);
 						confirmation.src = 'http://1.244.192.47:85/ERP-U/Upload/ship_confirmation/' + confirmation.data.IMG_SIGN_FILE.replace("jpg", "png")
 				});
 			}, 400);
@@ -197,12 +199,10 @@ function confirmationFormInit() {
 	setTitle("종돈 입식 확인서");
 	confirmationFormGetData();
 	confirmationFormEventBind();
-	
 }
 
 function confirmationFormGetData() {
 	var getData = JSON.parse($("#confirmation_data").text()).paramJson;
-	console.log(getData)
 	confirmation.sign = sessionStorage.getItem("sign");
 	var bodyObj = new Object();
 	bodyObj.FunctionID = "UP_CG_MOB_SHIP_CHECK_R";
@@ -210,25 +210,13 @@ function confirmationFormGetData() {
 	bodyObj.P_no_ship_plan = getData.no_ship_plan;
 	bodyObj.p_cd_partner = getData.cd_partner;
 	
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		confirmation.data = JSON.parse(data).result.List.UP_CG_MOB_SHIP_CHECK_R[0];
+	commonAjaxForGetData(bodyObj, function(data) {
+		confirmation.data = data.UP_CG_MOB_SHIP_CHECK_R[0];
 		confirmationFormSetData(confirmation.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 
 function confirmationFormSetData(data) {
-	console.log(data)
 	if(data != null && data != []) {
 		$("#confirmation_title").text("");
 		$("#confirmation_title").text(data.LALEL_TITLE);
@@ -348,6 +336,10 @@ function confirmationFormEventBind() {
 		} else {
 			location.href = "app://cmd;print;" + confirmation.src;
 		}
+	});
+	
+	$("#connect_print").click(function() {
+		location.href="app://cmd;bluetoothdevicelist";
 	});
 }
 

@@ -61,7 +61,6 @@
 				    </div>
 				    <div class="collapse navbar-collapse" id="report">
 				      <ul class="nav navbar-nav">
-				        <li><a href="/report/breeding_pig_supply_statement">종돈공급내역서</a></li>
 				        <li><a href="/report/flat_rate_account">청구서(정액)</a></li> 
 				        <li><a href="/report/performance_to_plan">계획대비실적</a></li> 
 				      </ul>
@@ -90,7 +89,7 @@ $(document).ready(function() {
 function menuListInitialize() {
 	setTitle("메뉴");
 	$(".nav_trigger").hide();
-	if(JSON.parse(sessionStorage.getItem("userInfo")).CD_GROUP == "8030") {
+	if(sessionStorage.getItem("groupFlag") == "1") {
 		 $("#menu_li_eartag, #menu_nav_report").hide();
 		 $("#menu_ul_sales li").hide();
 		 $("#menu_li_partner").show();

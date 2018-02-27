@@ -98,6 +98,9 @@ function earTaggedCheckInitialize() {
 	partnerInit();
 }
 
+/**
+ * 화면마다 높이가 달라서 높이를 하나로 맞춥니다.
+ */
 function inputFixHeight() {
 	var buttonList = [$("button")[0], $("button")[1]];
 	for(var i in buttonList) {
@@ -108,6 +111,9 @@ function inputFixHeight() {
 	}
 }
 
+/**
+ * Date Controls 초기화
+ */
 function referenceDatePickerInitialize() {
 	$("#referenceDate").datetimepicker({
 		useCurrent: true, 
@@ -119,6 +125,9 @@ function referenceDatePickerInitialize() {
 	$("#referenceDate").val(todayStr);
 }
 
+/**
+ * 필수 조건 확인
+ */
 function earTaggedValidation() {
 	if($("#farm").val() == null || $("#farm").val() == "") {
 		bootalert("농장명은 필수 입력입니다.");
@@ -138,6 +147,10 @@ function earTaggedValidation() {
 	return true;
 }
 
+/**
+ * Ajax 보내기 위한 body data 수집
+ * FunctionID = 프로시저 명
+ */
 function earTaggedForGetData() {
 	var returnObj = new Object();
 	returnObj.FunctionID = "UP_CG_MOB_EAR_NO";
@@ -154,12 +167,14 @@ function earTaggedForGetData() {
 function AjaxForearTaggedSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		earTagged.data = data.UP_CG_MOB_EAR_NO;
-		console.log(earTagged.data)
 		earTagged.grid.loadRows(earTagged.data);
 		$(".pagination").css("width", "max-content");
 	});
 }
 
+/**
+ * 그리드 초기화
+ */
 function earTagGridInitalize() {
 	$('#ear_tag_grid').footable({
 		"empty": "조회된 정보가 없습니다.",
@@ -196,6 +211,9 @@ function earTagGridInitalize() {
 	
 }
 
+/**
+ * 이벤트(click, change 등)
+ */
 function earTaggedEventbind() {
 	$("#search_popup").on('shown.bs.modal', function () {
 		$("#ln_partner").val($("#farm").val());
@@ -217,7 +235,11 @@ function earTaggedEventbind() {
 		}
 	});
 	
+	/**
+	 * 조회 버튼 클릭시 AJAX function 호출
+	 */
 	$("#ear_tag_search").click(function() {
+		// Validation function 에서 true 가 리턴되면 데이터를 모아서 ajax를 호출한다.
 		if(earTaggedValidation()) {
 			AjaxForearTaggedSearch(earTaggedForGetData())
 		}

@@ -501,6 +501,7 @@
 /*<![CDATA[*/
 var accountForm = {
 		data: null,
+		src: "",
 }
 
 function accountFormInit() {
@@ -524,9 +525,20 @@ function ajaxForAccountForm(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		$("#loading").hide();
 		accountForm.data = data.UP_CG_MOB_CHARGE_RPT[0];
-		console.log(accountForm.data);
 		if(accountForm.data != null) {
-			accountFormSetData(accountForm.data)
+			accountFormSetData(accountForm.data);
+			html2canvas(document.querySelector("#accountCanvas")).then(canvas => {
+				var cavImgStr = canvas.toDataURL('image/png', 1.0);
+				var cd_company = userInfo().CD_COMPANY;
+				var dt_start_end = accountForm.data.DT_START_END;
+				var cd_partner = accountForm.data.CD_PARTNER;
+				$.post('/canv/accountUploadProc'
+					, {strImg : cavImgStr, cd_company: cd_company, dt_start_end: dt_start_end, cd_partner: cd_partner}
+					, function(data) {
+						console.log(data);
+						accountForm.src = 'http://1.244.192.47:85/ERP-U/Upload/bill/' + cd_company + dt_start_end + cd_partner + ".png"
+				});
+			});
 		} else {
 			if($("#accountCanvas").css("display") == "block") {
 				$("#accountCanvas").hide();
@@ -579,17 +591,17 @@ function accountFormSetData(data) {
 	
 	$("#QTY_OUT_CNT").text(data.QTY_OUT_CNT);
 	var out_unitPrice = isNaN_unitPrice(data.AMT_OUT, data.QTY_OUT_CNT);
-	$("#OUT_UNIT").text(out_unitPrice);
+	$("#OUT_UNIT").text(addComma(out_unitPrice));
 	$("#AMT_OUT").text(addComma(data.AMT_OUT));
 	
 	$("#QTY_ETC_CNT").text(data.QTY_ETC_CNT);
 	var etc_unitPrice = isNaN_unitPrice(data.AMT_ETC, data.QTY_ETC_CNT);
-	$("#ETC_UNIT").text(etc_unitPrice);
+	$("#ETC_UNIT").text(addComma(etc_unitPrice));
 	$("#AMT_ETC").text(addComma(data.AMT_ETC));
 	
 	$("#QTY_CAR_CNT").text(data.QTY_CAR_CNT);
 	var car_unitPrice = isNaN_unitPrice(data.AMT_CAR, data.QTY_CAR_CNT);
-	$("#CAR_UNIT").text(car_unitPrice);
+	$("#CAR_UNIT").text(addComma(car_unitPrice));
 	$("#AMT_CAR").text(addComma(data.AMT_CAR));
 	
 	$("#qty_total_cnt").text(data.QTY_OUT_CNT);

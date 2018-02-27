@@ -85,7 +85,6 @@ function  signRegistSetData() {
 	if($("#row_data").text() != "{}") {
 		signRegist.rowData = JSON.parse($("#row_data").text()).paramJson;
 		signRegist.rowData.IMG_SIGN_FILE = signRegist.rowData.IMG_SIGN_FILE.replace("jpg", "png");
-		console.log(signRegist.rowData)
 		
 		var shippingDate = signRegist.rowData.DT_SHIP_PLAN.substring(0,4)+"-"+signRegist.rowData.DT_SHIP_PLAN.substring(4,6)+"-"+signRegist.rowData.DT_SHIP_PLAN.substring(6,8);
 	    $("#shippingDate").val(shippingDate);

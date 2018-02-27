@@ -26,6 +26,9 @@ public class MaUserController {
 	
 	public String hederInfo;
 	
+	/*
+	 *  헤더 인포 받아 오는 api
+	 */
 	@RequestMapping(path = "/api/getInfo", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> getInfo(HttpServletRequest request) {
@@ -93,7 +96,7 @@ public class MaUserController {
 	}
 	
 	/*
-	 *  1. 怨듯넻 API濡� �빐�떦 �꽌踰� Host Url �뼸�뼱�삤湲�
+	 *  1. Host Url 받아 옴
 	*/	
 	@RequestMapping(value = "/api/getUrl", method = RequestMethod.GET, produces = "application/text; charset=utf8")
     @ResponseBody
@@ -106,7 +109,7 @@ public class MaUserController {
     }
 	
 	/*	
-	 * 2. 怨듯넻 API濡� API 媛� 諛쏆븘 �삤湲�
+	 * 2. API list 받아옴
 	 */
 	@RequestMapping(value = "/api/getApi", method = RequestMethod.GET, produces = "application/text; charset=utf8")
     @ResponseBody
@@ -117,7 +120,7 @@ public class MaUserController {
 	}
 	
 	/*
-	 * 3. 怨듯넻 API濡� �꽭�뀡 媛� 媛��졇�삤湲�	
+	 * 3. session 받아오는 부분
 	 */
 	@RequestMapping(value = "/api/getSession", method = RequestMethod.GET, produces = "application/text; charset=utf8")
     @ResponseBody
@@ -129,7 +132,7 @@ public class MaUserController {
 	}
 	
 	/*
-	 * 4. 怨듯넻 API濡� user �젙蹂� 媛��졇�삤湲�	
+	 * 4. user info 받아오는 부분
 	 */
 	@RequestMapping(value = "/api/getUserInfo", method = RequestMethod.GET, produces = "application/text; charset=utf8")
     @ResponseBody

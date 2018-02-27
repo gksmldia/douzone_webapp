@@ -155,25 +155,13 @@ function patnerInfoGetData() {
 	bodyObj.P_CD_COMPANY = userInfo().CD_COMPANY;
 	bodyObj.P_CD_PARTNER = $("#cd_partner").text();
 	
-	$.get( "/api/getRest?restUrl=" + getUrl("RequestNtx") + "&header=" + encodedJSON(headerInfo()) + "&body=" + encodedJSON(bodyObj), function( data ) {
-		if(JSON.parse(data).resultCode == "2000") {
-			logOutAlert(JSON.parse(data).resultMessage);
-		} else if(JSON.parse(data).resultCode != "1000" && JSON.parse(data).resultCode != "2000") {
-			bootalert(JSON.parse(data).resultMessage);
-			return false
-		}
-	}).done(function(data){
-		patnerInfoDetail.data = JSON.parse(data).result.List.UP_CG_MOB_PARTNER_S[0];
+	commonAjaxForGetData(bodyObj, function(data) {
+		patnerInfoDetail.data = data.UP_CG_MOB_PARTNER_S[0];
 		patnerInfoSetData(patnerInfoDetail.data);
-	}).fail(function(err) {
-		console.log(err)
-		bootalert(JSON.parse(data).resultMessage);
-		return false;
 	});
 }
 
 function patnerInfoSetData(patnerInfoData) {
-	console.log(patnerInfoData)
 	if(patnerInfoData != null && patnerInfoData != {}) {
 		$("#farmName").text("");
 		$("#farmName").text(patnerInfoData.NM_PARTNER);

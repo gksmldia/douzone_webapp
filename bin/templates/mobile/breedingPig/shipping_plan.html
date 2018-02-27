@@ -44,16 +44,8 @@ var shippingPlan = {
 		
 }
 $(document).ready(function() {
-// 	shippingPlanInitialize();
-});
-
-$( window ).load(function() {
 	shippingPlanInitialize();
 });
-
-// $( window ).load(function() {
-// 	shippingPlanInitialize();
-// });
 
 function shippingPlanInitialize() {
 	$("#start_date").css("height", $("#shipping_plan_confirm").css("height"));
@@ -83,18 +75,18 @@ function shippingPlanGetData() {
 
 	return returnObj;
 }
-// 데이터 받아오는 function
+/* 데이터 받아오는 function */
 function shippingPlanGetDataByAjax(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		shippingPlan.gridData = data.UP_CG_MOB_SHIP_PLAN_S;
 		for(var i in shippingPlan.gridData) {
 			shippingPlan.gridData[i].index = Num(i);
 		}
-		console.log(shippingPlan.gridData)
 		shippingPlan.grid.loadRows(shippingPlan.gridData);
 	});
 }
-// 그리드 
+
+/* 그리드 초기화 */
 function shippingPlangridInitialize(gridDataSource) {
 	$('#shipping_plan_grid').footable({
 		"empty": "조회된 정보가 없습니다.",
@@ -191,7 +183,7 @@ function shippingPlangridInitialize(gridDataSource) {
 
 function shippingPlanEventBind() {
 	
-	// 출하 일자의 확인 클릭 이벤트
+	/* 출하 일자의 확인 클릭 이벤트 */
 	$("#shipping_plan_confirm").click(function() {
 		if($("#start_date").val() != "") {
 			var param = shippingPlanGetData();

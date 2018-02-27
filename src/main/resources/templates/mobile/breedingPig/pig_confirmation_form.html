@@ -176,9 +176,6 @@ var confirmation = {
 }
 $(document).ready(function() {
 	confirmationFormInit();
-});
-
-$(window).load(function() {
 	setTimeout(function(){ 
 		html2canvas(document.querySelector('#confirmation_text')).then(canvas => {
 			setTimeout(function(){ 
@@ -191,7 +188,6 @@ $(window).load(function() {
 				$.post('/canv/confirmationUploadProc'
 					, {strImg : cavImgStr, cd_company: cd_company, no_ship_plan: no_ship_plan, cd_partner: cd_partner}
 					, function(data) {
-						console.log(data);
 						confirmation.src = 'http://1.244.192.47:85/ERP-U/Upload/ship_confirmation/' + confirmation.data.IMG_SIGN_FILE.replace("jpg", "png")
 				});
 			}, 400);
@@ -203,12 +199,10 @@ function confirmationFormInit() {
 	setTitle("종돈 입식 확인서");
 	confirmationFormGetData();
 	confirmationFormEventBind();
-	
 }
 
 function confirmationFormGetData() {
 	var getData = JSON.parse($("#confirmation_data").text()).paramJson;
-	console.log(getData)
 	confirmation.sign = sessionStorage.getItem("sign");
 	var bodyObj = new Object();
 	bodyObj.FunctionID = "UP_CG_MOB_SHIP_CHECK_R";
@@ -223,7 +217,6 @@ function confirmationFormGetData() {
 }
 
 function confirmationFormSetData(data) {
-	console.log(data)
 	if(data != null && data != []) {
 		$("#confirmation_title").text("");
 		$("#confirmation_title").text(data.LALEL_TITLE);

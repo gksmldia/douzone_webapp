@@ -93,7 +93,6 @@ function costomerInfoGetData() {
 }
 function costomerInfoGetDataCallback(data) {
 	gridData = JSON.parse(data).result.List.UP_CG_MOB_PARTNER_POP_S;
-	console.log(JSON.parse(data).result.List.UP_CG_MOB_PARTNER_POP_S);
 	cosInfo.grid.loadRows(gridData);
 }
 
@@ -120,7 +119,6 @@ function costomerInfoGridInit() {
 					"width": "45%"
 				},
 				formatter: function(value, options, rowData) {
-	                console.log(rowData)
 					var url = '/sales/partner_detail?partner='+rowData.CD_PARTNER;
 
 	                return '<a href="' + url + '" >' + value + '</a>';
