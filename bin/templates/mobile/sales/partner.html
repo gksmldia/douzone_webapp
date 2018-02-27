@@ -3,6 +3,9 @@
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content">
 	<div class="container-fluid" style="padding-top: 25%;">
+		<div id="loading" style="display: none;">
+			<img id="loading-image"  th:src='@{/images/ajax-loader.gif}'  alt="Loading..."  style="width: 100%; height:20px;  margin-bottom: 30px;"/>
+		</div>
 		<form class="form-horizontal" style="font-size: 11pt;">
 			<div class="form-group">
 				<label for="ln_partner" class="col-xs-5 col-sm-3  control-label padTop4 text-muted" >농장명 / 대표자</label>
@@ -94,6 +97,7 @@ function costomerInfoGetData() {
 function costomerInfoGetDataCallback(data) {
 	gridData = JSON.parse(data).result.List.UP_CG_MOB_PARTNER_POP_S;
 	cosInfo.grid.loadRows(gridData);
+	$("#loading").hide();
 }
 
 function costomerInfoValidation() {
@@ -153,6 +157,7 @@ function costomerInfoGridInit() {
 
 function costomerInfoEventBind() {
 	$("#search_costomer").click(function() {
+		$("#loading").show();
 		costomerInfoGetData();
 	});
 	
