@@ -11,6 +11,7 @@ import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Base64.Decoder;
 import java.util.Date;
@@ -173,7 +174,6 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 
 		BufferedImage image = null;
 		byte[] byteImg;
-		;
 
 		Decoder decoder = java.util.Base64.getDecoder();
 		byteImg = decoder.decode(rstStrimg);
@@ -201,12 +201,13 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 		
 		logger.info("page_canvasUpload > " + strImg);
 		String uploadPath = "\\ship_confirmation\\";
+		String fileNm = cd_company + no_ship_plan + cd_partner;
 		String folder = System.getProperty("catalina.home") + uploadPath;
 		String fullpath = "";
 		String[] strParts = strImg.split(",");
+		
 		String rstStrimg = strParts[1];
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String fileNm = cd_company + no_ship_plan + cd_partner;
 
 		BufferedImage image = new BufferedImage( 900, 2500, BufferedImage.TYPE_INT_RGB );
 		Graphics2D graphics = image.createGraphics();
@@ -233,7 +234,7 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 
 		return fullpath;
 	}
-
+	
 	public JSONObject jsonPasing(String data) {
 		JSONObject json_return = new JSONObject();
 		try {

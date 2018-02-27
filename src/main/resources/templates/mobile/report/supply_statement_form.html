@@ -255,6 +255,7 @@ var supplyStatementForm = {
 		evenGrid: null,
 		data: [],
 		functionIdList: [],
+		src: "",
 }
 function supplyStatementFormInit() {
 	supplyStatementFormGrid();
@@ -336,11 +337,13 @@ function supplyStatementFormGrid() {
 
 function supplyStatementFormSetData(data, functionList) {
 	var prc_repay, prc_this;
+	var dt_ship ,cd_partner;
 	for(var i =0; i < functionList.length; i++) {
 		var dataObj = new Object();
 		switch(functionList[i]) {
 		case "UP_CG_MOB_PIG_LIST_RPT1" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT1[0];
+			console.log(dataObj);
 			$("#nm_bizarea").text(dataObj.NM_BIZAREA);
 			$("#ln_partner").text(dataObj.LN_PARTNER);
 			$("#nm_master").text(dataObj.NM_MASTER);
@@ -351,9 +354,12 @@ function supplyStatementFormSetData(data, functionList) {
 			$("#no_company").text(makeNoCompanyFormat(dataObj.NO_COMPANY));
 			$("#dt_end1").text(makeDateFormat(dataObj.DT_SHIP));
 			$("#dt_end2").text(makeDateFormat(dataObj.DT_SHIP));
+			dt_ship = dataObj.DT_SHIP;
+			cd_partner = dataObj.CD_PARTNER;
 			break;
 		case "UP_CG_MOB_PIG_LIST_RPT2" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT2[0];
+			console.log(dataObj);
 			$("#nm_sex").text(dataObj.NM_SEX);
 			$("#nm_item").text(dataObj.NM_ITEM);
 			$("#qty_ship_norm").text(dataObj.QTY_SHIP_NORM);
@@ -395,11 +401,13 @@ function supplyStatementFormSetData(data, functionList) {
 			break;
 		case "UP_CG_MOB_PIG_LIST_RPT3" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT3[0];
+			console.log(dataObj);
 			prc_repay = dataObj.PRC_REPAY;
 			$("#PRC_REPAY").text(addComma(prc_repay));
 			break;
 		case "UP_CG_MOB_PIG_LIST_RPT4" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT4[0];
+			console.log(dataObj);
 			$("#NM_ANTIBIO").text(dataObj.NM_ANTIBIO);
 			$("#QTY_ANTIBIO").text(dataObj.QTY_ANTIBIO);
 			$("#DAYS_VACCINE").text(dataObj.DAYS_VACCINE);
@@ -408,6 +416,7 @@ function supplyStatementFormSetData(data, functionList) {
 			break;
 		case "UP_CG_MOB_PIG_LIST_RPT5" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT5[0];
+			console.log(dataObj);
 			$("#NM_BANK_TITLE").text(dataObj.NM_BANK_TITLE);
 			$("#NM_BANK").text(dataObj.NM_BANK);
 			$("#BANK").text(dataObj.BANK);
@@ -438,6 +447,20 @@ function supplyStatementFormSetData(data, functionList) {
 	
 	var prc_sum = Num(prc_repay) + Num(prc_this);
 	$("#PRC_SUM").text(addComma(prc_sum.toString()));
+	
+	html2canvas(document.querySelector("#supplyStatementCanvas")).then(canvas => {
+//			var image = document.getElementById("supply_Img");
+//			image.src = canvas.toDataURL("image/png");
+		
+		var cavImgStr = canvas.toDataURL('image/png', 1.0);
+		var cd_company = userInfo().CD_COMPANY;
+		$.post('/canv/supplyUploadProc'
+			, {strImg : cavImgStr, cd_company: cd_company, dt_ship: dt_ship, cd_partner: cd_partner}
+			, function(data) {
+				console.log(data);
+				supplyStatementForm.src = 'http://1.244.192.47:85/ERP-U/Upload/supply_statment/' + cd_company + dt_ship + cd_partner + ".png"
+		});
+	});
 }
 
 function supplyStatementFormGetDataByAjax() {
@@ -449,7 +472,6 @@ function supplyStatementFormGetDataByAjax() {
 			supplyStatementForm.data.push(data);
 			supplyStatementForm.functionIdList.push(Object.keys(supplyStatementForm.data[supplyStatementForm.data.length-1])[0]);
 			if(supplyStatementForm.data.length == 6) {
-				console.log(supplyStatementForm.data);
 				supplyStatementFormSetData(supplyStatementForm.data, supplyStatementForm.functionIdList)
 			}
 		});

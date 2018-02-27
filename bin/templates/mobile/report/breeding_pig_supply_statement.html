@@ -74,10 +74,8 @@ function supplyStatementGetData() {
 function supplyStatementEventBind() {
 	
 	$("#output_img").click(function() {
-		html2canvas(document.querySelector("#supplyStatementCanvas")).then(canvas => {
-			var image = document.getElementById("supply_Img");
-			image.src = canvas.toDataURL("image/png");
-		});
+		console.log(supplyStatementForm.src)
+		$("#supply_Img").attr('src', supplyStatementForm.src);
 	});
 	
 }
