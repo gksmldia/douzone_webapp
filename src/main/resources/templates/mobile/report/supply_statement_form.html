@@ -354,8 +354,8 @@ function supplyStatementFormSetData(data, functionList) {
 			$("#no_company").text(makeNoCompanyFormat(dataObj.NO_COMPANY));
 			$("#dt_end1").text(makeDateFormat(dataObj.DT_SHIP));
 			$("#dt_end2").text(makeDateFormat(dataObj.DT_SHIP));
-			dt_ship = dataObj.DT_SHIP;
-			cd_partner = dataObj.CD_PARTNER;
+			supplyStatement.dt_ship = dataObj.DT_SHIP;
+			supplyStatement.cd_partner = dataObj.CD_PARTNER;
 			break;
 		case "UP_CG_MOB_PIG_LIST_RPT2" :
 			dataObj = data[i].UP_CG_MOB_PIG_LIST_RPT2[0];
