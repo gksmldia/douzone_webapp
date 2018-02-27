@@ -121,7 +121,7 @@ function referenceDatePickerInitialize() {
 	 });
 	
 	var today = new Date();
-	todayStr = today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();
+	todayStr = today.getFullYear() + "-" + setTwinNum(today.getMonth()+1) + "-" + today.getDate();
 	$("#referenceDate").val(todayStr);
 }
 

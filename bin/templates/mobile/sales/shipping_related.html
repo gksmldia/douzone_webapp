@@ -173,6 +173,16 @@ function shippingPerformanceGridInit() {
 		},
 		"columns": [
 			{
+				title: '출고기간',
+				name: 'DT_SHIP_PLAN',
+				style:{
+					"width": "80px",
+					"text-align": "center"
+				},
+				formatter: function(value, options, rowData) {
+					return makeDateFormat(value);
+	            }
+			}, {
 				title: '영업지역',
 				name: 'CD_ZONE',
 				style:{
@@ -203,21 +213,21 @@ function shippingPerformanceGridInit() {
 				name: 'QTY_SALE',
 				style:{
 					"width": "50px",
-					"text-align": "center"
+					"text-align": "right"
 				}
 			}, {
 				title: '체중',
 				name: 'WEI_SALE',
 				style:{
 					"width": "80px",
-					"text-align": "center"
+					"text-align": "right"
 				}
 			}, {
 				title: '평균체중',
 				name: 'WEI_AVR',
 				style:{
 					"width": "80px",
-					"text-align": "center"
+					"text-align": "right"
 				}
 			}, {
 				title: '물류계장',

@@ -89,9 +89,9 @@ function costomerInfoSelectInit() {
 
 function costomerInfoGetData() {
 	if(costomerInfoValidation()) {
+		$("#loading").show();
 		var paramObj = commonPartnerGetData($("#ln_partner").val().trim(), $("#cities").val().trim(), $("#joined_group").val().trim(), $("#assignment_area_sel").val() == "0" ? "" : $('#assignment_area_sel').val());
 		commonAjaxForPatnerSerach(paramObj, costomerInfoGetDataCallback);
-		
 	}
 }
 function costomerInfoGetDataCallback(data) {
@@ -157,7 +157,6 @@ function costomerInfoGridInit() {
 
 function costomerInfoEventBind() {
 	$("#search_costomer").click(function() {
-		$("#loading").show();
 		costomerInfoGetData();
 	});
 	
