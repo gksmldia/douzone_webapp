@@ -51,6 +51,20 @@ var supplyStatement = {
 
 $(document).ready(function() {
 	supplyStatementInit();
+	setTimeout(function(){ 
+		html2canvas(document.querySelector('#supplyStatementCanvas')).then(canvas => {
+			setTimeout(function(){ 
+				var cavImgStr = canvas.toDataURL('image/png', 1.0);
+				var cd_company = userInfo().CD_COMPANY;
+				$.post('/canv/supplyUploadProc'
+					, {strImg : cavImgStr, cd_company: cd_company, dt_ship: dt_ship, cd_partner: cd_partner}
+					, function(data) {
+						console.log(data);
+						supplyStatementForm.src = 'http://1.244.192.47:85/ERP-U/Upload/supply_statment/' + cd_company + dt_ship + cd_partner + ".png"
+				});
+			}, 400);
+		});
+	}, 300);
 });
 
 function supplyStatementInit() {
