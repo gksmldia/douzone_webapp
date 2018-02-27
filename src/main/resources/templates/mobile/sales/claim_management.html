@@ -3,6 +3,9 @@
 	layout:decorator="layout/default" lang="ko">
 <div  layout:fragment="content">
 	<div class="container-fluid" style="padding-top: 25%;">
+		<div id="loading" style="display: none;">
+			<img id="loading-image"  th:src='@{/images/ajax-loader.gif}'  alt="Loading..."  style="width: 100%; height:20px;  margin-bottom: 30px;"/>
+		</div>
 		<div class="row">
 			<div class="col-xs-12 col-sm-12">
 				<form class="form-horizontal"  style="font-size: 11pt;">
@@ -170,6 +173,7 @@ function clameDetailSearch(bodyObj) {
 	commonAjaxForGetData(bodyObj, function(data) {
 		clameDetail.data = data.UP_CG_MOB_CLAIM_SELECT1;
 		clameDetail.grid.loadRows(clameDetail.data);
+		$("#loading").hide();
 	});
 }
 
@@ -266,6 +270,7 @@ function clameDetailEventBind() {
 	
 	$("#claim_search").click(function() {
 		if(clameDetailSearchForValidation()) {
+			$("#loading").show();
 			clameDetailSearch(clameDetailForGetData());
 		}
 	});

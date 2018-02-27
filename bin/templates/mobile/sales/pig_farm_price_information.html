@@ -23,6 +23,9 @@
 						</div>
 						<label class="padTop4 text-muted">원</label>
 					</div>
+					<div id="loading" style="display: none;">
+						<img id="loading-image"  th:src='@{/images/ajax-loader.gif}'  alt="Loading..."  style="width: 100%; height:20px;  margin-bottom: 30px;"/>
+					</div>
 					<div class="form-group">
 						<label for="infoDays" class="col-xs-2 col-sm-4 control-label padTop4 text-muted" style="padding-right: 0px">기간</label>
 						<div class="col-xs-10 col-sm-8">
@@ -306,6 +309,7 @@ function creditSalesStatusSearch(bodyObj) {
 // 				$($('#price_information_grid tbody tr')[i+1].children[1]).css("border-bottom", "hidden")
 // 			}
 // 		}
+		$("#loading").hide();
 	});
 }
 
@@ -319,6 +323,7 @@ function priceInformationEventBind() {
 	});
 	
 	$("#price_information_search").click(function() {
+		$("#loading").show();
 		creditSalesStatusSearch(creditSalesStatusForGetData())
 	});
 }

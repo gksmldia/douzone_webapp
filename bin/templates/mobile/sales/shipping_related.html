@@ -221,14 +221,20 @@ function shippingPerformanceGridInit() {
 				style:{
 					"width": "80px",
 					"text-align": "right"
-				}
+				},
+				formatter: function(value, options, rowData) {
+					return addComma(value);
+	            }
 			}, {
 				title: '평균체중',
 				name: 'WEI_AVR',
 				style:{
 					"width": "80px",
 					"text-align": "right"
-				}
+				},
+				formatter: function(value, options, rowData) {
+					return addComma(value);
+	            }
 			}, {
 				title: '물류계장',
 				name: 'NM_DRIVER',
