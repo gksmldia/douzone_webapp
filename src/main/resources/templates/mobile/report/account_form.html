@@ -591,17 +591,17 @@ function accountFormSetData(data) {
 	
 	$("#QTY_OUT_CNT").text(data.QTY_OUT_CNT);
 	var out_unitPrice = isNaN_unitPrice(data.AMT_OUT, data.QTY_OUT_CNT);
-	$("#OUT_UNIT").text(addComma(out_unitPrice));
+	$("#OUT_UNIT").text(addComma(out_unitPrice.toString()));
 	$("#AMT_OUT").text(addComma(data.AMT_OUT));
 	
 	$("#QTY_ETC_CNT").text(data.QTY_ETC_CNT);
 	var etc_unitPrice = isNaN_unitPrice(data.AMT_ETC, data.QTY_ETC_CNT);
-	$("#ETC_UNIT").text(addComma(etc_unitPrice));
+	$("#ETC_UNIT").text(addComma(etc_unitPrice.toString()));
 	$("#AMT_ETC").text(addComma(data.AMT_ETC));
 	
 	$("#QTY_CAR_CNT").text(data.QTY_CAR_CNT);
 	var car_unitPrice = isNaN_unitPrice(data.AMT_CAR, data.QTY_CAR_CNT);
-	$("#CAR_UNIT").text(addComma(car_unitPrice));
+	$("#CAR_UNIT").text(addComma(car_unitPrice.toString()));
 	$("#AMT_CAR").text(addComma(data.AMT_CAR));
 	
 	$("#qty_total_cnt").text(data.QTY_OUT_CNT);
