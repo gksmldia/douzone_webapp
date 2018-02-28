@@ -200,6 +200,12 @@ function accountEventBind() {
 			BootstrapDialog.alert( '검색 후 출력 가능합니다.');
 			return false;
 		}
+		
+		if(accountForm.src == null || accountForm.src == "") {
+			BootstrapDialog.alert( '서버에서 이미지를 받아오는 중입니다. 잠시 후 다시 시도 해주세요.');
+			return false;
+		}
+		
 		$("#supply_Img").attr('src', accountForm.src);
 	});
 }
