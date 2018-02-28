@@ -205,7 +205,8 @@ function commonSelectInit(cd_field, selector, select_callback, option_0) {
 	});
 }
 
-function addComma(value) {
+function addComma(val) {
+	var value = val.trim();
 	var len, point, str; 
     if(value != "" && value != null) {
 	    	if(value.indexOf(".") ==  -1) {
