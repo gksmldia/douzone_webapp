@@ -180,7 +180,7 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 			@RequestParam("cd_company") String cd_company, @RequestParam("no_ship_plan") String no_ship_plan,
 			@RequestParam("cd_partner") String cd_partner) throws Throwable {
 		
-		logger.info("page_canvasUpload > " + strImg);
+		System.out.println("page_canvasUpload > " + strImg);
 		String uploadPath = "\\ship_sign\\";
 		String folder = System.getProperty("catalina.home") + uploadPath;
 		String fullpath = "";
@@ -221,7 +221,7 @@ public class ShppingManagementController extends WebMvcConfigurerAdapter {
 			@RequestParam("cd_company") String cd_company, @RequestParam("no_ship_plan") String no_ship_plan,
 			@RequestParam("cd_partner") String cd_partner) throws Throwable {
 		
-		logger.info("page_canvasUpload > " + strImg);
+		System.out.println("page_confirmationUpload > " + strImg);
 		String uploadPath = "\\ship_confirmation\\";
 		String fileNm = cd_company + no_ship_plan + cd_partner;
 		String folder = System.getProperty("catalina.home") + uploadPath;

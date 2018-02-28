@@ -93,7 +93,7 @@ public class ReportController {
 			@RequestParam("cd_company") String cd_company, @RequestParam("dt_ship") String dt_ship,
 			@RequestParam("cd_partner") String cd_partner) throws Throwable {
 		
-		logger.info("page_canvasUpload > " + strImg);
+		System.out.println("page_supplyUpload > " + strImg);
 		String uploadPath = "\\supply_statment\\";
 		String folder = System.getProperty("catalina.home") + uploadPath;
 		String fullpath = "";
@@ -133,7 +133,7 @@ public class ReportController {
 			@RequestParam("cd_company") String cd_company, @RequestParam("dt_start_end") String dt_start_end,
 			@RequestParam("cd_partner") String cd_partner) throws Throwable {
 		
-		logger.info("page_canvasUpload > " + strImg);
+		System.out.println("page_accountUpload > " + strImg);
 		String uploadPath = "\\bill\\";
 		String folder = System.getProperty("catalina.home") + uploadPath;
 		String fullpath = "";
